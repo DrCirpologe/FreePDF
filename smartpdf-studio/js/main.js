@@ -19,4 +19,30 @@ if (unlockBtn) {
 	});
 }
 
+function initAdSnow() {
+	const adArea = document.getElementById('adCustomArea');
+	if (!adArea) return;
+
+	const snowLayer = document.createElement('div');
+	snowLayer.className = 'ad-snow-layer';
+
+	const flakeCount = 28;
+	for (let index = 0; index < flakeCount; index += 1) {
+		const flake = document.createElement('span');
+		flake.className = 'ad-snowflake';
+		flake.style.left = `${Math.random() * 100}%`;
+		flake.style.animationDuration = `${4 + Math.random() * 5}s`;
+		flake.style.animationDelay = `${Math.random() * -8}s`;
+		flake.style.opacity = `${0.45 + Math.random() * 0.55}`;
+		const size = 4 + Math.random() * 7;
+		flake.style.width = `${size}px`;
+		flake.style.height = `${size}px`;
+		snowLayer.appendChild(flake);
+	}
+
+	adArea.appendChild(snowLayer);
+}
+
+initAdSnow();
+
 window.enablePhase2And3 = enablePhase2And3;
