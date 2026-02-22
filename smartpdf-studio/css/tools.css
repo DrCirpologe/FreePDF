@@ -9,6 +9,10 @@
     gap: 18px;
 }
 
+.tool-layout.two-cols {
+    grid-template-columns: 1fr 1fr;
+}
+
 .panel {
     background: #fff;
     border: 1px solid #f0dede;
@@ -146,6 +150,17 @@ select:focus {
     color: #6f6262;
 }
 
+@media (max-width: 1024px) {
+    .tool-layout.two-cols {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-sections,
+    .premium-sections {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 @media (max-width: 640px) {
     .tool-container {
         padding: 0 16px 56px;
@@ -153,5 +168,33 @@ select:focus {
 
     .panel {
         padding: 18px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .actions .btn,
+    .actions button {
+        width: 100%;
+    }
+
+    .image-preview {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-sections,
+    .premium-sections {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 420px) {
+    .panel {
+        padding: 14px;
+    }
+
+    .image-preview {
+        grid-template-columns: 1fr;
     }
 }
