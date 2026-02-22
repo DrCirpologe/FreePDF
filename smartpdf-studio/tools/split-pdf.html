@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF aufteilen | SmartPDF Studio</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/tools.css">
+</head>
+<body>
+<div class="page-wrap">
+    <div class="topbar">
+        <a href="../../index.html" class="top-link">← Zur Startseite</a>
+    </div>
+
+    <header class="landing">
+        <div class="hero-card">
+            <h1>PDF aufteilen</h1>
+            <p>Definiere Seitenbereiche wie 1-2,3-4 und exportiere mehrere PDFs.</p>
+        </div>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-layout">
+            <section class="panel">
+                <h2>Datei und Bereiche</h2>
+                <div class="field">
+                    <label for="splitInput">PDF Datei</label>
+                    <input id="splitInput" type="file" accept="application/pdf">
+                </div>
+                <div class="field">
+                    <label for="splitRanges">Seitenbereiche</label>
+                    <input id="splitRanges" type="text" placeholder="z. B. 1-2,3-4 oder 5">
+                </div>
+                <div class="actions">
+                    <button id="splitBtn" type="button" class="btn">PDF aufteilen</button>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>Status</h2>
+                <p id="splitMeta">Bitte eine PDF wählen.</p>
+                <div class="cv-preview">Hinweis: Für jeden Bereich wird eine eigene PDF heruntergeladen.</div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+<script src="../js/split-pdf.js"></script>
+</body>
+</html>

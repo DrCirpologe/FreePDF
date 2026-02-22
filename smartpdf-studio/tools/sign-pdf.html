@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF unterschreiben | SmartPDF Studio</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/tools.css">
+</head>
+<body>
+<div class="page-wrap">
+    <div class="topbar">
+        <a href="../../index.html" class="top-link">← Zur Startseite</a>
+    </div>
+
+    <header class="landing">
+        <div class="hero-card">
+            <h1>PDF unterschreiben</h1>
+            <p>Setze eine Text-Signatur und optional eine Unterschrift als Bild in deine PDF.</p>
+        </div>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-layout">
+            <section class="panel">
+                <h2>Signaturdaten</h2>
+                <div class="field">
+                    <label for="signInput">PDF Datei</label>
+                    <input id="signInput" type="file" accept="application/pdf">
+                </div>
+                <div class="field">
+                    <label for="signatureText">Signaturtext</label>
+                    <input id="signatureText" type="text" placeholder="Max Mustermann">
+                </div>
+                <div class="field">
+                    <label for="signatureImage">Signatur-Bild (optional)</label>
+                    <input id="signatureImage" type="file" accept="image/png,image/jpeg,image/jpg">
+                </div>
+                <div class="field">
+                    <label for="signaturePage">Seite für Signatur</label>
+                    <input id="signaturePage" type="text" placeholder="1">
+                </div>
+                <div class="actions">
+                    <button id="signBtn" type="button" class="btn">PDF unterschreiben</button>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>Status</h2>
+                <p id="signMeta">Noch keine Datei ausgewählt.</p>
+                <div class="cv-preview">Signatur wird unten rechts auf der gewählten Seite platziert.</div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+<script src="../js/sign-pdf.js"></script>
+</body>
+</html>

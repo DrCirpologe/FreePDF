@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPDF Studio</title>
+    <link rel="stylesheet" href="smartpdf-studio/css/main.css">
+    <link rel="stylesheet" href="smartpdf-studio/css/tools.css">
+</head>
+<body>
+<div class="page-wrap">
+    <header class="landing">
+        <div class="hero-card">
+            <h1>SmartPDF Studio</h1>
+            <p>Erstelle Bilder- und Lebenslauf-PDFs in einer modernen, schnellen und klaren Oberfläche.</p>
+            <div class="buttons">
+                <a href="smartpdf-studio/tools/image-to-pdf.html" class="btn">Fotos in PDF umwandeln</a>
+                <a href="smartpdf-studio/tools/merge-pdf.html" class="btn">PDF zusammenfügen</a>
+                <a href="smartpdf-studio/tools/split-pdf.html" class="btn">PDF aufteilen</a>
+                <a href="smartpdf-studio/tools/compress-pdf.html" class="btn">PDF komprimieren</a>
+                <a href="smartpdf-studio/tools/sign-pdf.html" class="btn">PDF unterschreiben</a>
+                <a href="smartpdf-studio/tools/cv-builder.html" class="btn">Lebenslauf als PDF erstellen</a>
+                <a href="smartpdf-studio/tools/login.html" class="btn hidden" id="loginBtn">Login</a>
+                <a href="smartpdf-studio/tools/dashboard.html" class="btn hidden" id="dashboardBtn">Dashboard</a>
+                <a href="smartpdf-studio/tools/premium-tools.html" class="btn hidden" id="premiumBtn">Premium Tools</a>
+            </div>
+            <div class="actions hidden" style="justify-content:center; margin-top:16px;">
+                <button class="btn btn-ghost" id="unlockBtn" type="button">Phase 2 &amp; 3 freischalten</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="section-shell">
+        <div class="section-stack">
+            <section id="cvTemplates" class="section-card">
+                <h2>Phase 1 CV Templates</h2>
+                <p>Diese Vorlagen sind sofort verfügbar.</p>
+                <div class="template-preview">
+                    <div class="template-card">Template 1 · Modern</div>
+                    <div class="template-card">Template 2 · Klassisch</div>
+                    <div class="template-card">Template 3 · Minimal</div>
+                </div>
+            </section>
+
+            <section id="premiumTemplates" class="section-card hidden">
+                <h2>Phase 3 CV Templates</h2>
+                <p>Exklusive Vorlagen, standardmäßig ausgeblendet.</p>
+                <div class="template-preview">
+                    <div class="template-card">Exklusiv Template 1</div>
+                    <div class="template-card">Exklusiv Template 2</div>
+                    <div class="template-card">Exklusiv Template 3</div>
+                </div>
+                <span class="note">Sichtbar erst nach Freischaltung.</span>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script src="smartpdf-studio/js/main.js"></script>
+</body>
+</html>

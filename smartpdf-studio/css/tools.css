@@ -1,0 +1,152 @@
+.tool-container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px 72px;
+}
+
+.tool-layout {
+    display: grid;
+    gap: 18px;
+}
+
+.panel {
+    background: #fff;
+    border: 1px solid #f0dede;
+    border-radius: 18px;
+    box-shadow: 0 14px 36px rgba(229, 57, 53, 0.1);
+    padding: 24px;
+}
+
+.panel h2 {
+    margin: 0 0 6px;
+}
+
+.panel p {
+    margin: 0 0 18px;
+    color: #6f6262;
+}
+
+.field {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.field label {
+    font-weight: 600;
+    color: #4c3f3f;
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='file'],
+textarea,
+select {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1px solid #ebd1d1;
+    border-radius: 12px;
+    background: #fff;
+    font: inherit;
+    color: #302727;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 96px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #e57b7b;
+    outline: 2px solid #ffd9d9;
+}
+
+.actions {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.image-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.preview-card {
+    background: #fffaf9;
+    border: 1px solid #efd3d3;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.image-preview img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #efd3d3;
+    background: #fff6f6;
+}
+
+.preview-remove {
+    margin-top: 8px;
+    width: 100%;
+    border: 1px solid #f2bebe;
+    background: #fff;
+    color: #9f2a2a;
+    border-radius: 10px;
+    padding: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.preview-remove:hover {
+    background: #fff2f2;
+}
+
+.cv-preview {
+    border: 1px dashed #efb3b3;
+    background: #fff7f7;
+    border-radius: 12px;
+    padding: 16px;
+    color: #5f5050;
+    margin-top: 16px;
+}
+
+.dashboard-sections,
+.premium-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 14px;
+}
+
+.info-card {
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid #f1dcdc;
+    background: #fffafa;
+}
+
+.info-card h3 {
+    margin: 0 0 8px;
+}
+
+.info-card p {
+    margin: 0;
+    color: #6f6262;
+}
+
+@media (max-width: 640px) {
+    .tool-container {
+        padding: 0 16px 56px;
+    }
+
+    .panel {
+        padding: 18px;
+    }
+}

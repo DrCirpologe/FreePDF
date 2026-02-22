@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF komprimieren | SmartPDF Studio</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/tools.css">
+</head>
+<body>
+<div class="page-wrap">
+    <div class="topbar">
+        <a href="../../index.html" class="top-link">← Zur Startseite</a>
+    </div>
+
+    <header class="landing">
+        <div class="hero-card">
+            <h1>PDF komprimieren</h1>
+            <p>Optimiert die Datei-Struktur für kleinere PDF-Größe direkt im Browser.</p>
+        </div>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-layout">
+            <section class="panel">
+                <h2>Komprimierung</h2>
+                <div class="field">
+                    <label for="compressInput">PDF Datei(en)</label>
+                    <input id="compressInput" type="file" accept="application/pdf" multiple>
+                </div>
+                <div class="field">
+                    <label for="compressQuality">Qualität</label>
+                    <select id="compressQuality">
+                        <option value="high">Hohe Qualität – wenig Kompression, größere Datei</option>
+                        <option value="medium" selected>Mittlere Qualität – mittlere Kompression</option>
+                        <option value="low">Niedrige Qualität – starke Kompression, kleinere Datei</option>
+                    </select>
+                </div>
+                <div class="actions">
+                    <button id="compressBtn" type="button" class="btn">PDF komprimieren</button>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>Status</h2>
+                <p id="compressMeta">Noch keine Datei ausgewählt.</p>
+                <div class="cv-preview">Bei mehreren Dateien wird jede PDF nacheinander komprimiert und einzeln heruntergeladen.</div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../js/compress-pdf.js"></script>
+</body>
+</html>
