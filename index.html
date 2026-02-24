@@ -6,10 +6,61 @@
     <title>Free PDF Studio</title>
     <link rel="stylesheet" href="smartpdf-studio/css/main.css">
     <link rel="stylesheet" href="smartpdf-studio/css/tools.css">
+    <style>
+        .landing-shift {
+            position: relative;
+            top: -25px;
+        }
+
+        .ad-section-shift {
+            position: relative;
+            top: -50px;
+        }
+
+        .ad-embed {
+            display: block;
+            width: 100%;
+            height: 274px;
+            min-height: 274px;
+            border: 0;
+            border-radius: inherit;
+            overflow: hidden;
+        }
+
+        @media (max-width: 1024px) {
+            .landing-shift {
+                top: -16px;
+            }
+
+            .ad-section-shift {
+                top: -28px;
+            }
+
+            .ad-embed {
+                height: 320px;
+                min-height: 320px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .landing-shift {
+                top: -10px;
+            }
+
+            .ad-section-shift {
+                top: -16px;
+            }
+
+            .ad-embed {
+                height: 380px;
+                min-height: 380px;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="page-wrap">
-    <header class="landing">
+    <header class="landing landing-shift">
         <div class="hero-card">
             <h1 class="brand-title">
                 <img src="smartpdf-studio/assets/pdf.jpeg" alt="Free PDF Studio Logo" class="brand-icon">
@@ -21,7 +72,6 @@
                 <a href="smartpdf-studio/tools/merge-pdf.html" class="btn">PDF zusammenfügen</a>
                 <a href="smartpdf-studio/tools/split-pdf.html" class="btn">PDF aufteilen</a>
                 <a href="smartpdf-studio/tools/compress-pdf.html" class="btn">PDF komprimieren</a>
-                <a href="smartpdf-studio/tools/sign-pdf.html" class="btn">PDF unterschreiben</a>
                 <a href="smartpdf-studio/tools/cv-builder.html" class="btn hidden">Lebenslauf als PDF erstellen</a>
                 <a href="smartpdf-studio/tools/login.html" class="btn hidden" id="loginBtn">Login</a>
                 <a href="smartpdf-studio/tools/dashboard.html" class="btn hidden" id="dashboardBtn">Dashboard</a>
@@ -35,9 +85,9 @@
 
     <main class="section-shell">
         <div class="section-stack">
-            <section id="adSection" class="section-card">
-                <div id="adCustomArea" class="ad-slot">
-                    <img src="smartpdf-studio/assets/werbung.jpg" alt="Werbung" class="ad-slot-image">
+            <section id="adSection" class="section-card ad-section-shift">
+                <div id="adCustomArea" class="ad-slot" style="position:relative;">
+                    <iframe src="indexa.html" title="CIRPAN Angebote" class="ad-slot-image ad-embed" scrolling="no"></iframe>
                 </div>
             </section>
 
