@@ -35,6 +35,9 @@ a {
     max-width: 1120px;
     margin: 0 auto;
     padding: 20px 24px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .top-link {
@@ -107,6 +110,25 @@ a {
     transition: background-color 0.2s ease, transform 0.2s ease;
     cursor: pointer;
     text-align: center;
+}
+
+.btn-popular {
+    position: relative;
+}
+
+.btn-popular::after {
+    content: 'Beliebt';
+    position: absolute;
+    top: -9px;
+    right: 10px;
+    font-size: 0.68rem;
+    line-height: 1;
+    font-weight: 700;
+    background: #fff;
+    color: var(--primary-strong);
+    border: 1px solid #f3c7c7;
+    border-radius: 999px;
+    padding: 4px 7px;
 }
 
 .btn:hover {

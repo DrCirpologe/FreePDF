@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF zu Bildern | Free PDF Studio</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/tools.css">
+</head>
+<body>
+<div class="page-wrap">
+    <div class="topbar">
+        <a href="../../index.html" class="top-link">← Zur Startseite</a>
+        <a href="all-tools.html" class="top-link">Alle Tools</a>
+    </div>
+
+    <header class="landing">
+        <div class="hero-card">
+            <h1>PDF zu Bildern</h1>
+            <p>Konvertiere jede PDF-Seite als PNG oder JPG in hoher Qualität.</p>
+        </div>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-layout two-cols">
+            <section class="panel">
+                <h2>Datei und Optionen</h2>
+                <div class="field">
+                    <label for="p2iInput">PDF Datei</label>
+                    <input id="p2iInput" type="file" accept="application/pdf">
+                </div>
+                <div class="field">
+                    <label for="p2iFormat">Bildformat</label>
+                    <select id="p2iFormat">
+                        <option value="png">PNG</option>
+                        <option value="jpg">JPG</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="p2iScale">Qualität/Skalierung (1.0 - 3.0)</label>
+                    <input id="p2iScale" type="text" value="1.5">
+                </div>
+                <div class="actions">
+                    <button id="p2iBtn" type="button" class="btn">PDF zu Bildern</button>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>Status</h2>
+                <p id="p2iStatus">Bitte eine PDF wählen.</p>
+                <div class="cv-preview">Pro Seite wird automatisch eine Bilddatei heruntergeladen.</div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="../js/pdf-to-images.js"></script>
+</body>
+</html>

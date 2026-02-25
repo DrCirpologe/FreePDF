@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metadaten entfernen | Free PDF Studio</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/tools.css">
+</head>
+<body>
+<div class="page-wrap">
+    <div class="topbar">
+        <a href="../../index.html" class="top-link">← Zur Startseite</a>
+        <a href="all-tools.html" class="top-link">Alle Tools</a>
+    </div>
+
+    <header class="landing">
+        <div class="hero-card">
+            <h1>Metadaten entfernen</h1>
+            <p>Entfernt Autor, Titel, Producer und ähnliche PDF-Metadaten.</p>
+        </div>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-layout two-cols">
+            <section class="panel">
+                <h2>Datei auswählen</h2>
+                <div class="field">
+                    <label for="metaInput">PDF Datei</label>
+                    <input id="metaInput" type="file" accept="application/pdf">
+                </div>
+                <div class="actions">
+                    <button id="metaBtn" type="button" class="btn">Metadaten entfernen</button>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>Status</h2>
+                <p id="metaStatus">Bitte eine PDF wählen.</p>
+                <div class="cv-preview">Empfohlen vor dem Teilen sensibler Dokumente.</div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+<script src="../js/remove-metadata.js"></script>
+</body>
+</html>

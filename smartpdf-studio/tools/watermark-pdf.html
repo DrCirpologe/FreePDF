@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wasserzeichen hinzufügen | Free PDF Studio</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/tools.css">
+</head>
+<body>
+<div class="page-wrap">
+    <div class="topbar">
+        <a href="../../index.html" class="top-link">← Zur Startseite</a>
+        <a href="all-tools.html" class="top-link">Alle Tools</a>
+    </div>
+
+    <header class="landing">
+        <div class="hero-card">
+            <h1>Wasserzeichen hinzufügen</h1>
+            <p>Setze Text-Wasserzeichen auf alle oder ausgewählte Seiten.</p>
+        </div>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-layout two-cols">
+            <section class="panel">
+                <h2>Datei und Wasserzeichen</h2>
+                <div class="field">
+                    <label for="watermarkInput">PDF Datei</label>
+                    <input id="watermarkInput" type="file" accept="application/pdf">
+                </div>
+                <div class="field">
+                    <label for="watermarkText">Wasserzeichen-Text</label>
+                    <input id="watermarkText" type="text" placeholder="z. B. VERTRAULICH">
+                </div>
+                <div class="field">
+                    <label for="watermarkPages">Seiten (leer = alle)</label>
+                    <input id="watermarkPages" type="text" placeholder="z. B. 1,2,5-7">
+                </div>
+                <div class="field">
+                    <label for="watermarkOpacity">Deckkraft (0.05 - 0.9)</label>
+                    <input id="watermarkOpacity" type="text" value="0.25">
+                </div>
+                <div class="actions">
+                    <button id="watermarkBtn" type="button" class="btn">Wasserzeichen hinzufügen</button>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>Status</h2>
+                <p id="watermarkMeta">Bitte eine PDF wählen.</p>
+                <div class="cv-preview">Deckkraft kleiner = unauffälligeres Wasserzeichen.</div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+<script src="../js/watermark-pdf.js"></script>
+</body>
+</html>
