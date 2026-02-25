@@ -7,6 +7,20 @@ const watermarkMeta = document.getElementById('watermarkMeta');
 
 let watermarkFile = null;
 
+async function preloadFromSavedSelection() {
+    if (!window.PDFResultsManager) {
+        return;
+    }
+
+    const selected = await window.PDFResultsManager.consumeToolSelectionAsFiles();
+    if (!selected.length) {
+        return;
+    }
+
+    watermarkFile = selected[0];
+    watermarkMeta.textContent = `${watermarkFile.name} aus Weiter bearbeiten geladen.`;
+}
+
 function parsePages(value, maxPages) {
     const cleaned = (value || '').replace(/\s/g, '');
     if (!cleaned) {
@@ -108,8 +122,18 @@ if (watermarkBtn) {
 
             const outBytes = await pdfDoc.save();
             const cleanName = watermarkFile.name.replace(/\.pdf$/i, '');
-            downloadBytes(outBytes, `${cleanName}-wasserzeichen.pdf`);
-            watermarkMeta.textContent = `Wasserzeichen auf ${targetPages.size} Seite(n) gesetzt.`;
+            const fileName = `${cleanName}-wasserzeichen.pdf`;
+            if (window.PDFResultsManager) {
+                await window.PDFResultsManager.addResult({
+                    bytes: outBytes,
+                    fileName,
+                    sourceTool: 'watermark-pdf'
+                });
+                watermarkMeta.textContent = `Wasserzeichen auf ${targetPages.size} Seite(n) gesetzt. Aktionen unten verfügbar.`;
+            } else {
+                downloadBytes(outBytes, fileName);
+                watermarkMeta.textContent = `Wasserzeichen auf ${targetPages.size} Seite(n) gesetzt.`;
+            }
         } catch {
             alert('Eingabe prüfen: Seiten z. B. 1,3-5');
         } finally {
@@ -117,4 +141,9 @@ if (watermarkBtn) {
             watermarkBtn.textContent = 'Wasserzeichen hinzufügen';
         }
     });
+}
+
+if (window.PDFResultsManager) {
+    window.PDFResultsManager.initPanel();
+    preloadFromSavedSelection();
 }

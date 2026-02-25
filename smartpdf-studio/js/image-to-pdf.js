@@ -89,12 +89,13 @@ if (generatePdfBtn) {
         }
 
         const { jsPDF } = window.jspdf;
-        let pdf;
 
         generatePdfBtn.disabled = true;
         generatePdfBtn.textContent = 'PDF wird erstellt...';
 
         try {
+            let createdCount = 0;
+
             for (let index = 0; index < selectedImages.length; index += 1) {
                 const file = selectedImages[index];
                 const dataUrl = await loadImageData(file);
@@ -103,23 +104,33 @@ if (generatePdfBtn) {
                 const pageWidth = image.width;
                 const pageHeight = image.height;
                 const orientation = pageWidth >= pageHeight ? 'landscape' : 'portrait';
-
-                if (index === 0) {
-                    pdf = new jsPDF({
-                        orientation,
-                        unit: 'px',
-                        format: [pageWidth, pageHeight]
-                    });
-                } else {
-                    pdf.addPage([pageWidth, pageHeight], orientation);
-                }
+                const pdf = new jsPDF({
+                    orientation,
+                    unit: 'px',
+                    format: [pageWidth, pageHeight]
+                });
 
                 const format = file.type === 'image/png' ? 'PNG' : 'JPEG';
                 pdf.addImage(dataUrl, format, 0, 0, pageWidth, pageHeight, undefined, 'FAST');
+
+                const cleanName = (file.name || `bild-${index + 1}`).replace(/\.[^.]+$/, '');
+                const fileName = `${cleanName}.pdf`;
+
+                if (window.PDFResultsManager) {
+                    const outputBytes = pdf.output('arraybuffer');
+                    await window.PDFResultsManager.addResult({
+                        bytes: outputBytes,
+                        fileName,
+                        sourceTool: 'image-to-pdf'
+                    });
+                } else {
+                    pdf.save(fileName);
+                }
+
+                createdCount += 1;
             }
 
-            pdf.save('bilder-export.pdf');
-            imageMeta.textContent = 'PDF erfolgreich erstellt.';
+            imageMeta.textContent = `${createdCount} PDF(s) erstellt. Wähle unten: Herunterladen, Teilen oder Weiter bearbeiten.`;
         } catch {
             alert('Beim Erstellen der PDF ist ein Fehler aufgetreten.');
         } finally {
@@ -127,4 +138,8 @@ if (generatePdfBtn) {
             generatePdfBtn.textContent = 'PDF erstellen';
         }
     });
+}
+
+if (window.PDFResultsManager) {
+    window.PDFResultsManager.initPanel();
 }

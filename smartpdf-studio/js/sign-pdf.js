@@ -7,6 +7,20 @@ const signMeta = document.getElementById('signMeta');
 
 let signFile = null;
 
+async function preloadFromSavedSelection() {
+    if (!window.PDFResultsManager) {
+        return;
+    }
+
+    const selected = await window.PDFResultsManager.consumeToolSelectionAsFiles();
+    if (!selected.length) {
+        return;
+    }
+
+    signFile = selected[0];
+    signMeta.textContent = `${signFile.name} aus Weiter bearbeiten geladen.`;
+}
+
 function readAsArrayBuffer(file) {
     return file.arrayBuffer();
 }
@@ -106,15 +120,24 @@ if (signBtn) {
             }
 
             const output = await pdfDoc.save();
-            const blob = new Blob([output], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'unterschrieben.pdf';
-            link.click();
-            URL.revokeObjectURL(url);
+            if (window.PDFResultsManager) {
+                await window.PDFResultsManager.addResult({
+                    bytes: output,
+                    fileName: 'unterschrieben.pdf',
+                    sourceTool: 'sign-pdf'
+                });
+                signMeta.textContent = 'PDF unterschrieben. Wähle unten: Herunterladen, Teilen oder Weiter bearbeiten.';
+            } else {
+                const blob = new Blob([output], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'unterschrieben.pdf';
+                link.click();
+                URL.revokeObjectURL(url);
 
-            signMeta.textContent = 'PDF erfolgreich unterschrieben.';
+                signMeta.textContent = 'PDF erfolgreich unterschrieben.';
+            }
         } catch {
             alert('Signieren fehlgeschlagen.');
         } finally {
@@ -122,4 +145,9 @@ if (signBtn) {
             signBtn.textContent = 'PDF unterschreiben';
         }
     });
+}
+
+if (window.PDFResultsManager) {
+    window.PDFResultsManager.initPanel();
+    preloadFromSavedSelection();
 }

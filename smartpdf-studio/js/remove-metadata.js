@@ -4,6 +4,20 @@ const metaStatus = document.getElementById('metaStatus');
 
 let metaFile = null;
 
+async function preloadFromSavedSelection() {
+    if (!window.PDFResultsManager) {
+        return;
+    }
+
+    const selected = await window.PDFResultsManager.consumeToolSelectionAsFiles();
+    if (!selected.length) {
+        return;
+    }
+
+    metaFile = selected[0];
+    metaStatus.textContent = `${metaFile.name} aus Weiter bearbeiten geladen.`;
+}
+
 function downloadBytes(bytes, fileName) {
     const blob = new Blob([bytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
@@ -55,8 +69,18 @@ if (metaBtn) {
 
             const outBytes = await pdfDoc.save();
             const cleanName = metaFile.name.replace(/\.pdf$/i, '');
-            downloadBytes(outBytes, `${cleanName}-metadata-entfernt.pdf`);
-            metaStatus.textContent = 'Metadaten wurden entfernt/neutralisiert.';
+            const fileName = `${cleanName}-metadata-entfernt.pdf`;
+            if (window.PDFResultsManager) {
+                await window.PDFResultsManager.addResult({
+                    bytes: outBytes,
+                    fileName,
+                    sourceTool: 'remove-metadata'
+                });
+                metaStatus.textContent = 'Metadaten entfernt. Aktionen unten verfügbar.';
+            } else {
+                downloadBytes(outBytes, fileName);
+                metaStatus.textContent = 'Metadaten wurden entfernt/neutralisiert.';
+            }
         } catch {
             alert('Metadaten konnten nicht entfernt werden.');
         } finally {
@@ -64,4 +88,9 @@ if (metaBtn) {
             metaBtn.textContent = 'Metadaten entfernen';
         }
     });
+}
+
+if (window.PDFResultsManager) {
+    window.PDFResultsManager.initPanel();
+    preloadFromSavedSelection();
 }

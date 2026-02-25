@@ -5,6 +5,20 @@ const splitMeta = document.getElementById('splitMeta');
 
 let splitFile = null;
 
+async function preloadFromSavedSelection() {
+    if (!window.PDFResultsManager) {
+        return;
+    }
+
+    const selected = await window.PDFResultsManager.consumeToolSelectionAsFiles();
+    if (!selected.length) {
+        return;
+    }
+
+    splitFile = selected[0];
+    splitMeta.textContent = `${splitFile.name} aus Weiter bearbeiten geladen.`;
+}
+
 function parseRanges(value, maxPages) {
     const cleaned = (value || '').replace(/\s/g, '');
     if (!cleaned) {
@@ -88,10 +102,20 @@ if (splitBtn) {
                 copiedPages.forEach((page) => outputPdf.addPage(page));
 
                 const outputBytes = await outputPdf.save();
-                downloadBytes(outputBytes, `split-${index + 1}-${start}-${end}.pdf`);
+                const fileName = `split-${index + 1}-${start}-${end}.pdf`;
+
+                if (window.PDFResultsManager) {
+                    await window.PDFResultsManager.addResult({
+                        bytes: outputBytes,
+                        fileName,
+                        sourceTool: 'split-pdf'
+                    });
+                } else {
+                    downloadBytes(outputBytes, fileName);
+                }
             }
 
-            splitMeta.textContent = `${ranges.length} PDF-Datei(en) erstellt.`;
+            splitMeta.textContent = `${ranges.length} PDF-Datei(en) erstellt. Wähle unten: Herunterladen, Teilen oder Weiter bearbeiten.`;
         } catch {
             alert('Ungültige Eingabe oder Fehler bei der Verarbeitung.');
         } finally {
@@ -99,4 +123,9 @@ if (splitBtn) {
             splitBtn.textContent = 'PDF aufteilen';
         }
     });
+}
+
+if (window.PDFResultsManager) {
+    window.PDFResultsManager.initPanel();
+    preloadFromSavedSelection();
 }

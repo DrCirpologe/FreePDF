@@ -5,6 +5,21 @@ const compressQuality = document.getElementById('compressQuality');
 
 let compressFiles = [];
 
+async function preloadFromSavedSelection() {
+    if (!window.PDFResultsManager) {
+        return;
+    }
+
+    const selected = await window.PDFResultsManager.consumeToolSelectionAsFiles();
+    if (!selected.length) {
+        return;
+    }
+
+    compressFiles = selected;
+    const totalSize = compressFiles.reduce((sum, file) => sum + file.size, 0);
+    compressMeta.textContent = `${compressFiles.length} PDF(s) aus Weiter bearbeiten geladen · Gesamtgröße: ${formatMb(totalSize)}`;
+}
+
 if (window.pdfjsLib) {
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 }
@@ -123,10 +138,20 @@ if (compressBtn) {
 
                 const outBlob = new Blob([resultBytes], { type: 'application/pdf' });
                 const cleanName = file.name.replace(/\.pdf$/i, '');
-                downloadBlob(outBlob, `${cleanName}-komprimiert.pdf`);
+                const fileName = `${cleanName}-komprimiert.pdf`;
+
+                if (window.PDFResultsManager) {
+                    await window.PDFResultsManager.addResult({
+                        blob: outBlob,
+                        fileName,
+                        sourceTool: 'compress-pdf'
+                    });
+                } else {
+                    downloadBlob(outBlob, fileName);
+                }
             }
 
-            compressMeta.textContent = `Fertig · Vorher: ${formatMb(beforeBytes)} · Nachher: ${formatMb(afterBytes)}`;
+            compressMeta.textContent = `Fertig · Vorher: ${formatMb(beforeBytes)} · Nachher: ${formatMb(afterBytes)} · Aktionen unten verfügbar.`;
         } catch {
             alert('Komprimierung fehlgeschlagen. Bitte Datei/Qualität prüfen.');
         } finally {
@@ -134,4 +159,9 @@ if (compressBtn) {
             compressBtn.textContent = 'PDF komprimieren';
         }
     });
+}
+
+if (window.PDFResultsManager) {
+    window.PDFResultsManager.initPanel();
+    preloadFromSavedSelection();
 }

@@ -7,6 +7,20 @@ const numberMeta = document.getElementById('numberMeta');
 
 let numberFile = null;
 
+async function preloadFromSavedSelection() {
+    if (!window.PDFResultsManager) {
+        return;
+    }
+
+    const selected = await window.PDFResultsManager.consumeToolSelectionAsFiles();
+    if (!selected.length) {
+        return;
+    }
+
+    numberFile = selected[0];
+    numberMeta.textContent = `${numberFile.name} aus Weiter bearbeiten geladen.`;
+}
+
 function parsePages(value, maxPages) {
     const cleaned = (value || '').replace(/\s/g, '');
     if (!cleaned) {
@@ -116,8 +130,18 @@ if (numberBtn) {
 
             const outBytes = await pdfDoc.save();
             const cleanName = numberFile.name.replace(/\.pdf$/i, '');
-            downloadBytes(outBytes, `${cleanName}-seitennummern.pdf`);
-            numberMeta.textContent = `Seitennummern gesetzt (${targetPages.size} Seite(n)).`;
+            const fileName = `${cleanName}-seitennummern.pdf`;
+            if (window.PDFResultsManager) {
+                await window.PDFResultsManager.addResult({
+                    bytes: outBytes,
+                    fileName,
+                    sourceTool: 'page-numbers'
+                });
+                numberMeta.textContent = `Seitennummern gesetzt (${targetPages.size} Seite(n)). Aktionen unten verfügbar.`;
+            } else {
+                downloadBytes(outBytes, fileName);
+                numberMeta.textContent = `Seitennummern gesetzt (${targetPages.size} Seite(n)).`;
+            }
         } catch {
             alert('Eingabe prüfen: Seiten z. B. 1-5,8');
         } finally {
@@ -125,4 +149,9 @@ if (numberBtn) {
             numberBtn.textContent = 'Seitennummern hinzufügen';
         }
     });
+}
+
+if (window.PDFResultsManager) {
+    window.PDFResultsManager.initPanel();
+    preloadFromSavedSelection();
 }

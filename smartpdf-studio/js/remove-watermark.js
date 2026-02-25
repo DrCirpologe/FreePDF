@@ -4,6 +4,20 @@ const rwStatus = document.getElementById('rwStatus');
 
 let rwFile = null;
 
+async function preloadFromSavedSelection() {
+    if (!window.PDFResultsManager) {
+        return;
+    }
+
+    const selected = await window.PDFResultsManager.consumeToolSelectionAsFiles();
+    if (!selected.length) {
+        return;
+    }
+
+    rwFile = selected[0];
+    rwStatus.textContent = `${rwFile.name} aus Weiter bearbeiten geladen.`;
+}
+
 function downloadBytes(bytes, fileName) {
     const blob = new Blob([bytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
@@ -53,7 +67,16 @@ if (rwBtn) {
 
             const outBytes = await pdfDoc.save();
             const cleanName = rwFile.name.replace(/\.pdf$/i, '');
-            downloadBytes(outBytes, `${cleanName}-wasserzeichen-entfernt.pdf`);
+            const fileName = `${cleanName}-wasserzeichen-entfernt.pdf`;
+            if (window.PDFResultsManager) {
+                await window.PDFResultsManager.addResult({
+                    bytes: outBytes,
+                    fileName,
+                    sourceTool: 'remove-watermark'
+                });
+            } else {
+                downloadBytes(outBytes, fileName);
+            }
 
             if (modifiedPages > 0) {
                 rwStatus.textContent = `Annotationen/Stempel auf ${modifiedPages} Seite(n) entfernt.`;
@@ -67,4 +90,9 @@ if (rwBtn) {
             rwBtn.textContent = 'Wasserzeichen entfernen';
         }
     });
+}
+
+if (window.PDFResultsManager) {
+    window.PDFResultsManager.initPanel();
+    preloadFromSavedSelection();
 }

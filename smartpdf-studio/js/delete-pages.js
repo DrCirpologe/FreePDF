@@ -5,6 +5,20 @@ const deleteMeta = document.getElementById('deleteMeta');
 
 let deleteFile = null;
 
+async function preloadFromSavedSelection() {
+    if (!window.PDFResultsManager) {
+        return;
+    }
+
+    const selected = await window.PDFResultsManager.consumeToolSelectionAsFiles();
+    if (!selected.length) {
+        return;
+    }
+
+    deleteFile = selected[0];
+    deleteMeta.textContent = `${deleteFile.name} aus Weiter bearbeiten geladen.`;
+}
+
 function parsePages(value, maxPages, allowEmptyAll = false) {
     const cleaned = (value || '').replace(/\s/g, '');
 
@@ -101,8 +115,18 @@ if (deleteBtn) {
 
             const outBytes = await outPdf.save();
             const cleanName = deleteFile.name.replace(/\.pdf$/i, '');
-            downloadBytes(outBytes, `${cleanName}-seiten-geloescht.pdf`);
-            deleteMeta.textContent = `${toDelete.size} Seite(n) entfernt.`;
+            const fileName = `${cleanName}-seiten-geloescht.pdf`;
+            if (window.PDFResultsManager) {
+                await window.PDFResultsManager.addResult({
+                    bytes: outBytes,
+                    fileName,
+                    sourceTool: 'delete-pages'
+                });
+                deleteMeta.textContent = `${toDelete.size} Seite(n) entfernt. Aktionen unten verfügbar.`;
+            } else {
+                downloadBytes(outBytes, fileName);
+                deleteMeta.textContent = `${toDelete.size} Seite(n) entfernt.`;
+            }
         } catch {
             alert('Eingabe prüfen: z. B. 2,4-6');
         } finally {
@@ -110,4 +134,9 @@ if (deleteBtn) {
             deleteBtn.textContent = 'Seiten löschen';
         }
     });
+}
+
+if (window.PDFResultsManager) {
+    window.PDFResultsManager.initPanel();
+    preloadFromSavedSelection();
 }

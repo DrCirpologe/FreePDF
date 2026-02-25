@@ -6,6 +6,20 @@ const rotateMeta = document.getElementById('rotateMeta');
 
 let rotateFile = null;
 
+async function preloadFromSavedSelection() {
+    if (!window.PDFResultsManager) {
+        return;
+    }
+
+    const selected = await window.PDFResultsManager.consumeToolSelectionAsFiles();
+    if (!selected.length) {
+        return;
+    }
+
+    rotateFile = selected[0];
+    rotateMeta.textContent = `${rotateFile.name} aus Weiter bearbeiten geladen.`;
+}
+
 function parsePages(value, maxPages) {
     const cleaned = (value || '').replace(/\s/g, '');
     if (!cleaned) {
@@ -89,8 +103,18 @@ if (rotateBtn) {
 
             const outBytes = await pdfDoc.save();
             const cleanName = rotateFile.name.replace(/\.pdf$/i, '');
-            downloadBytes(outBytes, `${cleanName}-rotiert.pdf`);
-            rotateMeta.textContent = `${targetPages.size} Seite(n) rotiert.`;
+            const fileName = `${cleanName}-rotiert.pdf`;
+            if (window.PDFResultsManager) {
+                await window.PDFResultsManager.addResult({
+                    bytes: outBytes,
+                    fileName,
+                    sourceTool: 'rotate-pdf'
+                });
+                rotateMeta.textContent = `${targetPages.size} Seite(n) rotiert. Aktionen unten verfügbar.`;
+            } else {
+                downloadBytes(outBytes, fileName);
+                rotateMeta.textContent = `${targetPages.size} Seite(n) rotiert.`;
+            }
         } catch {
             alert('Eingabe prüfen: z. B. 1,2,4-7');
         } finally {
@@ -98,4 +122,9 @@ if (rotateBtn) {
             rotateBtn.textContent = 'PDF rotieren';
         }
     });
+}
+
+if (window.PDFResultsManager) {
+    window.PDFResultsManager.initPanel();
+    preloadFromSavedSelection();
 }

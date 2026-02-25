@@ -5,6 +5,20 @@ const extractMeta = document.getElementById('extractMeta');
 
 let extractFile = null;
 
+async function preloadFromSavedSelection() {
+    if (!window.PDFResultsManager) {
+        return;
+    }
+
+    const selected = await window.PDFResultsManager.consumeToolSelectionAsFiles();
+    if (!selected.length) {
+        return;
+    }
+
+    extractFile = selected[0];
+    extractMeta.textContent = `${extractFile.name} aus Weiter bearbeiten geladen.`;
+}
+
 function parsePages(value, maxPages) {
     const cleaned = (value || '').replace(/\s/g, '');
     if (!cleaned) {
@@ -84,8 +98,18 @@ if (extractBtn) {
 
             const outBytes = await outPdf.save();
             const cleanName = extractFile.name.replace(/\.pdf$/i, '');
-            downloadBytes(outBytes, `${cleanName}-extrahiert.pdf`);
-            extractMeta.textContent = `${pages.length} Seite(n) extrahiert.`;
+            const fileName = `${cleanName}-extrahiert.pdf`;
+            if (window.PDFResultsManager) {
+                await window.PDFResultsManager.addResult({
+                    bytes: outBytes,
+                    fileName,
+                    sourceTool: 'extract-pages'
+                });
+                extractMeta.textContent = `${pages.length} Seite(n) extrahiert. Aktionen unten verfügbar.`;
+            } else {
+                downloadBytes(outBytes, fileName);
+                extractMeta.textContent = `${pages.length} Seite(n) extrahiert.`;
+            }
         } catch {
             alert('Eingabe prüfen: z. B. 1,3,6-8');
         } finally {
@@ -93,4 +117,9 @@ if (extractBtn) {
             extractBtn.textContent = 'Seiten extrahieren';
         }
     });
+}
+
+if (window.PDFResultsManager) {
+    window.PDFResultsManager.initPanel();
+    preloadFromSavedSelection();
 }

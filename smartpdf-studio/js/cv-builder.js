@@ -60,7 +60,17 @@ async function createCVPDF(formData) {
     cursorY = drawSection(pdf, 'Ausbildung', formData.education, cursorY, maxWidth);
     drawSection(pdf, 'Fähigkeiten', formData.skills, cursorY, maxWidth);
 
-    pdf.save('lebenslauf.pdf');
+    const outputBytes = pdf.output('arraybuffer');
+
+    if (window.PDFResultsManager) {
+        await window.PDFResultsManager.addResult({
+            bytes: outputBytes,
+            fileName: 'lebenslauf.pdf',
+            sourceTool: 'cv-builder'
+        });
+    } else {
+        pdf.save('lebenslauf.pdf');
+    }
 }
 
 async function readFormData() {
@@ -86,9 +96,13 @@ async function readFormData() {
     }
 
     cvPreview.textContent = `${name} · ${jobTitle} · ${template} ausgewählt.`;
-    cvMeta.textContent = 'PDF wurde erstellt und heruntergeladen.';
+    cvMeta.textContent = 'PDF wurde erstellt. Aktionen unten verfügbar.';
 
     await createCVPDF(formData);
+}
+
+if (window.PDFResultsManager) {
+    window.PDFResultsManager.initPanel();
 }
 
 if (generateCVBtn) {

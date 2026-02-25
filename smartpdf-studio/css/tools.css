@@ -150,6 +150,128 @@ select:focus {
     border-color: #eabcbc;
 }
 
+.result-panel {
+    margin-top: 18px;
+}
+
+.result-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.result-panel-head-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.result-panel-head h2 {
+    margin-bottom: 0;
+}
+
+.result-panel-info {
+    margin-top: 8px;
+}
+
+.result-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.result-item {
+    border: 1px solid #efd3d3;
+    background: #fff9f9;
+    border-radius: 12px;
+    padding: 12px;
+    display: grid;
+    gap: 10px;
+}
+
+.result-meta {
+    display: grid;
+    gap: 4px;
+}
+
+.result-meta span {
+    color: #6f6262;
+    font-size: 0.92rem;
+}
+
+.result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.result-action {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+}
+
+.result-empty {
+    border: 1px dashed #efb3b3;
+    background: #fff7f7;
+    border-radius: 12px;
+    padding: 14px;
+    color: #665656;
+}
+
+.result-modal-open .page-wrap {
+    filter: blur(4px);
+    pointer-events: none;
+    user-select: none;
+}
+
+.result-edit-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(36, 18, 18, 0.35);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 9999;
+}
+
+.result-edit-modal-overlay.hidden {
+    display: none;
+}
+
+.result-edit-modal {
+    width: min(640px, 100%);
+    background: #fff;
+    border: 1px solid #efd3d3;
+    border-radius: 16px;
+    box-shadow: 0 20px 48px rgba(47, 24, 24, 0.18);
+    padding: 20px;
+    display: grid;
+    gap: 12px;
+}
+
+.result-edit-modal h3 {
+    margin: 0;
+}
+
+.result-edit-modal p {
+    margin: 0;
+    color: #6a5d5d;
+}
+
+.result-edit-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+}
+
+.result-edit-option {
+    width: 100%;
+}
+
 .dashboard-sections,
 .premium-sections {
     display: grid;
