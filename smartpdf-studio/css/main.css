@@ -48,6 +48,12 @@ a {
     font-weight: 600;
 }
 
+.top-link:focus-visible {
+    outline: 2px solid #ffd9d9;
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
 .landing {
     max-width: 1120px;
     margin: 20px auto 0;
@@ -94,7 +100,7 @@ a {
 .buttons {
     margin-top: 30px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 12px;
 }
 
@@ -106,7 +112,9 @@ a {
     color: #fff;
     font-size: 0.97rem;
     font-weight: 700;
+    line-height: 1.25;
     padding: 13px 18px;
+    min-height: 46px;
     transition: background-color 0.2s ease, transform 0.2s ease;
     cursor: pointer;
     text-align: center;
@@ -139,6 +147,11 @@ a {
 .btn:disabled {
     cursor: not-allowed;
     background: #eeb7b7;
+}
+
+.btn:focus-visible {
+    outline: 2px solid #ffd9d9;
+    outline-offset: 2px;
 }
 
 .btn-ghost {
@@ -317,6 +330,34 @@ a {
     padding-top: 16px;
     border-top: 1px solid var(--border);
     text-align: center;
+}
+
+@media (max-width: 860px) {
+    .hero-card {
+        padding: 42px 20px;
+    }
+
+    .buttons {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .landing {
+        padding: 38px 16px;
+    }
+
+    .buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .section-card {
+        padding: 18px;
+    }
+
+    .site-footer {
+        padding: 28px 16px 18px;
+    }
 }
 
 .footer-bottom p {

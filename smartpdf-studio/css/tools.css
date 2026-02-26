@@ -67,11 +67,16 @@ textarea,
 select {
     width: 100%;
     padding: 12px 13px;
+    min-height: 44px;
     border: 1px solid #ebd1d1;
     border-radius: 12px;
     background: #fff;
     font: inherit;
     color: #302727;
+}
+
+input[type='file'] {
+    padding: 10px 12px;
 }
 
 textarea {
@@ -209,6 +214,10 @@ select:focus {
     gap: 10px;
 }
 
+.result-meta strong {
+    word-break: break-word;
+}
+
 .result-meta {
     display: grid;
     gap: 4px;
@@ -223,6 +232,10 @@ select:focus {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+}
+
+.result-actions .btn {
+    min-height: 40px;
 }
 
 .result-action {
@@ -377,6 +390,19 @@ select:focus {
 
     .actions .btn,
     .actions button {
+        width: 100%;
+    }
+
+    .result-panel-head-actions {
+        width: 100%;
+    }
+
+    .result-panel-head-actions .btn {
+        flex: 1 1 100%;
+    }
+
+    .result-actions .btn,
+    .result-actions .result-action {
         width: 100%;
     }
 
