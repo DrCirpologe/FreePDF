@@ -4,6 +4,7 @@ const splitBtn = document.getElementById('splitBtn');
 const splitMeta = document.getElementById('splitMeta');
 
 let splitFile = null;
+let sourceEditIds = [];
 
 async function preloadFromSavedSelection() {
     if (!window.PDFResultsManager) {
@@ -16,6 +17,7 @@ async function preloadFromSavedSelection() {
     }
 
     splitFile = selected[0];
+    sourceEditIds = window.PDFResultsManager.getActiveEditIds();
     splitMeta.textContent = `${splitFile.name} aus Weiter bearbeiten geladen.`;
 }
 
@@ -113,6 +115,12 @@ if (splitBtn) {
                 } else {
                     downloadBytes(outputBytes, fileName);
                 }
+            }
+
+            if (window.PDFResultsManager && sourceEditIds.length) {
+                await window.PDFResultsManager.deleteResults(sourceEditIds);
+                window.PDFResultsManager.clearActiveEditIds();
+                sourceEditIds = [];
             }
 
             splitMeta.textContent = `${ranges.length} PDF-Datei(en) erstellt. Wähle unten: Herunterladen, Teilen oder Weiter bearbeiten.`;

@@ -6,6 +6,7 @@ const signBtn = document.getElementById('signBtn');
 const signMeta = document.getElementById('signMeta');
 
 let signFile = null;
+let sourceEditIds = [];
 
 async function preloadFromSavedSelection() {
     if (!window.PDFResultsManager) {
@@ -18,6 +19,7 @@ async function preloadFromSavedSelection() {
     }
 
     signFile = selected[0];
+    sourceEditIds = window.PDFResultsManager.getActiveEditIds();
     signMeta.textContent = `${signFile.name} aus Weiter bearbeiten geladen.`;
 }
 
@@ -126,6 +128,11 @@ if (signBtn) {
                     fileName: 'unterschrieben.pdf',
                     sourceTool: 'sign-pdf'
                 });
+                if (sourceEditIds.length) {
+                    await window.PDFResultsManager.deleteResults(sourceEditIds);
+                    window.PDFResultsManager.clearActiveEditIds();
+                    sourceEditIds = [];
+                }
                 signMeta.textContent = 'PDF unterschrieben. Wähle unten: Herunterladen, Teilen oder Weiter bearbeiten.';
             } else {
                 const blob = new Blob([output], { type: 'application/pdf' });

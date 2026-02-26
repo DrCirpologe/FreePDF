@@ -4,6 +4,7 @@ const extractBtn = document.getElementById('extractBtn');
 const extractMeta = document.getElementById('extractMeta');
 
 let extractFile = null;
+let sourceEditIds = [];
 
 async function preloadFromSavedSelection() {
     if (!window.PDFResultsManager) {
@@ -16,6 +17,7 @@ async function preloadFromSavedSelection() {
     }
 
     extractFile = selected[0];
+    sourceEditIds = window.PDFResultsManager.getActiveEditIds();
     extractMeta.textContent = `${extractFile.name} aus Weiter bearbeiten geladen.`;
 }
 
@@ -105,6 +107,11 @@ if (extractBtn) {
                     fileName,
                     sourceTool: 'extract-pages'
                 });
+                if (sourceEditIds.length) {
+                    await window.PDFResultsManager.deleteResults(sourceEditIds);
+                    window.PDFResultsManager.clearActiveEditIds();
+                    sourceEditIds = [];
+                }
                 extractMeta.textContent = `${pages.length} Seite(n) extrahiert. Aktionen unten verfügbar.`;
             } else {
                 downloadBytes(outBytes, fileName);

@@ -4,6 +4,7 @@ const deleteBtn = document.getElementById('deleteBtn');
 const deleteMeta = document.getElementById('deleteMeta');
 
 let deleteFile = null;
+let sourceEditIds = [];
 
 async function preloadFromSavedSelection() {
     if (!window.PDFResultsManager) {
@@ -16,6 +17,7 @@ async function preloadFromSavedSelection() {
     }
 
     deleteFile = selected[0];
+    sourceEditIds = window.PDFResultsManager.getActiveEditIds();
     deleteMeta.textContent = `${deleteFile.name} aus Weiter bearbeiten geladen.`;
 }
 
@@ -122,6 +124,11 @@ if (deleteBtn) {
                     fileName,
                     sourceTool: 'delete-pages'
                 });
+                if (sourceEditIds.length) {
+                    await window.PDFResultsManager.deleteResults(sourceEditIds);
+                    window.PDFResultsManager.clearActiveEditIds();
+                    sourceEditIds = [];
+                }
                 deleteMeta.textContent = `${toDelete.size} Seite(n) entfernt. Aktionen unten verfügbar.`;
             } else {
                 downloadBytes(outBytes, fileName);

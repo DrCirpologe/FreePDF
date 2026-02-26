@@ -3,6 +3,7 @@ const metaBtn = document.getElementById('metaBtn');
 const metaStatus = document.getElementById('metaStatus');
 
 let metaFile = null;
+let sourceEditIds = [];
 
 async function preloadFromSavedSelection() {
     if (!window.PDFResultsManager) {
@@ -15,6 +16,7 @@ async function preloadFromSavedSelection() {
     }
 
     metaFile = selected[0];
+    sourceEditIds = window.PDFResultsManager.getActiveEditIds();
     metaStatus.textContent = `${metaFile.name} aus Weiter bearbeiten geladen.`;
 }
 
@@ -76,6 +78,11 @@ if (metaBtn) {
                     fileName,
                     sourceTool: 'remove-metadata'
                 });
+                if (sourceEditIds.length) {
+                    await window.PDFResultsManager.deleteResults(sourceEditIds);
+                    window.PDFResultsManager.clearActiveEditIds();
+                    sourceEditIds = [];
+                }
                 metaStatus.textContent = 'Metadaten entfernt. Aktionen unten verfügbar.';
             } else {
                 downloadBytes(outBytes, fileName);

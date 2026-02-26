@@ -4,6 +4,7 @@
     const DB_VERSION = 1;
     const TOOL_MERGE_PATH = 'merge-pdf.html';
     const TOOL_SELECTION_KEY = 'freepdf-tool-selection';
+    const ACTIVE_EDIT_IDS_KEY = 'freepdf-active-edit-ids';
     const RESULTS_UPDATED_EVENT = 'freepdf-results-updated';
     const EDIT_TARGETS = [
         { path: 'merge-pdf.html', label: 'Zusammenfügen' },
@@ -61,53 +62,70 @@
         return `${size.toFixed(unitIndex === 0 ? 0 : 2)} ${units[unitIndex]}`;
     }
 
+    async function hashBlob(blob) {
+        try {
+            if (!window.crypto || !window.crypto.subtle) {
+                return '';
+            }
+            const buffer = await blob.arrayBuffer();
+            const digest = await window.crypto.subtle.digest('SHA-256', buffer);
+            const hex = Array.from(new Uint8Array(digest))
+                .map((byte) => byte.toString(16).padStart(2, '0'))
+                .join('');
+            return hex;
+        } catch {
+            return '';
+        }
+    }
+
+    function normalizePdfFileName(fileName) {
+        const raw = String(fileName || '').trim();
+        let safe = raw || 'dokument.pdf';
+
+        safe = safe.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim();
+        safe = safe.replace(/\.download$/i, '');
+        safe = safe.replace(/\.(pdf)+$/i, '.pdf');
+
+        if (!/\.pdf$/i.test(safe)) {
+            safe = `${safe}.pdf`;
+        }
+
+        if (!safe || safe === '.pdf') {
+            return 'dokument.pdf';
+        }
+
+        return safe;
+    }
+
     async function addResult({ bytes, blob, fileName, sourceTool }) {
         const db = await openDb();
-        const safeName = (fileName || 'dokument.pdf').trim() || 'dokument.pdf';
+        const safeName = normalizePdfFileName(fileName);
         const safeBlob = blob || new Blob([bytes], { type: 'application/pdf' });
+        const safeSourceTool = sourceTool || 'tool';
+        const hash = await hashBlob(safeBlob);
+        const dedupeId = hash
+            ? `${safeSourceTool}::${safeName.toLowerCase()}::${hash}`
+            : generateId();
 
-        let savedId = null;
-        let attempts = 0;
+        const item = {
+            id: dedupeId,
+            fileName: safeName,
+            sourceTool: safeSourceTool,
+            createdAt: Date.now(),
+            size: safeBlob.size,
+            blob: safeBlob
+        };
 
-        while (!savedId && attempts < 5) {
-            attempts += 1;
-            const id = generateId();
-
-            const item = {
-                id,
-                fileName: safeName,
-                sourceTool: sourceTool || 'tool',
-                createdAt: Date.now(),
-                size: safeBlob.size,
-                blob: safeBlob
-            };
-
-            const inserted = await new Promise((resolve, reject) => {
-                const tx = db.transaction(STORE_NAME, 'readwrite');
-                const request = tx.objectStore(STORE_NAME).add(item);
-
-                request.onsuccess = () => resolve(true);
-                request.onerror = () => {
-                    if (request.error && request.error.name === 'ConstraintError') {
-                        resolve(false);
-                        return;
-                    }
-                    reject(request.error || new Error('Speichern fehlgeschlagen.'));
-                };
-            });
-
-            if (inserted) {
-                savedId = id;
-            }
-        }
-
-        if (!savedId) {
-            throw new Error('PDF konnte nicht eindeutig gespeichert werden. Bitte erneut versuchen.');
-        }
+        await new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const request = tx.objectStore(STORE_NAME).put(item);
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error || new Error('Speichern fehlgeschlagen.'));
+        });
 
         notifyResultsUpdated();
 
-        return savedId;
+        return dedupeId;
     }
 
     async function listResults() {
@@ -160,17 +178,114 @@
         notifyResultsUpdated();
     }
 
+    async function deleteResults(ids) {
+        const targetIds = Array.isArray(ids) ? ids.filter(Boolean) : [];
+        if (!targetIds.length) {
+            return;
+        }
+
+        const db = await openDb();
+
+        await new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            targetIds.forEach((id) => store.delete(id));
+            tx.oncomplete = () => resolve();
+            tx.onerror = () => reject(tx.error || new Error('Batch-Löschen fehlgeschlagen.'));
+        });
+
+        notifyResultsUpdated();
+    }
+
     function createFileFromItem(item) {
-        return new File([item.blob], item.fileName, { type: 'application/pdf' });
+        return new File([item.blob], normalizePdfFileName(item.fileName), { type: 'application/pdf' });
     }
 
     function triggerDownload(item) {
         const url = URL.createObjectURL(item.blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = item.fileName;
+        link.download = normalizePdfFileName(item.fileName);
+        link.style.display = 'none';
+        document.body.appendChild(link);
         link.click();
-        URL.revokeObjectURL(url);
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+            link.remove();
+        }, 30000);
+    }
+
+    function downloadBlob(blob, fileName) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+            link.remove();
+        }, 30000);
+    }
+
+    async function ensureJsZip() {
+        if (window.JSZip) {
+            return window.JSZip;
+        }
+
+        await new Promise((resolve, reject) => {
+            const existing = document.querySelector('script[data-freepdf-jszip="1"]');
+            if (existing) {
+                existing.addEventListener('load', resolve, { once: true });
+                existing.addEventListener('error', () => reject(new Error('JSZip konnte nicht geladen werden.')), { once: true });
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+            script.async = true;
+            script.dataset.freepdfJszip = '1';
+            script.onload = () => resolve();
+            script.onerror = () => reject(new Error('JSZip konnte nicht geladen werden.'));
+            document.head.appendChild(script);
+        });
+
+        if (!window.JSZip) {
+            throw new Error('ZIP-Funktion steht nicht zur Verfügung.');
+        }
+
+        return window.JSZip;
+    }
+
+    async function downloadAllAsZip(items) {
+        const JSZip = await ensureJsZip();
+        const zip = new JSZip();
+        const usedNames = new Map();
+
+        for (const item of items) {
+            const originalName = normalizePdfFileName(item.fileName);
+            const dotIndex = originalName.toLowerCase().lastIndexOf('.pdf');
+            const baseName = dotIndex > 0 ? originalName.slice(0, dotIndex) : originalName;
+
+            const nextIndex = (usedNames.get(originalName) || 0) + 1;
+            usedNames.set(originalName, nextIndex);
+
+            const finalName = nextIndex === 1
+                ? originalName
+                : `${baseName}-${nextIndex}.pdf`;
+
+            zip.file(finalName, item.blob);
+        }
+
+        const zipBlob = await zip.generateAsync({
+            type: 'blob',
+            compression: 'DEFLATE',
+            compressionOptions: { level: 6 }
+        });
+
+        const stamp = new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-');
+        downloadBlob(zipBlob, `freepdf-download-${stamp}.zip`);
     }
 
     async function tryShare(item) {
@@ -193,6 +308,24 @@
 
     function setToolSelection(ids, targetPath) {
         sessionStorage.setItem(TOOL_SELECTION_KEY, JSON.stringify({ ids, targetPath }));
+    }
+
+    function setActiveEditIds(ids) {
+        sessionStorage.setItem(ACTIVE_EDIT_IDS_KEY, JSON.stringify(Array.isArray(ids) ? ids : []));
+    }
+
+    function getActiveEditIds() {
+        const raw = sessionStorage.getItem(ACTIVE_EDIT_IDS_KEY);
+        if (!raw) {
+            return [];
+        }
+
+        try {
+            const parsed = JSON.parse(raw);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch {
+            return [];
+        }
     }
 
     function getToolSelection() {
@@ -233,9 +366,13 @@
         sessionStorage.removeItem(TOOL_SELECTION_KEY);
     }
 
+    function clearActiveEditIds() {
+        sessionStorage.removeItem(ACTIVE_EDIT_IDS_KEY);
+    }
+
     function resolveToolPath(path) {
-        if (path && path.includes('/')) {
-            return path;
+        if (typeof path === 'string' && path.trim()) {
+            return path.trim();
         }
         return TOOL_MERGE_PATH;
     }
@@ -317,6 +454,7 @@
             <div class="result-panel-head">
                 <h2>${title}</h2>
                 <div class="result-panel-head-actions">
+                    <button type="button" class="btn btn-ghost result-download-all-btn">Alle herunterladen</button>
                     <button type="button" class="btn btn-ghost result-share-all-btn">Alle teilen</button>
                     <button type="button" class="btn btn-ghost result-merge-all-btn">Alle weiter bearbeiten</button>
                     <button type="button" class="btn btn-ghost result-clear-btn">Liste leeren</button>
@@ -331,6 +469,7 @@
     async function renderList({ panelRoot, mergePath }) {
         const listRoot = panelRoot.querySelector('[data-result-list]');
         const items = await listResults();
+        const itemsById = new Map(items.map((item) => [item.id, item]));
 
         if (!items.length) {
             panelRoot.classList.add('hidden');
@@ -363,14 +502,18 @@
         });
 
         listRoot.querySelectorAll('[data-action="download"]').forEach((button) => {
-            button.addEventListener('click', async () => {
-                const item = await getResult(button.dataset.id);
+            button.addEventListener('click', () => {
+                const item = itemsById.get(button.dataset.id);
                 if (!item) {
                     return;
                 }
                 triggerDownload(item);
-                await deleteResult(item.id);
-                await renderList({ panelRoot, mergePath });
+
+                Promise.resolve()
+                    .then(() => deleteResult(item.id))
+                    .then(() => renderList({ panelRoot, mergePath }))
+                    .catch(() => {
+                    });
             });
         });
 
@@ -437,6 +580,25 @@
             openEditTargetModal(items.map((item) => item.id));
         });
 
+        panel.querySelector('.result-download-all-btn').addEventListener('click', async () => {
+            const items = await listResults();
+            if (!items.length) {
+                alert('Noch keine PDFs zum Herunterladen vorhanden.');
+                return;
+            }
+
+            if (items.length === 1) {
+                triggerDownload(items[0]);
+                return;
+            }
+
+            try {
+                await downloadAllAsZip(items);
+            } catch (error) {
+                alert(error?.message || 'ZIP-Download fehlgeschlagen.');
+            }
+        });
+
         panel.querySelector('.result-share-all-btn').addEventListener('click', async () => {
             const items = await listResults();
             if (!items.length) {
@@ -475,6 +637,7 @@
     async function consumeMergeSelectionAsFiles() {
         const toolSelection = getToolSelection();
         if (toolSelection.ids.length && toolSelection.targetPath === TOOL_MERGE_PATH) {
+            setActiveEditIds(toolSelection.ids);
             const files = [];
             for (const id of toolSelection.ids) {
                 const item = await getResult(id);
@@ -511,6 +674,7 @@
             return [];
         }
 
+        setActiveEditIds(ids);
         const files = [];
         for (const id of ids) {
             const item = await getResult(id);
@@ -528,6 +692,7 @@
         listResults,
         getResult,
         deleteResult,
+        deleteResults,
         clearAllResults,
         initPanel,
         consumeMergeSelectionAsFiles,
@@ -536,6 +701,9 @@
         setMergeSelection,
         clearMergeSelection,
         setToolSelection,
-        clearToolSelection
+        clearToolSelection,
+        setActiveEditIds,
+        getActiveEditIds,
+        clearActiveEditIds
     };
 })();

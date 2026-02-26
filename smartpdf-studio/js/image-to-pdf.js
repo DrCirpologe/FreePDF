@@ -4,6 +4,7 @@ const generatePdfBtn = document.getElementById('generatePdfBtn');
 const imageMeta = document.getElementById('imageMeta');
 
 let selectedImages = [];
+let isGeneratingPdf = false;
 
 function refreshMeta() {
     if (!selectedImages.length) {
@@ -78,13 +79,20 @@ if (imageInput) {
 
 if (generatePdfBtn) {
     generatePdfBtn.addEventListener('click', async () => {
+        if (isGeneratingPdf) {
+            return;
+        }
+        isGeneratingPdf = true;
+
         if (selectedImages.length === 0) {
             alert('Bitte wähle mindestens ein Bild aus.');
+            isGeneratingPdf = false;
             return;
         }
 
         if (!window.jspdf || !window.jspdf.jsPDF) {
             alert('PDF-Bibliothek konnte nicht geladen werden. Bitte Seite neu laden.');
+            isGeneratingPdf = false;
             return;
         }
 
@@ -134,6 +142,7 @@ if (generatePdfBtn) {
         } catch {
             alert('Beim Erstellen der PDF ist ein Fehler aufgetreten.');
         } finally {
+            isGeneratingPdf = false;
             generatePdfBtn.disabled = false;
             generatePdfBtn.textContent = 'PDF erstellen';
         }

@@ -17,7 +17,7 @@
     <header class="landing">
         <div class="hero-card">
             <h1>Seitennummern hinzufügen</h1>
-            <p>Nummeriere PDF-Seiten mit Startwert und Position.</p>
+            <p>Alle Seiten werden rechts oben nummeriert – außer den Seiten, die du ausschließt.</p>
         </div>
     </header>
 
@@ -27,25 +27,27 @@
                 <h2>Datei und Nummerierung</h2>
                 <div class="field">
                     <label for="numberInput">PDF Datei</label>
-                    <input id="numberInput" type="file" accept="application/pdf">
+                    <input id="numberInput" type="file" accept="application/pdf" multiple>
                 </div>
                 <div class="field">
                     <label for="numberStart">Startnummer</label>
                     <input id="numberStart" type="text" value="1">
                 </div>
                 <div class="field">
-                    <label for="numberPosition">Position</label>
-                    <select id="numberPosition">
-                        <option value="bottom-center">Unten Mitte</option>
-                        <option value="bottom-left">Unten Links</option>
-                        <option value="bottom-right">Unten Rechts</option>
-                        <option value="top-left">Oben Links</option>
-                        <option value="top-right">Oben Rechts</option>
-                    </select>
+                    <label for="numberExclude">Seiten nicht nummerieren (optional)</label>
+                    <input id="numberExclude" type="text" placeholder="z. B. 1,3 oder 5-8">
+                </div>
+                <div class="field-inline">
+                    <label class="check-label" for="numberSkipFirst">
+                        <input id="numberSkipFirst" type="checkbox">
+                        Erste Seite nicht nummerieren
+                    </label>
                 </div>
                 <div class="field">
-                    <label for="numberPages">Seiten (leer = alle)</label>
-                    <input id="numberPages" type="text" placeholder="z. B. 1-5,8">
+                    <label>Seiten anklicken, die nicht nummeriert werden sollen</label>
+                    <div id="numberPageMap" class="page-map">
+                        <div class="page-map-empty">PDF laden, um Seiten 1, 2, 3 ... zu sehen.</div>
+                    </div>
                 </div>
                 <div class="actions">
                     <button id="numberBtn" type="button" class="btn">Seitennummern hinzufügen</button>
@@ -62,7 +64,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
-<script src="../js/pdf-results-manager.js"></script>
-<script src="../js/page-numbers.js"></script>
+<script src="../js/pdf-results-manager.js?v=20260226f"></script>
+<script src="../js/page-numbers.js?v=20260226f"></script>
 </body>
 </html>

@@ -36,6 +36,24 @@
     margin-bottom: 14px;
 }
 
+.field-inline {
+    margin-bottom: 14px;
+}
+
+.check-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #4c3f3f;
+}
+
+.check-label input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
 .field label {
     font-weight: 600;
     color: #4c3f3f;
@@ -270,6 +288,44 @@ select:focus {
 
 .result-edit-option {
     width: 100%;
+}
+
+.page-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid #efd3d3;
+    border-radius: 12px;
+    background: #fff9f9;
+    max-height: 220px;
+    overflow: auto;
+}
+
+.page-chip {
+    border: 1px solid #efc4c4;
+    background: #fff;
+    color: #4f4141;
+    border-radius: 10px;
+    padding: 8px 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.page-chip:hover {
+    background: #fff2f2;
+}
+
+.page-chip.is-excluded {
+    background: #fce5e5;
+    border-color: #e58888;
+    color: #8f2f2f;
+}
+
+.page-map-empty {
+    grid-column: 1 / -1;
+    color: #6f6262;
+    font-size: 0.95rem;
 }
 
 .dashboard-sections,

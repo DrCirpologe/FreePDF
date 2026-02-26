@@ -4,6 +4,7 @@ const mergeMeta = document.getElementById('mergeMeta');
 const mergeList = document.getElementById('mergeList');
 
 let mergeFiles = [];
+let sourceEditIds = [];
 
 async function preloadSavedResults() {
     if (!window.PDFResultsManager) {
@@ -16,6 +17,7 @@ async function preloadSavedResults() {
     }
 
     mergeFiles = [...mergeFiles, ...preselected];
+    sourceEditIds = window.PDFResultsManager.getActiveEditIds();
     updateMergeList();
     mergeMeta.textContent = `${mergeFiles.length} PDF-Datei(en) geladen (inkl. Weiter-bearbeiten Auswahl).`;
 }
@@ -72,6 +74,11 @@ if (mergeBtn) {
                     fileName: 'zusammengefuegt.pdf',
                     sourceTool: 'merge-pdf'
                 });
+                if (sourceEditIds.length) {
+                    await window.PDFResultsManager.deleteResults(sourceEditIds);
+                    window.PDFResultsManager.clearActiveEditIds();
+                    sourceEditIds = [];
+                }
                 mergeMeta.textContent = 'PDF zusammengefügt. Wähle unten: Herunterladen, Teilen oder Weiter bearbeiten.';
             } else {
                 const blob = new Blob([result], { type: 'application/pdf' });

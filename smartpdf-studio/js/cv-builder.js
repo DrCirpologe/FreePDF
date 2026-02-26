@@ -1,6 +1,7 @@
 const generateCVBtn = document.getElementById('generateCVBtn');
 const cvPreview = document.getElementById('cvPreview');
 const cvMeta = document.getElementById('cvMeta');
+let isGeneratingCV = false;
 
 function sanitizeValue(value) {
     return (value || '').trim();
@@ -107,6 +108,11 @@ if (window.PDFResultsManager) {
 
 if (generateCVBtn) {
     generateCVBtn.addEventListener('click', async () => {
+        if (isGeneratingCV) {
+            return;
+        }
+        isGeneratingCV = true;
+
         generateCVBtn.disabled = true;
         generateCVBtn.textContent = 'PDF wird erstellt...';
         try {
@@ -114,6 +120,7 @@ if (generateCVBtn) {
         } catch {
             alert('Beim Erstellen des Lebenslaufs ist ein Fehler aufgetreten.');
         } finally {
+            isGeneratingCV = false;
             generateCVBtn.disabled = false;
             generateCVBtn.textContent = 'Lebenslauf als PDF erstellen';
         }

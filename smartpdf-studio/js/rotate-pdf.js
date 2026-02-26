@@ -5,6 +5,7 @@ const rotateBtn = document.getElementById('rotateBtn');
 const rotateMeta = document.getElementById('rotateMeta');
 
 let rotateFile = null;
+let sourceEditIds = [];
 
 async function preloadFromSavedSelection() {
     if (!window.PDFResultsManager) {
@@ -17,6 +18,7 @@ async function preloadFromSavedSelection() {
     }
 
     rotateFile = selected[0];
+    sourceEditIds = window.PDFResultsManager.getActiveEditIds();
     rotateMeta.textContent = `${rotateFile.name} aus Weiter bearbeiten geladen.`;
 }
 
@@ -110,6 +112,11 @@ if (rotateBtn) {
                     fileName,
                     sourceTool: 'rotate-pdf'
                 });
+                if (sourceEditIds.length) {
+                    await window.PDFResultsManager.deleteResults(sourceEditIds);
+                    window.PDFResultsManager.clearActiveEditIds();
+                    sourceEditIds = [];
+                }
                 rotateMeta.textContent = `${targetPages.size} Seite(n) rotiert. Aktionen unten verfügbar.`;
             } else {
                 downloadBytes(outBytes, fileName);

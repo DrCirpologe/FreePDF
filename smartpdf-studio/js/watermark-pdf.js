@@ -6,6 +6,7 @@ const watermarkBtn = document.getElementById('watermarkBtn');
 const watermarkMeta = document.getElementById('watermarkMeta');
 
 let watermarkFile = null;
+let sourceEditIds = [];
 
 async function preloadFromSavedSelection() {
     if (!window.PDFResultsManager) {
@@ -18,6 +19,7 @@ async function preloadFromSavedSelection() {
     }
 
     watermarkFile = selected[0];
+    sourceEditIds = window.PDFResultsManager.getActiveEditIds();
     watermarkMeta.textContent = `${watermarkFile.name} aus Weiter bearbeiten geladen.`;
 }
 
@@ -129,6 +131,11 @@ if (watermarkBtn) {
                     fileName,
                     sourceTool: 'watermark-pdf'
                 });
+                if (sourceEditIds.length) {
+                    await window.PDFResultsManager.deleteResults(sourceEditIds);
+                    window.PDFResultsManager.clearActiveEditIds();
+                    sourceEditIds = [];
+                }
                 watermarkMeta.textContent = `Wasserzeichen auf ${targetPages.size} Seite(n) gesetzt. Aktionen unten verfügbar.`;
             } else {
                 downloadBytes(outBytes, fileName);

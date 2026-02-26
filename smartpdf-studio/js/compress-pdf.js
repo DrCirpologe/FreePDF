@@ -4,6 +4,7 @@ const compressMeta = document.getElementById('compressMeta');
 const compressQuality = document.getElementById('compressQuality');
 
 let compressFiles = [];
+let sourceEditIds = [];
 
 async function preloadFromSavedSelection() {
     if (!window.PDFResultsManager) {
@@ -16,6 +17,7 @@ async function preloadFromSavedSelection() {
     }
 
     compressFiles = selected;
+    sourceEditIds = window.PDFResultsManager.getActiveEditIds();
     const totalSize = compressFiles.reduce((sum, file) => sum + file.size, 0);
     compressMeta.textContent = `${compressFiles.length} PDF(s) aus Weiter bearbeiten geladen · Gesamtgröße: ${formatMb(totalSize)}`;
 }
@@ -149,6 +151,12 @@ if (compressBtn) {
                 } else {
                     downloadBlob(outBlob, fileName);
                 }
+            }
+
+            if (window.PDFResultsManager && sourceEditIds.length) {
+                await window.PDFResultsManager.deleteResults(sourceEditIds);
+                window.PDFResultsManager.clearActiveEditIds();
+                sourceEditIds = [];
             }
 
             compressMeta.textContent = `Fertig · Vorher: ${formatMb(beforeBytes)} · Nachher: ${formatMb(afterBytes)} · Aktionen unten verfügbar.`;

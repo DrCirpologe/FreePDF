@@ -3,6 +3,7 @@ const rwBtn = document.getElementById('rwBtn');
 const rwStatus = document.getElementById('rwStatus');
 
 let rwFile = null;
+let sourceEditIds = [];
 
 async function preloadFromSavedSelection() {
     if (!window.PDFResultsManager) {
@@ -15,6 +16,7 @@ async function preloadFromSavedSelection() {
     }
 
     rwFile = selected[0];
+    sourceEditIds = window.PDFResultsManager.getActiveEditIds();
     rwStatus.textContent = `${rwFile.name} aus Weiter bearbeiten geladen.`;
 }
 
@@ -74,6 +76,11 @@ if (rwBtn) {
                     fileName,
                     sourceTool: 'remove-watermark'
                 });
+                if (sourceEditIds.length) {
+                    await window.PDFResultsManager.deleteResults(sourceEditIds);
+                    window.PDFResultsManager.clearActiveEditIds();
+                    sourceEditIds = [];
+                }
             } else {
                 downloadBytes(outBytes, fileName);
             }
