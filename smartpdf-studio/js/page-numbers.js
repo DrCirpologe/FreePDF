@@ -170,6 +170,17 @@ function getPosition(pageWidth, pageHeight, textWidth) {
     return { x: pageWidth - textWidth - 20, y: pageHeight - 24 };
 }
 
+function getNumberingErrorMessage(error) {
+    const message = String(error?.message || '').toLowerCase();
+    if (message.includes('encrypted') || message.includes('password')) {
+        return 'Diese PDF ist geschützt/verschlüsselt und kann ohne Entsperren nicht nummeriert werden.';
+    }
+    if (message.includes('invalid') || message.includes('parse')) {
+        return 'Datei ist keine gültige PDF oder beschädigt.';
+    }
+    return 'Eingabe prüfen: Ausschluss z. B. 1,3 oder 5-8';
+}
+
 if (numberInput) {
     numberInput.addEventListener('change', async (event) => {
         try {
@@ -312,8 +323,8 @@ if (numberBtn) {
             } else {
                 numberMeta.textContent = `${createdCount} PDF(s) nummeriert und heruntergeladen.`;
             }
-        } catch {
-            alert('Eingabe prüfen: Ausschluss z. B. 1,3 oder 5-8');
+        } catch (error) {
+            alert(getNumberingErrorMessage(error));
         } finally {
             numberBtn.disabled = false;
             numberBtn.textContent = 'Seitennummern hinzufügen';

@@ -552,7 +552,34 @@
         return document.querySelector('.tool-layout') || document.querySelector('.tool-container') || document.body;
     }
 
+    function isReloadNavigation() {
+        try {
+            const entries = performance.getEntriesByType('navigation');
+            if (entries && entries.length) {
+                return entries[0].type === 'reload';
+            }
+            if (performance && performance.navigation) {
+                return performance.navigation.type === 1;
+            }
+        } catch {
+            return false;
+        }
+        return false;
+    }
+
+    async function clearStateOnReload() {
+        if (!isReloadNavigation()) {
+            return;
+        }
+        await clearAllResults();
+        clearMergeSelection();
+        clearToolSelection();
+        clearActiveEditIds();
+    }
+
     async function initPanel({ mountSelector, title = 'Deine erzeugten PDFs', mergePath = 'merge-pdf.html' } = {}) {
+        await clearStateOnReload();
+
         const container = ensurePanelContainer(mountSelector);
         if (!container || document.querySelector('.result-panel')) {
             return;

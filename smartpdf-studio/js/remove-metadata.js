@@ -2,7 +2,7 @@ const metaInput = document.getElementById('metaInput');
 const metaBtn = document.getElementById('metaBtn');
 const metaStatus = document.getElementById('metaStatus');
 
-let metaFile = null;
+let metaFiles = [];
 let sourceEditIds = [];
 
 async function preloadFromSavedSelection() {
@@ -15,9 +15,14 @@ async function preloadFromSavedSelection() {
         return;
     }
 
-    metaFile = selected[0];
+    metaFiles = selected;
     sourceEditIds = window.PDFResultsManager.getActiveEditIds();
-    metaStatus.textContent = `${metaFile.name} aus Weiter bearbeiten geladen.`;
+
+    const dt = new DataTransfer();
+    selected.forEach((file) => dt.items.add(file));
+    metaInput.files = dt.files;
+
+    metaStatus.textContent = `${selected.length} PDF(s) aus Weiter bearbeiten geladen.`;
 }
 
 function downloadBytes(bytes, fileName) {
@@ -30,16 +35,30 @@ function downloadBytes(bytes, fileName) {
     URL.revokeObjectURL(url);
 }
 
+function getMetaErrorMessage(error) {
+    const message = String(error?.message || '').toLowerCase();
+    if (message.includes('encrypted') || message.includes('password')) {
+        return 'Diese PDF ist geschützt/verschlüsselt und kann ohne Entsperren nicht bearbeitet werden.';
+    }
+    if (message.includes('invalid') || message.includes('parse')) {
+        return 'Datei ist keine gültige PDF oder beschädigt.';
+    }
+    return 'Metadaten konnten nicht entfernt werden. Bitte andere PDF testen.';
+}
+
 if (metaInput) {
     metaInput.addEventListener('change', (event) => {
-        metaFile = event.target.files?.[0] || null;
-        metaStatus.textContent = metaFile ? `${metaFile.name} ausgewählt.` : 'Bitte eine PDF wählen.';
+        metaFiles = Array.from(event.target.files || []);
+        metaStatus.textContent = metaFiles.length
+            ? `${metaFiles.length} PDF(s) ausgewählt.`
+            : 'Bitte eine PDF wählen.';
     });
 }
 
 if (metaBtn) {
     metaBtn.addEventListener('click', async () => {
-        if (!metaFile) {
+        const pickedFiles = metaFiles.length ? metaFiles : Array.from(metaInput?.files || []);
+        if (!pickedFiles.length) {
             alert('Bitte zuerst eine PDF-Datei auswählen.');
             return;
         }
@@ -54,42 +73,58 @@ if (metaBtn) {
 
         try {
             const { PDFDocument } = window.PDFLib;
-            const srcBytes = await metaFile.arrayBuffer();
-            const pdfDoc = await PDFDocument.load(srcBytes, { updateMetadata: true });
+            let createdCount = 0;
 
-            pdfDoc.setTitle('');
-            pdfDoc.setAuthor('');
-            pdfDoc.setSubject('');
-            pdfDoc.setKeywords([]);
-            pdfDoc.setProducer('');
-            pdfDoc.setCreator('');
-            pdfDoc.setLanguage('');
+            for (const file of pickedFiles) {
+                const srcBytes = await file.arrayBuffer();
+                const pdfDoc = await PDFDocument.load(srcBytes, { updateMetadata: true });
 
-            const now = new Date('2000-01-01T00:00:00.000Z');
-            pdfDoc.setCreationDate(now);
-            pdfDoc.setModificationDate(now);
+                pdfDoc.setTitle('');
+                pdfDoc.setAuthor('');
+                pdfDoc.setSubject('');
+                pdfDoc.setKeywords([]);
+                pdfDoc.setProducer('');
+                pdfDoc.setCreator('');
+                pdfDoc.setLanguage('');
 
-            const outBytes = await pdfDoc.save();
-            const cleanName = metaFile.name.replace(/\.pdf$/i, '');
-            const fileName = `${cleanName}-metadata-entfernt.pdf`;
+                const now = new Date('2000-01-01T00:00:00.000Z');
+                pdfDoc.setCreationDate(now);
+                pdfDoc.setModificationDate(now);
+
+                const outBytes = await pdfDoc.save();
+                const cleanName = file.name.replace(/\.download$/i, '').replace(/\.pdf$/i, '') || 'dokument';
+                const fileName = `${cleanName}-metadata-entfernt.pdf`;
+
+                if (window.PDFResultsManager) {
+                    await window.PDFResultsManager.addResult({
+                        bytes: outBytes,
+                        fileName,
+                        sourceTool: 'remove-metadata'
+                    });
+                } else {
+                    downloadBytes(outBytes, fileName);
+                }
+
+                createdCount += 1;
+            }
+
+            if (!createdCount) {
+                alert('Keine PDF konnte verarbeitet werden.');
+                return;
+            }
+
             if (window.PDFResultsManager) {
-                await window.PDFResultsManager.addResult({
-                    bytes: outBytes,
-                    fileName,
-                    sourceTool: 'remove-metadata'
-                });
                 if (sourceEditIds.length) {
                     await window.PDFResultsManager.deleteResults(sourceEditIds);
                     window.PDFResultsManager.clearActiveEditIds();
                     sourceEditIds = [];
                 }
-                metaStatus.textContent = 'Metadaten entfernt. Aktionen unten verfügbar.';
+                metaStatus.textContent = `${createdCount} PDF(s): Metadaten entfernt. Aktionen unten verfügbar.`;
             } else {
-                downloadBytes(outBytes, fileName);
-                metaStatus.textContent = 'Metadaten wurden entfernt/neutralisiert.';
+                metaStatus.textContent = `${createdCount} PDF(s): Metadaten wurden entfernt/neutralisiert.`;
             }
-        } catch {
-            alert('Metadaten konnten nicht entfernt werden.');
+        } catch (error) {
+            alert(getMetaErrorMessage(error));
         } finally {
             metaBtn.disabled = false;
             metaBtn.textContent = 'Metadaten entfernen';
