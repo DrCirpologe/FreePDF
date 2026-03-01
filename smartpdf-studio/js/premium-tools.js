@@ -1,1 +1,0 @@
-console.log('Premium Tools vorbereitet und standardmäßig ausgeblendet.');
