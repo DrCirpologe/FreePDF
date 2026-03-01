@@ -1,9 +1,144 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState, type ComponentType } from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import { Layers, ChevronDown, Combine, Scissors, Trash2, RotateCw } from 'lucide-react';
+import {
+    Layers,
+    ChevronDown,
+    Combine,
+    Scissors,
+    Trash2,
+    RotateCw,
+    Minimize2,
+    FileText,
+    FileImage,
+    Image,
+    PenTool,
+    Hash,
+    ShieldAlert
+} from 'lucide-react';
+
+type ToolItem = {
+    title: string;
+    path?: string;
+    externalHref?: string;
+    icon: ComponentType<{ className?: string }>;
+    tone: string;
+    plainText?: boolean;
+};
+
+type ToolColumn = {
+    heading: string;
+    items: ToolItem[];
+};
+
+const TOOL_SHEET_COLUMNS: ToolColumn[] = [
+    {
+        heading: 'Komprimieren',
+        items: [
+            { title: 'PDF verkleinern', path: '/compress', icon: Minimize2, tone: 'bg-red-100 text-red-800 group-hover:bg-red-800 group-hover:text-white' },
+            { title: 'Konvertieren', icon: FileText, tone: '', plainText: true },
+            { title: 'PDF-Konverter', path: '/pdf-converter', icon: FileText, tone: 'bg-red-100 text-red-800 group-hover:bg-red-800 group-hover:text-white' },
+            { title: 'KI PDF', icon: ShieldAlert, tone: '', plainText: true },
+            { title: 'Mit PDFs chatten', path: '/chat-with-pdf', icon: FileText, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' },
+            { title: 'KI-PDF-Zusammenfassung', path: '/ai-pdf-summary', icon: FileText, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' },
+            { title: 'PDF übersetzen', path: '/translate-pdf', icon: FileText, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' },
+            { title: 'KI-basierter Fragen-Generator', path: '/ai-question-generator', icon: Hash, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' }
+        ]
+    },
+    {
+        heading: 'Organisieren',
+        items: [
+            { title: 'PDFs zusammenfügen', path: '/merge', icon: Combine, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' },
+            { title: 'PDF teilen', path: '/split', icon: Scissors, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' },
+            { title: 'PDF drehen', path: '/rotate', icon: RotateCw, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' },
+            { title: 'PDF-Seiten löschen', path: '/delete-pages', icon: Trash2, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' },
+            { title: 'PDF-Seiten extrahieren', path: '/extract-pages', icon: FileText, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' },
+            { title: 'PDF Organisieren', path: '/organize-pdf', icon: FileText, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' }
+        ]
+    },
+    {
+        heading: 'Ansehen und Bearbeiten',
+        items: [
+            { title: 'PDF bearbeiten', path: '/edit-pdf', icon: PenTool, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'PDF Kommentieren', path: '/annotate-pdf', icon: PenTool, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'PDF-Reader', path: '/pdf-reader', icon: FileText, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'Seitenzahlen einfügen', path: '/page-numbers', icon: Hash, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'PDFs zuschneiden', path: '/crop-pdf', icon: Scissors, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'PDF schwärzen', path: '/redact-pdf', icon: ShieldAlert, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'Wasserzeichen-PDF', path: '/watermark', icon: FileText, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'PDF-Formularausfüller', path: '/pdf-form-filler', icon: FileText, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'PDF freigeben', path: '/share-pdf', icon: FileText, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' }
+        ]
+    },
+    {
+        heading: 'Aus PDF konvertieren',
+        items: [
+            { title: 'PDF in Word', path: '/pdf-to-word', icon: FileText, tone: 'bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' },
+            { title: 'PDF in Excel', path: '/pdf-to-excel', icon: FileText, tone: 'bg-emerald-100 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white' },
+            { title: 'PDF in PPT', path: '/pdf-to-ppt', icon: FileText, tone: 'bg-orange-100 text-orange-600 group-hover:bg-orange-500 group-hover:text-white' },
+            { title: 'PDF in JPG', path: '/pdf-to-jpg', icon: FileImage, tone: 'bg-yellow-100 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white' }
+        ]
+    },
+    {
+        heading: 'Zu PDF konvertieren',
+        items: [
+            { title: 'Word in PDF', path: '/word-to-pdf', icon: FileText, tone: 'bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' },
+            { title: 'Excel in PDF', path: '/excel-to-pdf', icon: FileText, tone: 'bg-emerald-100 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white' },
+            { title: 'PPT in PDF', path: '/ppt-to-pdf', icon: FileText, tone: 'bg-orange-100 text-orange-600 group-hover:bg-orange-500 group-hover:text-white' },
+            { title: 'JPG in PDF', path: '/jpg-to-pdf', icon: Image, tone: 'bg-yellow-100 text-yellow-700 group-hover:bg-yellow-600 group-hover:text-white' },
+            { title: 'PDF OCR', path: '/pdf-ocr', icon: FileImage, tone: 'bg-red-100 text-red-700 group-hover:bg-red-600 group-hover:text-white' }
+        ]
+    },
+    {
+        heading: 'Unterschreiben',
+        items: [
+            { title: 'Unterschreibe PDF', path: '/sign', icon: PenTool, tone: 'bg-pink-100 text-pink-700 group-hover:bg-pink-600 group-hover:text-white' },
+            { title: 'Unterschriften anfordern (Sign.com)', externalHref: 'https://sign.com', icon: PenTool, tone: 'bg-yellow-100 text-yellow-700 group-hover:bg-yellow-600 group-hover:text-white' },
+            { title: 'Mehr', icon: ShieldAlert, tone: '', plainText: true },
+            { title: 'PDF Passwort entfernen', path: '/remove-password', icon: ShieldAlert, tone: 'bg-rose-100 text-rose-600 group-hover:bg-rose-500 group-hover:text-white' },
+            { title: 'PDF verschlüsseln', path: '/encrypt-pdf', icon: ShieldAlert, tone: 'bg-rose-100 text-rose-600 group-hover:bg-rose-500 group-hover:text-white' },
+            { title: 'Ebenen der PDF reduzieren', path: '/flatten-pdf', icon: FileText, tone: 'bg-rose-100 text-rose-600 group-hover:bg-rose-500 group-hover:text-white' },
+            { title: 'Scan', icon: FileImage, tone: '', plainText: true },
+            { title: 'PDF-Scanner', path: '/pdf-scanner', icon: FileImage, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' }
+        ]
+    }
+];
 
 export default function Layout() {
     const [isToolsOpen, setIsToolsOpen] = useState(false);
+    const toolsSheetRef = useRef<HTMLDivElement | null>(null);
+    const toolsButtonRef = useRef<HTMLButtonElement | null>(null);
+
+    useEffect(() => {
+        const handleOutsideClick = (event: MouseEvent) => {
+            if (!isToolsOpen) {
+                return;
+            }
+
+            const target = event.target as Node;
+            const clickedInsideSheet = toolsSheetRef.current?.contains(target);
+            const clickedToolsButton = toolsButtonRef.current?.contains(target);
+
+            if (!clickedInsideSheet && !clickedToolsButton) {
+                setIsToolsOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleOutsideClick);
+
+        const originalBodyOverflow = document.body.style.overflow;
+        const originalHtmlOverflow = document.documentElement.style.overflow;
+
+        if (isToolsOpen) {
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick);
+            document.body.style.overflow = originalBodyOverflow;
+            document.documentElement.style.overflow = originalHtmlOverflow;
+        };
+    }, [isToolsOpen]);
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -23,6 +158,7 @@ export default function Layout() {
                         <div className="h-6 w-px bg-gray-300 hidden md:block"></div>
 
                         <button
+                            ref={toolsButtonRef}
                             onClick={() => setIsToolsOpen(!isToolsOpen)}
                             className={`hidden md:flex items-center gap-2 font-semibold transition-colors ${isToolsOpen ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'
                                 }`}
@@ -30,6 +166,15 @@ export default function Layout() {
                             <span>Tools</span>
                             <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isToolsOpen ? 'rotate-180' : ''}`} />
                         </button>
+
+                        <nav className="hidden lg:flex items-center gap-4">
+                            <Link to="/compress" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Komprimieren</Link>
+                            <Link to="/pdf-converter" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Umwandeln</Link>
+                            <Link to="/merge" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Zusammenführen</Link>
+                            <Link to="/edit-pdf" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Bearbeiten</Link>
+                            <Link to="/sign" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Unterschreiben</Link>
+                            <Link to="/ai-pdf-assistant" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">KI PDF</Link>
+                        </nav>
                     </div>
 
                     <nav className="flex items-center gap-6">
@@ -43,68 +188,74 @@ export default function Layout() {
                 {isToolsOpen && (
                     <>
                         <div
-                            className="fixed inset-0 top-16 bg-gray-900/20 backdrop-blur-sm z-40 transition-opacity"
+                            className="fixed inset-0 top-16 bg-gray-500/55 backdrop-blur-md backdrop-grayscale backdrop-brightness-75 z-40 transition-opacity"
                             onClick={() => setIsToolsOpen(false)}
                         ></div>
-                        <div className="absolute top-16 left-0 right-0 h-[50vh] bg-white border-b border-gray-200 shadow-xl z-50 overflow-y-auto animate-slide-up">
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-                                <h2 className="text-2xl font-bold text-gray-900 mb-8">Beliebte PDF Tools</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                    <Link
-                                        to="/merge"
-                                        onClick={() => setIsToolsOpen(false)}
-                                        className="flex items-start gap-4 p-4 rounded-xl hover:bg-blue-50 transition-colors group"
-                                    >
-                                        <div className="bg-blue-100 text-blue-600 p-3 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                                            <Combine className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-900 mb-1 group-hover:text-blue-700">PDF zusammenfügen</h3>
-                                            <p className="text-sm text-gray-500">Mehrere PDFs zu einer Datei verbinden</p>
-                                        </div>
-                                    </Link>
+                        <div ref={toolsSheetRef} className="absolute top-16 left-0 right-0 h-[calc(64vh-2.56rem+25px)] bg-white border-t border-b border-gray-200 shadow-xl z-50 overflow-y-hidden animate-slide-up">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+                                    {TOOL_SHEET_COLUMNS.map((column) => (
+                                        <div key={column.heading} className="rounded-lg p-2">
+                                            <h3 className="text-[10px] font-bold uppercase tracking-wide text-gray-700 mb-2 px-1">
+                                                {column.heading}
+                                            </h3>
 
-                                    <Link
-                                        to="/split"
-                                        onClick={() => setIsToolsOpen(false)}
-                                        className="flex items-start gap-4 p-4 rounded-xl hover:bg-orange-50 transition-colors group"
-                                    >
-                                        <div className="bg-orange-100 text-orange-600 p-3 rounded-lg group-hover:bg-orange-500 group-hover:text-white transition-colors">
-                                            <Scissors className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-900 mb-1 group-hover:text-orange-700">PDF aufteilen</h3>
-                                            <p className="text-sm text-gray-500">Seiten einzeln extrahieren</p>
-                                        </div>
-                                    </Link>
+                                            <div className="space-y-1.5">
+                                                {column.items.map((tool) => {
+                                                    const Icon = tool.icon;
 
-                                    <Link
-                                        to="/delete-pages"
-                                        onClick={() => setIsToolsOpen(false)}
-                                        className="flex items-start gap-4 p-4 rounded-xl hover:bg-red-50 transition-colors group"
-                                    >
-                                        <div className="bg-red-100 text-red-600 p-3 rounded-lg group-hover:bg-red-600 group-hover:text-white transition-colors">
-                                            <Trash2 className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-900 mb-1 group-hover:text-red-700">Seiten löschen</h3>
-                                            <p className="text-sm text-gray-500">Unerwünschte Seiten entfernen</p>
-                                        </div>
-                                    </Link>
+                                                    if (tool.plainText) {
+                                                        return (
+                                                            <div
+                                                                key={`${column.heading}-${tool.title}`}
+                                                                className="px-1 py-0.5"
+                                                            >
+                                                                <span className="font-bold text-[12px] text-gray-700 leading-tight">
+                                                                    {tool.title}
+                                                                </span>
+                                                            </div>
+                                                        );
+                                                    }
 
-                                    <Link
-                                        to="/rotate"
-                                        onClick={() => setIsToolsOpen(false)}
-                                        className="flex items-start gap-4 p-4 rounded-xl hover:bg-purple-50 transition-colors group"
-                                    >
-                                        <div className="bg-purple-100 text-purple-600 p-3 rounded-lg group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                                            <RotateCw className="w-6 h-6" />
+                                                    if (tool.externalHref) {
+                                                        return (
+                                                            <a
+                                                                key={`${column.heading}-${tool.title}`}
+                                                                href={tool.externalHref}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                onClick={() => setIsToolsOpen(false)}
+                                                                className="group flex items-center gap-1.5 p-1.5 rounded-md hover:bg-gray-50 transition-colors"
+                                                            >
+                                                                <div className={`p-1.5 rounded-md transition-colors ${tool.tone}`}>
+                                                                    <Icon className="w-[18px] h-[18px]" />
+                                                                </div>
+                                                                <span className="font-semibold text-[12px] text-gray-900 leading-tight">
+                                                                    {tool.title}
+                                                                </span>
+                                                            </a>
+                                                        );
+                                                    }
+
+                                                    return (
+                                                        <Link
+                                                            key={`${column.heading}-${tool.title}`}
+                                                            to={tool.path ?? '/'}
+                                                            onClick={() => setIsToolsOpen(false)}
+                                                            className="group flex items-center gap-1.5 p-1.5 rounded-md hover:bg-gray-50 transition-colors"
+                                                        >
+                                                            <div className={`p-1.5 rounded-md transition-colors ${tool.tone}`}>
+                                                                <Icon className="w-[18px] h-[18px]" />
+                                                            </div>
+                                                            <span className="font-semibold text-[12px] text-gray-900 leading-tight">
+                                                                {tool.title}
+                                                            </span>
+                                                        </Link>
+                                                    );
+                                                })}
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-900 mb-1 group-hover:text-purple-700">PDF rotieren</h3>
-                                            <p className="text-sm text-gray-500">Seiten oder Dokument drehen</p>
-                                        </div>
-                                    </Link>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -113,12 +264,12 @@ export default function Layout() {
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 w-full flex flex-col items-center">
+            <main className={`flex-1 w-full flex flex-col items-center transition-all duration-200 ${isToolsOpen ? 'blur-[3px]' : 'blur-0'}`}>
                 <Outlet />
             </main>
 
             {/* Footer */}
-            <footer className="bg-gray-50 border-t border-gray-200 mt-20">
+            <footer className={`bg-gray-50 border-t border-gray-200 mt-20 transition-all duration-200 ${isToolsOpen ? 'blur-[3px]' : 'blur-0'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         <div className="col-span-1 md:col-span-2">

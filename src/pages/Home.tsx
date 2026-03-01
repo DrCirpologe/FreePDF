@@ -5,12 +5,7 @@ import {
     Minimize2,
     Trash2,
     RotateCw,
-    PenTool,
-    FileImage,
-    Image,
-    ShieldAlert,
-    Hash,
-    FileText
+    PenTool
 } from 'lucide-react';
 
 const TOOLS = [
@@ -67,32 +62,38 @@ const TOOLS = [
     }
 ];
 
-const MORE_TOOLS = [
-    {
-        icon: <Image className="w-6 h-6 text-pink-500" />,
-        title: 'JPG zu PDF',
-        path: '/img-to-pdf'
-    },
-    {
-        icon: <FileImage className="w-6 h-6 text-yellow-500" />,
-        title: 'PDF zu Bilder',
-        path: '/pdf-to-img'
-    },
-    {
-        icon: <ShieldAlert className="w-6 h-6 text-emerald-500" />,
-        title: 'Metadaten entfernen',
-        path: '/remove-metadata'
-    },
-    {
-        icon: <Hash className="w-6 h-6 text-cyan-500" />,
-        title: 'Seitenzahlen',
-        path: '/page-numbers'
-    },
-    {
-        icon: <FileText className="w-6 h-6 text-slate-500" />,
-        title: 'Wasserzeichen',
-        path: '/watermark'
-    }
+const ALL_TOOLS = [
+    { path: '/ppt-to-pdf', title: 'PPT in PDF', description: 'PowerPoint-Präsentationen in PDF-Dokumente konvertieren.' },
+    { path: '/word-to-pdf', title: 'Word in PDF', description: 'Word-Dokumente in PDF-Dateien konvertieren.' },
+    { path: '/excel-to-pdf', title: 'Excel in PDF', description: 'Excel-Tabellen in PDF-Dokumente konvertieren.' },
+    { path: '/jpg-to-pdf', title: 'JPG in PDF', description: 'JPG, PNG, BMP, GIF und TIFF in PDF umwandeln.' },
+    { path: '/pdf-to-jpg', title: 'PDF in JPG', description: 'PDF-Seiten als einzelne Bilder speichern.' },
+    { path: '/pdf-to-word', title: 'PDF in Word', description: 'PDFs in bearbeitbare Word-Dokumente konvertieren.' },
+    { path: '/pdf-to-ppt', title: 'PDF in PPT', description: 'PDFs in bearbeitbare PowerPoint-Dateien konvertieren.' },
+    { path: '/pdf-to-excel', title: 'PDF in Excel', description: 'PDFs in bearbeitbare Excel-Tabellen konvertieren.' },
+    { path: '/pdf-converter', title: 'PDF-Konverter', description: 'Dateien in PDF und aus PDF zurück konvertieren.' },
+    { path: '/annotate-pdf', title: 'PDF kommentieren', description: 'In PDF schreiben, zeichnen und markieren.' },
+    { path: '/edit-pdf', title: 'PDF bearbeiten', description: 'Text, Formen, Bilder und Kommentare hinzufügen.' },
+    { path: '/pdf-form-filler', title: 'PDF-Formularausfüller', description: 'PDF-Formulare online ausfüllen.' },
+    { path: '/pdf-reader', title: 'PDF-Reader', description: 'PDFs online anzeigen, drucken und teilen.' },
+    { path: '/crop-pdf', title: 'PDF zuschneiden', description: 'Dokumente mit dem Zuschneidungstool zuschneiden.' },
+    { path: '/redact-pdf', title: 'PDF schwärzen', description: 'Vertrauliche Inhalte aus PDFs entfernen.' },
+    { path: '/watermark', title: 'Wasserzeichen-PDF', description: 'Ein Wasserzeichen zu PDFs hinzufügen.' },
+    { path: '/page-numbers', title: 'Seitenzahlen einfügen', description: 'Seitenzahlen in PDF-Dateien einbauen.' },
+    { path: '/extract-pages', title: 'PDF-Seiten extrahieren', description: 'Gezielte Seiten aus einer PDF-Datei auswählen.' },
+    { path: '/organize-pdf', title: 'PDF organisieren', description: 'Seiten neu anordnen, löschen, drehen und ergänzen.' },
+    { path: '/remove-password', title: 'PDF Passwort entfernen', description: 'Passwort, Verschlüsselung und Rechte entfernen.' },
+    { path: '/encrypt-pdf', title: 'PDF verschlüsseln', description: 'Passwort hinzufügen und PDF verschlüsseln.' },
+    { path: '/flatten-pdf', title: 'Ebenen reduzieren', description: 'Bearbeitung der PDF nachträglich verhindern.' },
+    { path: '/ocr', title: 'OCR', description: 'Gescannte Texte durchsuchbar machen.' },
+    { path: '/pdf-ocr', title: 'PDF OCR', description: 'Texterkennung für gescannte PDFs nutzen.' },
+    { path: '/ai-pdf-assistant', title: 'KI-PDF-Assistent', description: 'Mit KI Dokumente bearbeiten.' },
+    { path: '/chat-with-pdf', title: 'Mit PDFs chatten', description: 'Fragen direkt zu deinen PDFs stellen.' },
+    { path: '/ai-pdf-summary', title: 'KI-PDF-Zusammenfassung', description: 'PDF-Inhalte per KI zusammenfassen lassen.' },
+    { path: '/translate-pdf', title: 'PDF übersetzen', description: 'PDF-Inhalte als übersetzte Zusammenfassung erhalten.' },
+    { path: '/ai-question-generator', title: 'KI-Fragen-Generator', description: 'Multiple-Choice- und offene Fragen erstellen.' },
+    { path: '/pdf-scanner', title: 'PDF-Scanner', description: 'PDFs aus Smartphone-Scans erstellen.' },
+    { path: '/remove-metadata', title: 'Metadaten entfernen', description: 'Sensible Dateimetadaten aus PDFs löschen.' }
 ];
 
 export default function Home() {
@@ -150,20 +151,23 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* More Tools List */}
-            <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Weitere nützliche Helfer</h3>
-                <div className="flex flex-wrap justify-center gap-4">
-                    {MORE_TOOLS.map((tool) => (
+            {/* All Tools Grid */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+                <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Alle PDF-Tools</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {ALL_TOOLS.map((tool) => (
                         <Link
-                            key={tool.title}
+                            key={tool.path}
                             to={tool.path}
-                            className="flex items-center gap-3 bg-white border border-gray-200 px-5 py-3 rounded-full hover:border-blue-300 hover:shadow-md transition-all group"
+                            className="group bg-white border border-gray-200 rounded-2xl p-5 hover:border-blue-300 hover:shadow-lg transition-all"
                         >
-                            <div className="group-hover:scale-110 transition-transform">
-                                {tool.icon}
+                            <div className="flex items-start justify-between gap-3 mb-3">
+                                <h4 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                                    {tool.title}
+                                </h4>
+                                <span className="text-blue-500 text-xl leading-none">→</span>
                             </div>
-                            <span className="font-semibold text-gray-700 group-hover:text-gray-900">{tool.title}</span>
+                            <p className="text-sm text-gray-600 leading-relaxed">{tool.description}</p>
                         </Link>
                     ))}
                 </div>
