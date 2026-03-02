@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import CookieBanner from './components/CookieBanner';
 import Home from './pages/Home';
+import Startseite from './pages/Startseite';
 import ToolsLayout from './pages/tools/ToolsLayout';
 import MergePdf from './pages/tools/MergePdf';
 import SplitPdf from './pages/tools/SplitPdf';
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="startseite" element={<Startseite />} />
 
           {/* Tool Routes wrapped in a standard layout */}
           <Route element={<ToolsLayout />}>

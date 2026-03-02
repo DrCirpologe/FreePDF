@@ -105,8 +105,18 @@ const TOOL_SHEET_COLUMNS: ToolColumn[] = [
 
 export default function Layout() {
     const [isToolsOpen, setIsToolsOpen] = useState(false);
+    const [sheetTop, setSheetTop] = useState(64);
     const toolsSheetRef = useRef<HTMLDivElement | null>(null);
     const toolsButtonRef = useRef<HTMLButtonElement | null>(null);
+
+    const handleToolsToggle = () => {
+        if (!isToolsOpen) {
+            const buttonBottom = toolsButtonRef.current?.getBoundingClientRect().bottom ?? 64;
+            setSheetTop(Math.round(buttonBottom + 10));
+        }
+
+        setIsToolsOpen(prev => !prev);
+    };
 
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
@@ -124,7 +134,6 @@ export default function Layout() {
         };
 
         document.addEventListener('mousedown', handleOutsideClick);
-
         const originalBodyOverflow = document.body.style.overflow;
         const originalHtmlOverflow = document.documentElement.style.overflow;
 
@@ -146,7 +155,7 @@ export default function Layout() {
             <header className="sticky top-0 z-50 glass-panel border-b border-gray-200">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-6">
-                        <Link to="/" className="flex items-center gap-2 group">
+                        <Link to="/startseite" className="flex items-center gap-2 group">
                             <div className="bg-blue-600 text-white p-1.5 rounded-lg group-hover:bg-blue-700 transition-colors">
                                 <Layers className="w-5 h-5" />
                             </div>
@@ -159,7 +168,7 @@ export default function Layout() {
 
                         <button
                             ref={toolsButtonRef}
-                            onClick={() => setIsToolsOpen(!isToolsOpen)}
+                            onClick={handleToolsToggle}
                             className={`hidden md:flex items-center gap-2 font-semibold transition-colors ${isToolsOpen ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'
                                 }`}
                         >
@@ -177,11 +186,6 @@ export default function Layout() {
                         </nav>
                     </div>
 
-                    <nav className="flex items-center gap-6">
-                        <Link to="/" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
-                            Alle Tools anzeigen
-                        </Link>
-                    </nav>
                 </div>
 
                 {/* Tools Mega Menu / Sheet */}
@@ -191,7 +195,7 @@ export default function Layout() {
                             className="fixed inset-0 top-16 bg-gray-500/55 backdrop-blur-md backdrop-grayscale backdrop-brightness-75 z-40 transition-opacity"
                             onClick={() => setIsToolsOpen(false)}
                         ></div>
-                        <div ref={toolsSheetRef} className="absolute top-16 left-0 right-0 h-[calc(64vh-2.56rem+25px)] bg-white border-t border-b border-gray-200 shadow-xl z-50 overflow-y-hidden animate-slide-up">
+                        <div ref={toolsSheetRef} style={{ top: `${sheetTop}px` }} className="fixed left-0 right-0 h-[calc(64vh-2.56rem+25px)] bg-white border-t border-b border-gray-200 shadow-xl z-50 overflow-y-hidden animate-slide-up">
                             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
                                     {TOOL_SHEET_COLUMNS.map((column) => (
