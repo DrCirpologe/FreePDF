@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { PDFDocument, degrees } from 'pdf-lib';
 import { Loader2, Download, RefreshCcw, RotateCw, RotateCcw } from 'lucide-react';
 import PdfUploader from '../../components/PdfUploader';
 
@@ -20,6 +19,7 @@ export default function RotatePdf() {
             setError(null);
 
             try {
+                const { PDFDocument } = await import('pdf-lib');
                 const arrayBuffer = await selectedFile.arrayBuffer();
                 const pdf = await PDFDocument.load(arrayBuffer);
                 const count = pdf.getPageCount();
@@ -69,6 +69,7 @@ export default function RotatePdf() {
         setError(null);
 
         try {
+            const { PDFDocument, degrees } = await import('pdf-lib');
             const arrayBuffer = await file.arrayBuffer();
             const pdfDoc = await PDFDocument.load(arrayBuffer);
 

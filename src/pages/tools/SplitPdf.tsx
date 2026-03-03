@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { PDFDocument } from 'pdf-lib';
 import { Loader2, Download, RefreshCcw, FileOutput } from 'lucide-react';
-import JSZip from 'jszip';
 import PdfUploader from '../../components/PdfUploader';
 
 export default function SplitPdf() {
@@ -19,6 +17,7 @@ export default function SplitPdf() {
             setError(null);
 
             try {
+                const { PDFDocument } = await import('pdf-lib');
                 const arrayBuffer = await selectedFile.arrayBuffer();
                 const pdf = await PDFDocument.load(arrayBuffer);
                 setNumPages(pdf.getPageCount());
@@ -34,6 +33,8 @@ export default function SplitPdf() {
         setError(null);
 
         try {
+            const { PDFDocument } = await import('pdf-lib');
+            const { default: JSZip } = await import('jszip');
             const arrayBuffer = await file.arrayBuffer();
             const originalPdf = await PDFDocument.load(arrayBuffer);
             const totalPages = originalPdf.getPageCount();

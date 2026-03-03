@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { PDFDocument } from 'pdf-lib';
 import { Loader2, Download, RefreshCcw, FileMinus, Trash } from 'lucide-react';
 import PdfUploader from '../../components/PdfUploader';
 
@@ -21,6 +20,7 @@ export default function DeletePages() {
             setSelectedPages(new Set());
 
             try {
+                const { PDFDocument } = await import('pdf-lib');
                 const arrayBuffer = await selectedFile.arrayBuffer();
                 const pdf = await PDFDocument.load(arrayBuffer);
                 setNumPages(pdf.getPageCount());
@@ -52,6 +52,7 @@ export default function DeletePages() {
         setError(null);
 
         try {
+            const { PDFDocument } = await import('pdf-lib');
             const arrayBuffer = await file.arrayBuffer();
             const pdfDoc = await PDFDocument.load(arrayBuffer);
 

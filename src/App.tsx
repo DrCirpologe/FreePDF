@@ -1,36 +1,49 @@
+import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import CookieBanner from './components/CookieBanner';
-import Home from './pages/Home';
-import Startseite from './pages/Startseite';
-import ToolsLayout from './pages/tools/ToolsLayout';
-import MergePdf from './pages/tools/MergePdf';
-import SplitPdf from './pages/tools/SplitPdf';
-import DeletePages from './pages/tools/DeletePages';
-import RotatePdf from './pages/tools/RotatePdf';
-import ToolPlaceholder from './pages/tools/ToolPlaceholder';
-import Impressum from './pages/Impressum';
-import Datenschutz from './pages/Datenschutz';
+
+const Home = lazy(() => import('./pages/Home'));
+const Startseite = lazy(() => import('./pages/Startseite'));
+const ToolsLayout = lazy(() => import('./pages/tools/ToolsLayout'));
+const MergePdf = lazy(() => import('./pages/tools/MergePdf'));
+const SplitPdf = lazy(() => import('./pages/tools/SplitPdf'));
+const DeletePages = lazy(() => import('./pages/tools/DeletePages'));
+const RotatePdf = lazy(() => import('./pages/tools/RotatePdf'));
+const CompressPdf = lazy(() => import('./pages/tools/CompressPdf'));
+const ExtractPages = lazy(() => import('./pages/tools/ExtractPages'));
+const OrganizePdf = lazy(() => import('./pages/tools/OrganizePdf'));
+const PageNumbers = lazy(() => import('./pages/tools/PageNumbers'));
+const WatermarkPdf = lazy(() => import('./pages/tools/WatermarkPdf'));
+const JpgToPdf = lazy(() => import('./pages/tools/JpgToPdf'));
+const PdfReader = lazy(() => import('./pages/tools/PdfReader'));
+const RemoveMetadata = lazy(() => import('./pages/tools/RemoveMetadata'));
+const FlattenPdf = lazy(() => import('./pages/tools/FlattenPdf'));
+const CropPdf = lazy(() => import('./pages/tools/CropPdf'));
+const ToolPlaceholder = lazy(() => import('./pages/tools/ToolPlaceholder'));
+const Impressum = lazy(() => import('./pages/Impressum'));
+const Datenschutz = lazy(() => import('./pages/Datenschutz'));
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="startseite" element={<Startseite />} />
+      <Suspense fallback={<div className="px-4 py-10 text-center text-gray-600">Lädt…</div>}>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="startseite" element={<Startseite />} />
 
-          {/* Tool Routes wrapped in a standard layout */}
-          <Route element={<ToolsLayout />}>
-            <Route path="merge" element={<MergePdf />} />
-            <Route path="split" element={<SplitPdf />} />
-            <Route path="delete-pages" element={<DeletePages />} />
-            <Route path="rotate" element={<RotatePdf />} />
+            {/* Tool Routes wrapped in a standard layout */}
+            <Route element={<ToolsLayout />}>
+              <Route path="merge" element={<MergePdf />} />
+              <Route path="split" element={<SplitPdf />} />
+              <Route path="delete-pages" element={<DeletePages />} />
+              <Route path="rotate" element={<RotatePdf />} />
 
             {/* Placeholder Views (UI first, logic later) */}
             <Route
               path="compress"
-              element={<ToolPlaceholder title="PDF verkleinern" description="Die Größe Ihres PDFs ohne Qualitätsverlust reduzieren." />}
+              element={<CompressPdf />}
             />
             <Route
               path="ppt-to-pdf"
@@ -82,11 +95,11 @@ function App() {
             />
             <Route
               path="jpg-to-pdf"
-              element={<ToolPlaceholder title="JPG in PDF" description="Bilder in den Formaten JPG, PNG, BMP, GIF und TIFF in ein PDF umwandeln." />}
+              element={<JpgToPdf />}
             />
             <Route
               path="img-to-pdf"
-              element={<ToolPlaceholder title="JPG in PDF" description="Bilder in den Formaten JPG, PNG, BMP, GIF und TIFF in ein PDF umwandeln." />}
+              element={<JpgToPdf />}
             />
             <Route
               path="pdf-to-excel"
@@ -98,7 +111,7 @@ function App() {
             />
             <Route
               path="pdf-reader"
-              element={<ToolPlaceholder title="PDF-Reader" description="PDFs online anzeigen, drucken und teilen." />}
+              element={<PdfReader />}
             />
             <Route
               path="share-pdf"
@@ -106,7 +119,7 @@ function App() {
             />
             <Route
               path="crop-pdf"
-              element={<ToolPlaceholder title="PDFs zuschneiden" description="Schneide deine Dokumente mit unserem PDF-Zuschneidungstool zu." />}
+              element={<CropPdf />}
             />
             <Route
               path="redact-pdf"
@@ -114,11 +127,11 @@ function App() {
             />
             <Route
               path="watermark"
-              element={<ToolPlaceholder title="Wasserzeichen-PDF" description="Füge ein Wasserzeichen zu deinen PDFs hinzu." />}
+              element={<WatermarkPdf />}
             />
             <Route
               path="page-numbers"
-              element={<ToolPlaceholder title="Seitenzahlen einfügen" description="Seitenzahlen in PDF mit Leichtigkeit einbauen." />}
+              element={<PageNumbers />}
             />
             <Route
               path="ai-pdf-assistant"
@@ -142,11 +155,11 @@ function App() {
             />
             <Route
               path="extract-pages"
-              element={<ToolPlaceholder title="PDF-Seiten extrahieren" description="Wähle gezielt Seiten aus einer PDF-Datei aus." />}
+              element={<ExtractPages />}
             />
             <Route
               path="organize-pdf"
-              element={<ToolPlaceholder title="PDF Organisieren" description="PDFs neu anordnen, löschen, drehen und Seiten hinzufügen." />}
+              element={<OrganizePdf />}
             />
             <Route
               path="sign"
@@ -162,7 +175,7 @@ function App() {
             />
             <Route
               path="flatten-pdf"
-              element={<ToolPlaceholder title="Ebenen der PDF reduzieren" description="Verhindere eine Bearbeitung deiner PDFs." />}
+              element={<FlattenPdf />}
             />
             <Route
               path="pdf-scanner"
@@ -170,15 +183,16 @@ function App() {
             />
             <Route
               path="remove-metadata"
-              element={<ToolPlaceholder title="Metadaten entfernen" description="Entferne sensible Metadaten aus deiner PDF-Datei." />}
+              element={<RemoveMetadata />}
             />
-          </Route>
+            </Route>
 
-          {/* Legal Routes */}
-          <Route path="impressum" element={<Impressum />} />
-          <Route path="datenschutz" element={<Datenschutz />} />
-        </Route>
-      </Routes>
+            {/* Legal Routes */}
+            <Route path="impressum" element={<Impressum />} />
+            <Route path="datenschutz" element={<Datenschutz />} />
+          </Route>
+        </Routes>
+      </Suspense>
       <CookieBanner />
     </BrowserRouter>
   );

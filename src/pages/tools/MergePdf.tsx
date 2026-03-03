@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { PDFDocument } from 'pdf-lib';
 import { Loader2, Download, Trash, GripVertical, FileText } from 'lucide-react';
 import PdfUploader from '../../components/PdfUploader';
 
@@ -29,6 +28,7 @@ export default function MergePdf() {
         setError(null);
 
         try {
+            const { PDFDocument } = await import('pdf-lib');
             const mergedPdf = await PDFDocument.create();
 
             for (const file of files) {
