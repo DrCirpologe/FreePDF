@@ -7,41 +7,70 @@ export default function RemovePassword() {
     const [resultUrl, setResultUrl] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [password, setPassword] = useState('');
 
     const onFilesSelected = (files: File[]) => {
         if (!files[0]) return;
         setFile(files[0]);
         setResultUrl(null);
         setError(null);
+        setPassword('');
     };
 
     const removePassword = async () => {
         if (!file) return;
+        if (!password.trim()) {
+            setError('Bitte gib das PDF-Passwort ein.');
+            return;
+        }
+
         setIsProcessing(true);
         setError(null);
 
         try {
-            const { PDFDocument } = await import('pdf-lib-plus-encrypt');
-            const source = await file.arrayBuffer();
+            const pdfBytes = new Uint8Array(await file.arrayBuffer());
+            const pdfjsLib = await import('pdfjs-dist');
+            const { PDFDocument } = await import('pdf-lib');
 
-            const encryptedDoc = await PDFDocument.load(source as ArrayBuffer, { ignoreEncryption: true } as any);
+            pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
+
+            const loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
+            loadingTask.onPassword = (updatePassword: (password: string) => void) => {
+                updatePassword(password.trim());
+            };
+
+            const sourcePdf = await loadingTask.promise;
             const outDoc = await PDFDocument.create();
-            const pageIndices = Array.from({ length: encryptedDoc.getPageCount() }, (_, i) => i);
-            const pages = await outDoc.copyPages(encryptedDoc, pageIndices);
-            pages.forEach((page) => outDoc.addPage(page));
 
-            try {
-                const form = outDoc.getForm();
-                form.flatten();
-            } catch {
-                // ignore missing form support
+            for (let pageNumber = 1; pageNumber <= sourcePdf.numPages; pageNumber++) {
+                const page = await sourcePdf.getPage(pageNumber);
+                const viewport = page.getViewport({ scale: 2 });
+
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                if (!context) throw new Error('Canvas konnte nicht initialisiert werden.');
+
+                canvas.width = Math.ceil(viewport.width);
+                canvas.height = Math.ceil(viewport.height);
+
+                await page.render({ canvasContext: context, viewport, canvas }).promise;
+
+                const imageDataUrl = canvas.toDataURL('image/png');
+                const image = await outDoc.embedPng(imageDataUrl);
+                const outPage = outDoc.addPage([viewport.width, viewport.height]);
+                outPage.drawImage(image, { x: 0, y: 0, width: viewport.width, height: viewport.height });
             }
 
             const outBytes = await outDoc.save();
             const outBlob = new Blob([outBytes as BlobPart], { type: 'application/pdf' });
             setResultUrl(URL.createObjectURL(outBlob));
         } catch (e: any) {
-            setError(e?.message || 'Passwort konnte nicht entfernt werden. Diese Datei verwendet ggf. eine nicht unterstützte Verschlüsselung.');
+            const message = String(e?.message || '');
+            if (message.toLowerCase().includes('password')) {
+                setError('Passwort falsch oder PDF kann damit nicht geöffnet werden.');
+            } else {
+                setError('Passwort konnte nicht entfernt werden. Bitte prüfe Passwort und Datei.');
+            }
         } finally {
             setIsProcessing(false);
         }
@@ -63,8 +92,16 @@ export default function RemovePassword() {
                             <div className="flex items-center gap-2 font-semibold text-gray-700"><LockOpen className="w-5 h-5 text-orange-600" /> {file.name}</div>
 
                             <p className="text-sm text-gray-600 bg-orange-50 border border-orange-200 rounded-xl p-3">
-                                Hinweis: Bei stark oder proprietär verschlüsselten PDFs kann die Entsperrung fehlschlagen.
+                                Das Dokument wird nach Eingabe des korrekten Passworts neu aufgebaut und ohne Schutz gespeichert.
                             </p>
+
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="PDF-Passwort eingeben"
+                                className="w-full rounded-xl border border-gray-300 px-4 py-3"
+                            />
 
                             {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
 
