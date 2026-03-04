@@ -20,6 +20,12 @@ const PdfReader = lazy(() => import('./pages/tools/PdfReader'));
 const RemoveMetadata = lazy(() => import('./pages/tools/RemoveMetadata'));
 const FlattenPdf = lazy(() => import('./pages/tools/FlattenPdf'));
 const CropPdf = lazy(() => import('./pages/tools/CropPdf'));
+const PdfToJpg = lazy(() => import('./pages/tools/PdfToJpg'));
+const AnnotatePdf = lazy(() => import('./pages/tools/AnnotatePdf'));
+const PdfFormFiller = lazy(() => import('./pages/tools/PdfFormFiller'));
+const SharePdf = lazy(() => import('./pages/tools/SharePdf'));
+const EditPdf = lazy(() => import('./pages/tools/EditPdf'));
+const RedactPdf = lazy(() => import('./pages/tools/RedactPdf'));
 const ToolPlaceholder = lazy(() => import('./pages/tools/ToolPlaceholder'));
 const Impressum = lazy(() => import('./pages/Impressum'));
 const Datenschutz = lazy(() => import('./pages/Datenschutz'));
@@ -51,11 +57,11 @@ function App() {
             />
             <Route
               path="pdf-to-jpg"
-              element={<ToolPlaceholder title="PDF in JPG" description="Bilder aus Ihrem PDF extrahieren oder jede Seite als separates Bild speichern." />}
+              element={<PdfToJpg />}
             />
             <Route
               path="pdf-to-img"
-              element={<ToolPlaceholder title="PDF in JPG" description="Bilder aus Ihrem PDF extrahieren oder jede Seite als separates Bild speichern." />}
+              element={<PdfToJpg />}
             />
             <Route
               path="word-to-pdf"
@@ -63,7 +69,7 @@ function App() {
             />
             <Route
               path="annotate-pdf"
-              element={<ToolPlaceholder title="PDF kommentieren" description="Schreibe, zeichne und markiere in deiner PDF-Datei." />}
+              element={<AnnotatePdf />}
             />
             <Route
               path="pdf-converter"
@@ -91,7 +97,7 @@ function App() {
             />
             <Route
               path="pdf-form-filler"
-              element={<ToolPlaceholder title="PDF-Formularausfüller" description="PDF-Formulare online ausfüllen." />}
+              element={<PdfFormFiller />}
             />
             <Route
               path="jpg-to-pdf"
@@ -107,7 +113,7 @@ function App() {
             />
             <Route
               path="edit-pdf"
-              element={<ToolPlaceholder title="PDF bearbeiten" description="Text, Formen, Bilder und freihändige Kommentare in Ihrem PDF hinzufügen." />}
+              element={<EditPdf />}
             />
             <Route
               path="pdf-reader"
@@ -115,7 +121,7 @@ function App() {
             />
             <Route
               path="share-pdf"
-              element={<ToolPlaceholder title="PDF freigeben" description="Teile deine PDFs schnell und einfach online." />}
+              element={<SharePdf />}
             />
             <Route
               path="crop-pdf"
@@ -123,7 +129,7 @@ function App() {
             />
             <Route
               path="redact-pdf"
-              element={<ToolPlaceholder title="PDF schwärzen" description="Entferne vertrauliche Informationen aus deinen PDFs." />}
+              element={<RedactPdf />}
             />
             <Route
               path="watermark"
