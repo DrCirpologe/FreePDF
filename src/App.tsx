@@ -26,6 +26,8 @@ const PdfFormFiller = lazy(() => import('./pages/tools/PdfFormFiller'));
 const SharePdf = lazy(() => import('./pages/tools/SharePdf'));
 const EditPdf = lazy(() => import('./pages/tools/EditPdf'));
 const RedactPdf = lazy(() => import('./pages/tools/RedactPdf'));
+const RemovePassword = lazy(() => import('./pages/tools/RemovePassword'));
+const EncryptPdf = lazy(() => import('./pages/tools/EncryptPdf'));
 const ToolPlaceholder = lazy(() => import('./pages/tools/ToolPlaceholder'));
 const Impressum = lazy(() => import('./pages/Impressum'));
 const Datenschutz = lazy(() => import('./pages/Datenschutz'));
@@ -173,11 +175,11 @@ function App() {
             />
             <Route
               path="remove-password"
-              element={<ToolPlaceholder title="PDF Passwort entfernen" description="Passwort, Verschlüsselung und Genehmigung aus Ihrem PDF entfernen." />}
+              element={<RemovePassword />}
             />
             <Route
               path="encrypt-pdf"
-              element={<ToolPlaceholder title="PDF verschlüsseln" description="Passwort hinzufügen und Ihre PDF-Datei verschlüsseln." />}
+              element={<EncryptPdf />}
             />
             <Route
               path="flatten-pdf"
