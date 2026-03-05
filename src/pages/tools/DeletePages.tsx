@@ -24,7 +24,7 @@ export default function DeletePages() {
                 const arrayBuffer = await selectedFile.arrayBuffer();
                 const pdf = await PDFDocument.load(arrayBuffer);
                 setNumPages(pdf.getPageCount());
-            } catch (e) {
+            } catch {
                 setError('Die Datei konnte nicht gelesen werden. Ist sie verschlüsselt?');
             }
         }

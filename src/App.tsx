@@ -28,6 +28,11 @@ const EditPdf = lazy(() => import('./pages/tools/EditPdf'));
 const RedactPdf = lazy(() => import('./pages/tools/RedactPdf'));
 const RemovePassword = lazy(() => import('./pages/tools/RemovePassword'));
 const EncryptPdf = lazy(() => import('./pages/tools/EncryptPdf'));
+const Ocr = lazy(() => import('./pages/tools/Ocr'));
+const PdfOcr = lazy(() => import('./pages/tools/PdfOcr'));
+const SignPdf = lazy(() => import('./pages/tools/SignPdf'));
+const PdfScanner = lazy(() => import('./pages/tools/PdfScanner'));
+const PdfConverter = lazy(() => import('./pages/tools/PdfConverter'));
 const ToolPlaceholder = lazy(() => import('./pages/tools/ToolPlaceholder'));
 const Impressum = lazy(() => import('./pages/Impressum'));
 const Datenschutz = lazy(() => import('./pages/Datenschutz'));
@@ -75,7 +80,7 @@ function App() {
             />
             <Route
               path="pdf-converter"
-              element={<ToolPlaceholder title="PDF-Konverter" description="Word-, PowerPoint- und Excel-Dateien in ein PDF konvertieren und aus einem PDF wieder zurück verwandeln." />}
+              element={<PdfConverter />}
             />
             <Route
               path="pdf-to-ppt"
@@ -83,11 +88,11 @@ function App() {
             />
             <Route
               path="ocr"
-              element={<ToolPlaceholder title="OCR" description="Ermögliche das Durchsuchen von gescannten Texten." />}
+              element={<Ocr />}
             />
             <Route
               path="pdf-ocr"
-              element={<ToolPlaceholder title="PDF OCR" description="Ermögliche das Durchsuchen von gescannten Texten." />}
+              element={<PdfOcr />}
             />
             <Route
               path="excel-to-pdf"
@@ -171,7 +176,7 @@ function App() {
             />
             <Route
               path="sign"
-              element={<ToolPlaceholder title="Unterschreibe PDF" description="Erstelle eine elektronische Signatur und unterschreibe deine Dokumente." />}
+              element={<SignPdf />}
             />
             <Route
               path="remove-password"
@@ -187,7 +192,7 @@ function App() {
             />
             <Route
               path="pdf-scanner"
-              element={<ToolPlaceholder title="PDF-Scanner" description="Erstelle PDFs aus Scans auf deinem Smartphone." />}
+              element={<PdfScanner />}
             />
             <Route
               path="remove-metadata"

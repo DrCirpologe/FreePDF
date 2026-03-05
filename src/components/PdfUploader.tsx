@@ -51,7 +51,7 @@ export default function PdfUploader({
         setIsDragging(false);
     }, []);
 
-    const processFiles = (filesList: FileList | File[]) => {
+    const processFiles = useCallback((filesList: FileList | File[]) => {
         const validFiles = Array.from(filesList).filter(file => {
             if (accept === "application/pdf") return file.type === "application/pdf";
             return true;
@@ -60,7 +60,7 @@ export default function PdfUploader({
         if (validFiles.length > 0) {
             onFilesSelected(multiple ? validFiles.slice(0, maxFiles) : [validFiles[0]]);
         }
-    };
+    }, [accept, maxFiles, multiple, onFilesSelected]);
 
     const handleDrop = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -68,7 +68,7 @@ export default function PdfUploader({
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             processFiles(e.dataTransfer.files);
         }
-    }, [multiple, maxFiles, accept, onFilesSelected]);
+    }, [processFiles]);
 
     const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {

@@ -34,7 +34,7 @@ export default function RotatePdf() {
                 }
                 setRotations(initialRotations);
 
-            } catch (e) {
+            } catch {
                 setError('Die Datei konnte nicht gelesen werden. Ist sie verschlüsselt?');
             }
         }
