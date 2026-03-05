@@ -173,6 +173,7 @@ export default function Layout() {
                         >
                             <span>Tools</span>
                             <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isToolsOpen ? 'rotate-180' : ''}`} />
+                        </button>
 
                         <nav className="hidden lg:flex items-center gap-4">
                             <Link to="/compress" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Komprimieren</Link>
