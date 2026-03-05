@@ -92,7 +92,6 @@ const TOOL_SHEET_COLUMNS: ToolColumn[] = [
         heading: 'Unterschreiben',
         items: [
             { title: 'Unterschreibe PDF', path: '/sign', icon: PenTool, tone: 'bg-pink-100 text-pink-700 group-hover:bg-pink-600 group-hover:text-white' },
-            { title: 'Unterschriften anfordern (Sign.com)', externalHref: 'https://sign.com', icon: PenTool, tone: 'bg-yellow-100 text-yellow-700 group-hover:bg-yellow-600 group-hover:text-white' },
             { title: 'Mehr', icon: ShieldAlert, tone: '', plainText: true },
             { title: 'PDF Passwort entfernen', path: '/remove-password', icon: ShieldAlert, tone: 'bg-rose-100 text-rose-600 group-hover:bg-rose-500 group-hover:text-white' },
             { title: 'PDF verschlüsseln', path: '/encrypt-pdf', icon: ShieldAlert, tone: 'bg-rose-100 text-rose-600 group-hover:bg-rose-500 group-hover:text-white' },
@@ -174,7 +173,6 @@ export default function Layout() {
                         >
                             <span>Tools</span>
                             <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isToolsOpen ? 'rotate-180' : ''}`} />
-                        </button>
 
                         <nav className="hidden lg:flex items-center gap-4">
                             <Link to="/compress" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Komprimieren</Link>
