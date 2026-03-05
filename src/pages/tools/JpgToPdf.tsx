@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Download, ImagePlus, Loader2, RefreshCcw } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import PdfUploader from '../../components/PdfUploader';
 
 export default function JpgToPdf() {
+    const location = useLocation();
     const [images, setImages] = useState<File[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [resultUrl, setResultUrl] = useState<string | null>(null);
@@ -14,6 +16,22 @@ export default function JpgToPdf() {
         setResultUrl(null);
         setError(valid.length ? null : 'Bitte wähle Bilddateien aus.');
     };
+
+    useEffect(() => {
+        const state = location.state as { prefillFile?: File; prefillFiles?: File[] } | null;
+        const candidates = state?.prefillFiles?.length
+            ? state.prefillFiles
+            : state?.prefillFile
+                ? [state.prefillFile]
+                : [];
+
+        const validImages = candidates.filter((candidate) => candidate.type.startsWith('image/'));
+        if (!validImages.length) return;
+
+        setImages(validImages);
+        setResultUrl(null);
+        setError(null);
+    }, [location.state]);
 
     const convert = async () => {
         if (!images.length) return;

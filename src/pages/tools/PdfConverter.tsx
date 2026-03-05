@@ -12,7 +12,7 @@ type InspectorResult = {
 };
 
 export default function PdfConverter() {
-    const [file, setFile] = useState<File | null>(null);
+    const [files, setFiles] = useState<File[]>([]);
     const [analysis, setAnalysis] = useState<InspectorResult | null>(null);
     const [recentFiles, setRecentFiles] = useState<RecentFileEntry[]>(() => getRecentFiles());
     const workerRef = useRef<Worker | null>(null);
@@ -31,8 +31,9 @@ export default function PdfConverter() {
         };
     }, []);
 
-    const extension = analysis?.extension || (file ? getFileExtension(file.name) : '');
-    const detectedKind = analysis?.kind || (file ? detectFileKind(file.name, file.type) : 'unknown');
+    const primaryFile = files[0] || null;
+    const extension = analysis?.extension || (primaryFile ? getFileExtension(primaryFile.name) : '');
+    const detectedKind = analysis?.kind || (primaryFile ? detectFileKind(primaryFile.name, primaryFile.type) : 'unknown');
     const actions = useMemo(() => getConverterActions(detectedKind), [detectedKind]);
 
     const icon = useMemo(() => {
@@ -41,30 +42,38 @@ export default function PdfConverter() {
         return <FileImage className="w-5 h-5 text-blue-600" />;
     }, [detectedKind]);
 
-    const handleFileInput = (selectedFile: File | null) => {
-        if (!selectedFile) return;
+    const handleFileInput = (selectedFiles: FileList | null) => {
+        if (!selectedFiles || selectedFiles.length === 0) return;
 
-        setFile(selectedFile);
+        const pickedFiles = Array.from(selectedFiles);
+        const allImages = pickedFiles.every((selectedFile) => detectFileKind(selectedFile.name, selectedFile.type) === 'image');
+        const normalizedFiles = allImages ? pickedFiles : [pickedFiles[0]];
+        const firstFile = normalizedFiles[0];
+
+        setFiles(normalizedFiles);
         setAnalysis(null);
 
         workerRef.current?.postMessage({
-            name: selectedFile.name,
-            mimeType: selectedFile.type,
-            size: selectedFile.size,
+            name: firstFile.name,
+            mimeType: firstFile.type,
+            size: firstFile.size,
         });
 
-        const updatedRecent = addRecentFile({
-            name: selectedFile.name,
-            extension: getFileExtension(selectedFile.name),
-            kind: detectFileKind(selectedFile.name, selectedFile.type),
-            size: selectedFile.size,
-            mimeType: selectedFile.type,
-        });
+        let updatedRecent = recentFiles;
+        for (const selectedFile of normalizedFiles) {
+            updatedRecent = addRecentFile({
+                name: selectedFile.name,
+                extension: getFileExtension(selectedFile.name),
+                kind: detectFileKind(selectedFile.name, selectedFile.type),
+                size: selectedFile.size,
+                mimeType: selectedFile.type,
+            });
+        }
         setRecentFiles(updatedRecent);
     };
 
     const resetSelection = () => {
-        setFile(null);
+        setFiles([]);
         setAnalysis(null);
     };
 
@@ -80,24 +89,33 @@ export default function PdfConverter() {
                     <span className="text-sm font-semibold text-gray-700">Datei auswählen</span>
                     <input
                         type="file"
-                        onChange={(e) => handleFileInput(e.target.files?.[0] || null)}
+                        onChange={(e) => handleFileInput(e.target.files || null)}
                         className="mt-2 block w-full rounded-xl border border-gray-300 px-4 py-3"
                         accept={converterAccept}
+                        multiple
                     />
                 </label>
 
-                {file && (
+                {files.length > 0 && (
                     <div className="space-y-4">
                         <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 flex items-center gap-2 text-blue-800 font-semibold">
                             {icon}
-                            {file.name}
+                            <span className="truncate">{files.length > 1 ? `${files.length} Dateien ausgewählt` : primaryFile?.name}</span>
                             <span className="ml-auto text-xs uppercase tracking-wide">{extension || 'ohne Endung'}</span>
                         </div>
+
+                        {files.length > 1 && (
+                            <ul className="text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 max-h-36 overflow-y-auto space-y-1">
+                                {files.map((selectedFile, index) => (
+                                    <li key={`${selectedFile.name}-${index}`} className="truncate">• {selectedFile.name}</li>
+                                ))}
+                            </ul>
+                        )}
 
                         <div className="text-xs text-gray-500 grid grid-cols-1 sm:grid-cols-3 gap-2">
                             <div><span className="font-semibold text-gray-700">Typ:</span> {detectedKind}</div>
                             <div><span className="font-semibold text-gray-700">Größe:</span> {analysis?.sizeLabel || 'wird analysiert...'}</div>
-                            <div><span className="font-semibold text-gray-700">MIME:</span> {file.type || 'unbekannt'}</div>
+                            <div><span className="font-semibold text-gray-700">MIME:</span> {primaryFile?.type || 'unbekannt'}</div>
                         </div>
 
                         <div className="grid grid-cols-1 gap-3">
@@ -108,7 +126,17 @@ export default function PdfConverter() {
                                         {!action.available && action.reason && <div className="text-xs text-gray-500 mt-0.5">{action.reason}</div>}
                                     </div>
                                     {action.available ? (
-                                        <Link to={action.route} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold inline-flex items-center gap-2 whitespace-nowrap">
+                                        <Link
+                                            to={action.route}
+                                            state={
+                                                primaryFile
+                                                    ? action.route === '/jpg-to-pdf' && files.length > 1
+                                                        ? { prefillFiles: files }
+                                                        : { prefillFile: primaryFile }
+                                                    : undefined
+                                            }
+                                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold inline-flex items-center gap-2 whitespace-nowrap"
+                                        >
                                             Öffnen <ArrowRight className="w-4 h-4" />
                                         </Link>
                                     ) : (
@@ -124,7 +152,7 @@ export default function PdfConverter() {
                     </div>
                 )}
 
-                {!file && (
+                {files.length === 0 && (
                     <div className="space-y-4">
                         <div className="text-sm text-gray-500 flex items-center gap-2">
                             <FileCog className="w-4 h-4" /> Wähle eine Datei, um automatisch passende Konvertierungsmöglichkeiten zu sehen.

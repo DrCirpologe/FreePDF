@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Download, FileImage, Loader2, RefreshCcw } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import PdfUploader from '../../components/PdfUploader';
 
 import * as pdfjsLib from 'pdfjs-dist';
@@ -12,6 +13,7 @@ type PagePreview = {
 };
 
 export default function PdfToJpg() {
+    const location = useLocation();
     const [file, setFile] = useState<File | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -25,6 +27,17 @@ export default function PdfToJpg() {
         setResultZipUrl(null);
         setPreviews([]);
     };
+
+    useEffect(() => {
+        const state = location.state as { prefillFile?: File } | null;
+        const prefillFile = state?.prefillFile;
+        if (!prefillFile || prefillFile.type !== 'application/pdf') return;
+
+        setFile(prefillFile);
+        setError(null);
+        setResultZipUrl(null);
+        setPreviews([]);
+    }, [location.state]);
 
     const convert = async () => {
         if (!file) return;

@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Copy, Download, Loader2, RefreshCcw, ScanText } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import PdfUploader from '../../components/PdfUploader';
 
 export default function Ocr() {
+    const location = useLocation();
     const [file, setFile] = useState<File | null>(null);
     const [language, setLanguage] = useState('eng');
     const [isProcessing, setIsProcessing] = useState(false);
@@ -17,6 +19,17 @@ export default function Ocr() {
         setError(null);
         setProgress(0);
     };
+
+    useEffect(() => {
+        const state = location.state as { prefillFile?: File } | null;
+        const prefillFile = state?.prefillFile;
+        if (!prefillFile || !prefillFile.type.startsWith('image/')) return;
+
+        setFile(prefillFile);
+        setResultText('');
+        setError(null);
+        setProgress(0);
+    }, [location.state]);
 
     const runOcr = async () => {
         if (!file) return;
