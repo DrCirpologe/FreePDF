@@ -68,14 +68,14 @@ const TOOLS = [
 ];
 
 const ALL_TOOLS = [
-    { path: '/ppt-to-pdf', title: 'PPT in PDF', description: 'PowerPoint-Präsentationen in PDF-Dokumente konvertieren.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '📊' },
-    { path: '/word-to-pdf', title: 'Word in PDF', description: 'Word-Dokumente in PDF-Dateien konvertieren.', icon: <FileText className="w-8 h-8 text-indigo-500" />, color: 'bg-indigo-50', emoji: '📝' },
-    { path: '/excel-to-pdf', title: 'Excel in PDF', description: 'Excel-Tabellen in PDF-Dokumente konvertieren.', icon: <FileText className="w-8 h-8 text-emerald-500" />, color: 'bg-emerald-50', emoji: '📈' },
+    // { path: '/ppt-to-pdf', title: 'PPT in PDF', description: 'PowerPoint-Präsentationen in PDF-Dokumente konvertieren.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '📊' },
+    // { path: '/word-to-pdf', title: 'Word in PDF', description: 'Word-Dokumente in PDF-Dateien konvertieren.', icon: <FileText className="w-8 h-8 text-indigo-500" />, color: 'bg-indigo-50', emoji: '📝' },
+    // { path: '/excel-to-pdf', title: 'Excel in PDF', description: 'Excel-Tabellen in PDF-Dokumente konvertieren.', icon: <FileText className="w-8 h-8 text-emerald-500" />, color: 'bg-emerald-50', emoji: '📈' },
     { path: '/jpg-to-pdf', title: 'JPG in PDF', description: 'JPG, PNG, BMP, GIF und TIFF in PDF umwandeln.', icon: <Image className="w-8 h-8 text-yellow-500" />, color: 'bg-yellow-50', emoji: '🖼️' },
     { path: '/pdf-to-jpg', title: 'PDF in JPG', description: 'PDF-Seiten als einzelne Bilder speichern.', icon: <FileImage className="w-8 h-8 text-orange-500" />, color: 'bg-orange-50', emoji: '📸' },
-    { path: '/pdf-to-word', title: 'PDF in Word', description: 'PDFs in bearbeitbare Word-Dokumente konvertieren.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '📄' },
-    { path: '/pdf-to-ppt', title: 'PDF in PPT', description: 'PDFs in bearbeitbare PowerPoint-Dateien konvertieren.', icon: <FileText className="w-8 h-8 text-red-500" />, color: 'bg-red-50', emoji: '📽️' },
-    { path: '/pdf-to-excel', title: 'PDF in Excel', description: 'PDFs in bearbeitbare Excel-Tabellen konvertieren.', icon: <FileText className="w-8 h-8 text-green-500" />, color: 'bg-green-50', emoji: '📊' },
+    // { path: '/pdf-to-word', title: 'PDF in Word', description: 'PDFs in bearbeitbare Word-Dokumente konvertieren.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '📄' },
+    // { path: '/pdf-to-ppt', title: 'PDF in PPT', description: 'PDFs in bearbeitbare PowerPoint-Dateien konvertieren.', icon: <FileText className="w-8 h-8 text-red-500" />, color: 'bg-red-50', emoji: '📽️' },
+    // { path: '/pdf-to-excel', title: 'PDF in Excel', description: 'PDFs in bearbeitbare Excel-Tabellen konvertieren.', icon: <FileText className="w-8 h-8 text-green-500" />, color: 'bg-green-50', emoji: '📊' },
     { path: '/pdf-converter', title: 'PDF-Konverter', description: 'Dateien in PDF und aus PDF zurück konvertieren.', icon: <FileText className="w-8 h-8 text-purple-500" />, color: 'bg-purple-50', emoji: '🔁' },
     { path: '/annotate-pdf', title: 'PDF kommentieren', description: 'In PDF schreiben, zeichnen und markieren.', icon: <PenTool className="w-8 h-8 text-pink-500" />, color: 'bg-pink-50', emoji: '✏️' },
     { path: '/edit-pdf', title: 'PDF bearbeiten', description: 'Text, Formen, Bilder und Kommentare hinzufügen.', icon: <PenTool className="w-8 h-8 text-cyan-500" />, color: 'bg-cyan-50', emoji: '🛠️' },
@@ -92,11 +92,11 @@ const ALL_TOOLS = [
     { path: '/flatten-pdf', title: 'Ebenen reduzieren', description: 'Bearbeitung der PDF nachträglich verhindern.', icon: <FileText className="w-8 h-8 text-amber-500" />, color: 'bg-amber-50', emoji: '📌' },
     { path: '/ocr', title: 'OCR', description: 'Gescannte Texte durchsuchbar machen.', icon: <FileImage className="w-8 h-8 text-teal-500" />, color: 'bg-teal-50', emoji: '🔍' },
     { path: '/pdf-ocr', title: 'PDF OCR', description: 'Texterkennung für gescannte PDFs nutzen.', icon: <FileImage className="w-8 h-8 text-red-500" />, color: 'bg-red-50', emoji: '🧾' },
-    { path: '/ai-pdf-assistant', title: 'KI-PDF-Assistent', description: 'Mit KI Dokumente bearbeiten.', icon: <ShieldAlert className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '🤖' },
-    { path: '/chat-with-pdf', title: 'Mit PDFs chatten', description: 'Fragen direkt zu deinen PDFs stellen.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '💬' },
-    { path: '/ai-pdf-summary', title: 'KI-PDF-Zusammenfassung', description: 'PDF-Inhalte per KI zusammenfassen lassen.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '🧠' },
-    { path: '/translate-pdf', title: 'PDF übersetzen', description: 'PDF-Inhalte als übersetzte Zusammenfassung erhalten.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '🌐' },
-    { path: '/ai-question-generator', title: 'KI-Fragen-Generator', description: 'Multiple-Choice- und offene Fragen erstellen.', icon: <Hash className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '❓' },
+    // { path: '/ai-pdf-assistant', title: 'KI-PDF-Assistent', description: 'Mit KI Dokumente bearbeiten.', icon: <ShieldAlert className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '🤖' },
+    // { path: '/chat-with-pdf', title: 'Mit PDFs chatten', description: 'Fragen direkt zu deinen PDFs stellen.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '💬' },
+    // { path: '/ai-pdf-summary', title: 'KI-PDF-Zusammenfassung', description: 'PDF-Inhalte per KI zusammenfassen lassen.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '🧠' },
+    // { path: '/translate-pdf', title: 'PDF übersetzen', description: 'PDF-Inhalte als übersetzte Zusammenfassung erhalten.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '🌐' },
+    // { path: '/ai-question-generator', title: 'KI-Fragen-Generator', description: 'Multiple-Choice- und offene Fragen erstellen.', icon: <Hash className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '❓' },
     { path: '/pdf-scanner', title: 'PDF-Scanner', description: 'PDFs aus Smartphone-Scans erstellen.', icon: <FileImage className="w-8 h-8 text-cyan-500" />, color: 'bg-cyan-50', emoji: '📱' },
     { path: '/remove-metadata', title: 'Metadaten entfernen', description: 'Sensible Dateimetadaten aus PDFs löschen.', icon: <ShieldAlert className="w-8 h-8 text-emerald-500" />, color: 'bg-emerald-50', emoji: '🧹' }
 ];

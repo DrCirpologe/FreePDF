@@ -33,7 +33,6 @@ const PdfOcr = lazy(() => import('./pages/tools/PdfOcr'));
 const SignPdf = lazy(() => import('./pages/tools/SignPdf'));
 const PdfScanner = lazy(() => import('./pages/tools/PdfScanner'));
 const PdfConverter = lazy(() => import('./pages/tools/PdfConverter'));
-const ToolPlaceholder = lazy(() => import('./pages/tools/ToolPlaceholder'));
 const Impressum = lazy(() => import('./pages/Impressum'));
 const Datenschutz = lazy(() => import('./pages/Datenschutz'));
 
@@ -58,10 +57,10 @@ function App() {
               path="compress"
               element={<CompressPdf />}
             />
-            <Route
+            {/* <Route
               path="ppt-to-pdf"
               element={<ToolPlaceholder title="PPT in PDF" description="PowerPoint-Präsentationen in PDF-Dokumente konvertieren." />}
-            />
+            /> */}
             <Route
               path="pdf-to-jpg"
               element={<PdfToJpg />}
@@ -70,10 +69,10 @@ function App() {
               path="pdf-to-img"
               element={<PdfToJpg />}
             />
-            <Route
+            {/* <Route
               path="word-to-pdf"
               element={<ToolPlaceholder title="Word in PDF" description="Word-Dokumente in PDF-Dateien konvertieren." />}
-            />
+            /> */}
             <Route
               path="annotate-pdf"
               element={<AnnotatePdf />}
@@ -82,10 +81,10 @@ function App() {
               path="pdf-converter"
               element={<PdfConverter />}
             />
-            <Route
+            {/* <Route
               path="pdf-to-ppt"
               element={<ToolPlaceholder title="PDF in PPT" description="PDFs in bearbeitbare PowerPoint-Präsentationen konvertieren." />}
-            />
+            /> */}
             <Route
               path="ocr"
               element={<Ocr />}
@@ -94,14 +93,14 @@ function App() {
               path="pdf-ocr"
               element={<PdfOcr />}
             />
-            <Route
+            {/* <Route
               path="excel-to-pdf"
               element={<ToolPlaceholder title="Excel in PDF" description="Excel-Tabellen in PDF-Dokumente konvertieren." />}
-            />
-            <Route
+            /> */}
+            {/* <Route
               path="pdf-to-word"
               element={<ToolPlaceholder title="PDF in Word" description="PDFs in bearbeitbare Word-Dokumente konvertieren." />}
-            />
+            /> */}
             <Route
               path="pdf-form-filler"
               element={<PdfFormFiller />}
@@ -114,10 +113,10 @@ function App() {
               path="img-to-pdf"
               element={<JpgToPdf />}
             />
-            <Route
+            {/* <Route
               path="pdf-to-excel"
               element={<ToolPlaceholder title="PDF in Excel" description="PDFs in bearbeitbare Excel-Tabellen konvertieren." />}
-            />
+            /> */}
             <Route
               path="edit-pdf"
               element={<EditPdf />}
@@ -146,26 +145,26 @@ function App() {
               path="page-numbers"
               element={<PageNumbers />}
             />
-            <Route
+            {/* <Route
               path="ai-pdf-assistant"
               element={<ToolPlaceholder title="KI-PDF-Assistent" description="Nutze unseren KI-Assistenten zur Bearbeitung deiner Dokumente." />}
-            />
-            <Route
+            /> */}
+            {/* <Route
               path="chat-with-pdf"
               element={<ToolPlaceholder title="Mit PDFs chatten" description="Chatte mit deinen PDFs und stelle ihnen alle möglichen Fragen." />}
-            />
-            <Route
+            /> */}
+            {/* <Route
               path="ai-pdf-summary"
               element={<ToolPlaceholder title="KI-PDF-Zusammenfassung" description="Lass dir deine PDF von einer KI zusammenfassen, mit der du per Chat interagieren kannst." />}
-            />
-            <Route
+            /> */}
+            {/* <Route
               path="translate-pdf"
               element={<ToolPlaceholder title="PDF übersetzen" description="Lass dir eine Zusammenfassung deines PDFs übersetzen." />}
-            />
-            <Route
+            /> */}
+            {/* <Route
               path="ai-question-generator"
               element={<ToolPlaceholder title="KI-basierter Fragen-Generator" description="Multiple-Choice-, Richtig-oder-Falsch- oder offene Testfragen erstellen." />}
-            />
+            /> */}
             <Route
               path="extract-pages"
               element={<ExtractPages />}

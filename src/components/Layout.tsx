@@ -37,11 +37,11 @@ const TOOL_SHEET_COLUMNS: ToolColumn[] = [
             { title: 'PDF verkleinern', path: '/compress', icon: Minimize2, tone: 'bg-red-100 text-red-800 group-hover:bg-red-800 group-hover:text-white' },
             { title: 'Konvertieren', icon: FileText, tone: '', plainText: true },
             { title: 'PDF-Konverter', path: '/pdf-converter', icon: FileText, tone: 'bg-red-100 text-red-800 group-hover:bg-red-800 group-hover:text-white' },
-            { title: 'KI PDF', icon: ShieldAlert, tone: '', plainText: true },
-            { title: 'Mit PDFs chatten', path: '/chat-with-pdf', icon: FileText, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' },
-            { title: 'KI-PDF-Zusammenfassung', path: '/ai-pdf-summary', icon: FileText, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' },
-            { title: 'PDF übersetzen', path: '/translate-pdf', icon: FileText, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' },
-            { title: 'KI-basierter Fragen-Generator', path: '/ai-question-generator', icon: Hash, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' }
+            // { title: 'KI PDF', icon: ShieldAlert, tone: '', plainText: true },
+            // { title: 'Mit PDFs chatten', path: '/chat-with-pdf', icon: FileText, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' },
+            // { title: 'KI-PDF-Zusammenfassung', path: '/ai-pdf-summary', icon: FileText, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' },
+            // { title: 'PDF übersetzen', path: '/translate-pdf', icon: FileText, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' },
+            // { title: 'KI-basierter Fragen-Generator', path: '/ai-question-generator', icon: Hash, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' }
         ]
     },
     {
@@ -72,18 +72,18 @@ const TOOL_SHEET_COLUMNS: ToolColumn[] = [
     {
         heading: 'Aus PDF konvertieren',
         items: [
-            { title: 'PDF in Word', path: '/pdf-to-word', icon: FileText, tone: 'bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' },
-            { title: 'PDF in Excel', path: '/pdf-to-excel', icon: FileText, tone: 'bg-emerald-100 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white' },
-            { title: 'PDF in PPT', path: '/pdf-to-ppt', icon: FileText, tone: 'bg-orange-100 text-orange-600 group-hover:bg-orange-500 group-hover:text-white' },
+            // { title: 'PDF in Word', path: '/pdf-to-word', icon: FileText, tone: 'bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' },
+            // { title: 'PDF in Excel', path: '/pdf-to-excel', icon: FileText, tone: 'bg-emerald-100 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white' },
+            // { title: 'PDF in PPT', path: '/pdf-to-ppt', icon: FileText, tone: 'bg-orange-100 text-orange-600 group-hover:bg-orange-500 group-hover:text-white' },
             { title: 'PDF in JPG', path: '/pdf-to-jpg', icon: FileImage, tone: 'bg-yellow-100 text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white' }
         ]
     },
     {
         heading: 'Zu PDF konvertieren',
         items: [
-            { title: 'Word in PDF', path: '/word-to-pdf', icon: FileText, tone: 'bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' },
-            { title: 'Excel in PDF', path: '/excel-to-pdf', icon: FileText, tone: 'bg-emerald-100 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white' },
-            { title: 'PPT in PDF', path: '/ppt-to-pdf', icon: FileText, tone: 'bg-orange-100 text-orange-600 group-hover:bg-orange-500 group-hover:text-white' },
+            // { title: 'Word in PDF', path: '/word-to-pdf', icon: FileText, tone: 'bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' },
+            // { title: 'Excel in PDF', path: '/excel-to-pdf', icon: FileText, tone: 'bg-emerald-100 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white' },
+            // { title: 'PPT in PDF', path: '/ppt-to-pdf', icon: FileText, tone: 'bg-orange-100 text-orange-600 group-hover:bg-orange-500 group-hover:text-white' },
             { title: 'JPG in PDF', path: '/jpg-to-pdf', icon: Image, tone: 'bg-yellow-100 text-yellow-700 group-hover:bg-yellow-600 group-hover:text-white' },
             { title: 'PDF OCR', path: '/pdf-ocr', icon: FileImage, tone: 'bg-red-100 text-red-700 group-hover:bg-red-600 group-hover:text-white' }
         ]
@@ -182,7 +182,7 @@ export default function Layout() {
                             <Link to="/merge" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Zusammenführen</Link>
                             <Link to="/edit-pdf" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Bearbeiten</Link>
                             <Link to="/sign" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Unterschreiben</Link>
-                            <Link to="/ai-pdf-assistant" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">KI PDF</Link>
+                            {/* <Link to="/ai-pdf-assistant" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">KI PDF</Link> */}
                         </nav>
                     </div>
 

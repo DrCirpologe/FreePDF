@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom';
-import { FileText, Combine, Image, PenTool, Scissors, Minimize2 } from 'lucide-react';
+import { Combine, Image, PenTool, Scissors, Minimize2 } from 'lucide-react';
 
 const POPULAR_TOOLS = [
-    {
-        path: '/pdf-to-word',
-        title: 'PDF in Word',
-        description: 'PDF-Dateien in bearbeitbare Word-Dokumente umwandeln.',
-        icon: <FileText className="w-8 h-8 text-blue-500" />,
-        color: 'bg-blue-50',
-        emoji: '📄'
-    },
+    // {
+    //     path: '/pdf-to-word',
+    //     title: 'PDF in Word',
+    //     description: 'PDF-Dateien in bearbeitbare Word-Dokumente umwandeln.',
+    //     icon: <FileText className="w-8 h-8 text-blue-500" />,
+    //     color: 'bg-blue-50',
+    //     emoji: '📄'
+    // },
     {
         path: '/merge',
         title: 'PDFs zusammenfügen',
