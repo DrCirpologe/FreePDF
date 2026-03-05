@@ -1,73 +1,72 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, FileCog, FileImage, FileText, Image } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { ArrowRight, Clock3, FileCog, FileImage, FileText, Image, RefreshCcw, Trash2 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { getConverterActions } from '../../utils/converterActions';
+import { addRecentFile, clearRecentFiles, getRecentFiles, type RecentFileEntry } from '../../utils/recentFiles';
+import { converterAccept, detectFileKind, getFileExtension, type FileKind } from '../../utils/fileType';
 
-type Action = {
-    label: string;
-    route: string;
-    available: boolean;
-    reason?: string;
+type InspectorResult = {
+    extension: string;
+    kind: FileKind;
+    sizeLabel: string;
 };
 
 export default function PdfConverter() {
     const [file, setFile] = useState<File | null>(null);
+    const [analysis, setAnalysis] = useState<InspectorResult | null>(null);
+    const [recentFiles, setRecentFiles] = useState<RecentFileEntry[]>(() => getRecentFiles());
+    const workerRef = useRef<Worker | null>(null);
 
-    const extension = useMemo(() => {
-        if (!file) return '';
-        const idx = file.name.lastIndexOf('.');
-        return idx > -1 ? file.name.slice(idx + 1).toLowerCase() : '';
-    }, [file]);
+    useEffect(() => {
+        const worker = new Worker(new URL('../../workers/fileInspector.worker.ts', import.meta.url), { type: 'module' });
+        workerRef.current = worker;
 
-    const actions = useMemo<Action[]>(() => {
-        if (!file) return [];
+        worker.onmessage = (event: MessageEvent<InspectorResult>) => {
+            setAnalysis(event.data);
+        };
 
-        if (extension === 'pdf') {
-            return [
-                { label: 'PDF in JPG', route: '/pdf-to-jpg', available: true },
-                { label: 'PDF OCR', route: '/pdf-ocr', available: true },
-                { label: 'PDF bearbeiten', route: '/edit-pdf', available: true },
-                { label: 'PDF schwärzen', route: '/redact-pdf', available: true },
-                { label: 'PDF in Word', route: '/pdf-to-word', available: false, reason: 'Benötigt Office-Konvertierungsengine' },
-                { label: 'PDF in Excel', route: '/pdf-to-excel', available: false, reason: 'Benötigt Office-Konvertierungsengine' },
-                { label: 'PDF in PPT', route: '/pdf-to-ppt', available: false, reason: 'Benötigt Office-Konvertierungsengine' },
-            ];
-        }
+        return () => {
+            worker.terminate();
+            workerRef.current = null;
+        };
+    }, []);
 
-        if (['jpg', 'jpeg', 'png', 'webp'].includes(extension)) {
-            return [
-                { label: 'JPG/Bild in PDF', route: '/jpg-to-pdf', available: true },
-                { label: 'OCR (Bild)', route: '/ocr', available: true },
-            ];
-        }
-
-        if (['doc', 'docx'].includes(extension)) {
-            return [
-                { label: 'Word in PDF', route: '/word-to-pdf', available: false, reason: 'Ohne lokale Office-Engine nicht browserseitig umsetzbar' },
-            ];
-        }
-
-        if (['ppt', 'pptx'].includes(extension)) {
-            return [
-                { label: 'PPT in PDF', route: '/ppt-to-pdf', available: false, reason: 'Ohne lokale Office-Engine nicht browserseitig umsetzbar' },
-            ];
-        }
-
-        if (['xls', 'xlsx'].includes(extension)) {
-            return [
-                { label: 'Excel in PDF', route: '/excel-to-pdf', available: false, reason: 'Ohne lokale Office-Engine nicht browserseitig umsetzbar' },
-            ];
-        }
-
-        return [
-            { label: 'Dateityp derzeit nicht unterstützt', route: '#', available: false, reason: 'Nutze PDF oder Bilddateien' },
-        ];
-    }, [file, extension]);
+    const extension = analysis?.extension || (file ? getFileExtension(file.name) : '');
+    const detectedKind = analysis?.kind || (file ? detectFileKind(file.name, file.type) : 'unknown');
+    const actions = useMemo(() => getConverterActions(detectedKind), [detectedKind]);
 
     const icon = useMemo(() => {
-        if (extension === 'pdf') return <FileText className="w-5 h-5 text-blue-600" />;
-        if (['jpg', 'jpeg', 'png', 'webp'].includes(extension)) return <Image className="w-5 h-5 text-blue-600" />;
+        if (detectedKind === 'pdf') return <FileText className="w-5 h-5 text-blue-600" />;
+        if (detectedKind === 'image') return <Image className="w-5 h-5 text-blue-600" />;
         return <FileImage className="w-5 h-5 text-blue-600" />;
-    }, [extension]);
+    }, [detectedKind]);
+
+    const handleFileInput = (selectedFile: File | null) => {
+        if (!selectedFile) return;
+
+        setFile(selectedFile);
+        setAnalysis(null);
+
+        workerRef.current?.postMessage({
+            name: selectedFile.name,
+            mimeType: selectedFile.type,
+            size: selectedFile.size,
+        });
+
+        const updatedRecent = addRecentFile({
+            name: selectedFile.name,
+            extension: getFileExtension(selectedFile.name),
+            kind: detectFileKind(selectedFile.name, selectedFile.type),
+            size: selectedFile.size,
+            mimeType: selectedFile.type,
+        });
+        setRecentFiles(updatedRecent);
+    };
+
+    const resetSelection = () => {
+        setFile(null);
+        setAnalysis(null);
+    };
 
     return (
         <div className="w-full max-w-5xl">
@@ -81,9 +80,9 @@ export default function PdfConverter() {
                     <span className="text-sm font-semibold text-gray-700">Datei auswählen</span>
                     <input
                         type="file"
-                        onChange={(e) => setFile(e.target.files?.[0] || null)}
+                        onChange={(e) => handleFileInput(e.target.files?.[0] || null)}
                         className="mt-2 block w-full rounded-xl border border-gray-300 px-4 py-3"
-                        accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                        accept={converterAccept}
                     />
                 </label>
 
@@ -93,6 +92,12 @@ export default function PdfConverter() {
                             {icon}
                             {file.name}
                             <span className="ml-auto text-xs uppercase tracking-wide">{extension || 'ohne Endung'}</span>
+                        </div>
+
+                        <div className="text-xs text-gray-500 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div><span className="font-semibold text-gray-700">Typ:</span> {detectedKind}</div>
+                            <div><span className="font-semibold text-gray-700">Größe:</span> {analysis?.sizeLabel || 'wird analysiert...'}</div>
+                            <div><span className="font-semibold text-gray-700">MIME:</span> {file.type || 'unbekannt'}</div>
                         </div>
 
                         <div className="grid grid-cols-1 gap-3">
@@ -112,12 +117,44 @@ export default function PdfConverter() {
                                 </div>
                             ))}
                         </div>
+
+                        <button onClick={resetSelection} className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 px-4 rounded-xl text-sm font-semibold inline-flex items-center gap-2">
+                            <RefreshCcw className="w-4 h-4" /> Auswahl zurücksetzen
+                        </button>
                     </div>
                 )}
 
                 {!file && (
-                    <div className="text-sm text-gray-500 flex items-center gap-2">
-                        <FileCog className="w-4 h-4" /> Wähle eine Datei, um automatisch passende Konvertierungsmöglichkeiten zu sehen.
+                    <div className="space-y-4">
+                        <div className="text-sm text-gray-500 flex items-center gap-2">
+                            <FileCog className="w-4 h-4" /> Wähle eine Datei, um automatisch passende Konvertierungsmöglichkeiten zu sehen.
+                        </div>
+
+                        {recentFiles.length > 0 && (
+                            <div className="border border-gray-200 rounded-xl p-4 space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <div className="text-sm font-semibold text-gray-700 flex items-center gap-2"><Clock3 className="w-4 h-4" /> Zuletzt verwendet</div>
+                                    <button
+                                        onClick={() => {
+                                            clearRecentFiles();
+                                            setRecentFiles([]);
+                                        }}
+                                        className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-2.5 py-1 rounded-lg inline-flex items-center gap-1"
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" /> Leeren
+                                    </button>
+                                </div>
+
+                                <div className="space-y-2">
+                                    {recentFiles.map((entry) => (
+                                        <div key={entry.id} className="text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 flex justify-between gap-3">
+                                            <span className="truncate">{entry.name}</span>
+                                            <span className="uppercase text-gray-500">{entry.extension || 'n/a'}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
