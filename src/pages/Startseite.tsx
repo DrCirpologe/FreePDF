@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Combine, Image, PenTool, Scissors, Minimize2 } from 'lucide-react';
+import { Combine, Image, FileSignature, FilePenLine, Minimize2 } from 'lucide-react';
 
 const POPULAR_TOOLS = [
     // {
@@ -30,7 +30,7 @@ const POPULAR_TOOLS = [
         path: '/sign',
         title: 'Unterschreibe PDF',
         description: 'Dokumente digital unterschreiben und weitergeben.',
-        icon: <PenTool className="w-8 h-8 text-pink-500" />,
+        icon: <FileSignature className="w-8 h-8 text-pink-500" />,
         color: 'bg-pink-50',
         emoji: '✍️'
     },
@@ -38,7 +38,7 @@ const POPULAR_TOOLS = [
         path: '/edit-pdf',
         title: 'PDF bearbeiten',
         description: 'Text und Elemente in PDFs direkt anpassen.',
-        icon: <Scissors className="w-8 h-8 text-cyan-500" />,
+        icon: <FilePenLine className="w-8 h-8 text-cyan-500" />,
         color: 'bg-cyan-50',
         emoji: '🛠️'
     },
@@ -58,11 +58,10 @@ export default function Startseite() {
             <section className="w-full grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
                 <div className="text-left">
                     <h1 className="text-[2.75rem] md:text-[3.25rem] font-bold text-gray-900 tracking-tight mb-6">
-                        Wir machen PDF <br /> einfach.
+                        Wir machen <span className="text-red-600">PDFs</span> <span className="text-blue-600">einfach.</span>
                     </h1>
                     <p className="text-gray-600 text-[1.2rem] max-w-2xl mb-8 leading-relaxed">
-                        die du brauchst, um produktiver und smarter mit <br />
-                        Dokumenten zu arbeiten.
+                        Alle Werkzeuge, die du zum Bearbeiten brauchst – direkt im Browser. Keine Installation, absolut kostenlos und 100% sicher, da deine Dateien deinen Computer nie verlassen.
                     </p>
                 </div>
 

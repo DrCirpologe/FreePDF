@@ -1,10 +1,20 @@
-import { useState } from 'react';
-import { Download, EyeOff, Loader2, Plus, RefreshCcw, Trash2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Download, EyeOff, Loader2, RefreshCcw, Trash2 } from 'lucide-react';
 import PdfUploader from '../../components/PdfUploader';
+import * as pdfjsLib from 'pdfjs-dist';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 
 type RedactionBox = {
     id: string;
     page: number;
+    xRatio: number;
+    yRatio: number;
+    widthRatio: number;
+    heightRatio: number;
+};
+
+type BoxPreview = {
     x: number;
     y: number;
     width: number;
@@ -12,17 +22,28 @@ type RedactionBox = {
 };
 
 export default function RedactPdf() {
+    const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
+    const previewContainerRef = useRef<HTMLDivElement | null>(null);
+
     const [file, setFile] = useState<File | null>(null);
     const [resultUrl, setResultUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
 
     const [boxes, setBoxes] = useState<RedactionBox[]>([]);
-    const [page, setPage] = useState(1);
-    const [x, setX] = useState(100);
-    const [y, setY] = useState(100);
-    const [width, setWidth] = useState(120);
-    const [height, setHeight] = useState(30);
+    const [pageCount, setPageCount] = useState(1);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [previewSize, setPreviewSize] = useState({ width: 0, height: 0 });
+    const [previewDisplaySize, setPreviewDisplaySize] = useState({ width: 0, height: 0 });
+    const [draftBox, setDraftBox] = useState<BoxPreview | null>(null);
+    const [drawStart, setDrawStart] = useState<{ x: number; y: number } | null>(null);
+
+    const activePreviewSize = {
+        width: previewDisplaySize.width || previewSize.width,
+        height: previewDisplaySize.height || previewSize.height,
+    };
+
+    const minSize = 16;
 
     const onFilesSelected = (files: File[]) => {
         if (!files[0]) return;
@@ -30,11 +51,74 @@ export default function RedactPdf() {
         setResultUrl(null);
         setBoxes([]);
         setError(null);
+        setPageCount(1);
+        setPageNumber(1);
+        setPreviewSize({ width: 0, height: 0 });
+        setPreviewDisplaySize({ width: 0, height: 0 });
+        setDraftBox(null);
+        setDrawStart(null);
     };
 
-    const addBox = () => {
-        if (width <= 0 || height <= 0) return;
-        setBoxes((prev) => [...prev, { id: crypto.randomUUID(), page, x, y, width, height }]);
+    const getRelativePoint = (clientX: number, clientY: number) => {
+        const container = previewContainerRef.current;
+        if (!container) return null;
+        const rect = container.getBoundingClientRect();
+        const x = Math.min(Math.max(0, clientX - rect.left), activePreviewSize.width);
+        const y = Math.min(Math.max(0, clientY - rect.top), activePreviewSize.height);
+        return { x, y };
+    };
+
+    useEffect(() => {
+        const renderPreview = async () => {
+            if (!file) return;
+            const canvas = previewCanvasRef.current;
+            if (!canvas) return;
+
+            const data = new Uint8Array(await file.arrayBuffer());
+            const pdf = await pdfjsLib.getDocument({ data }).promise;
+            const safePage = Math.min(Math.max(1, pageNumber), pdf.numPages);
+            const page = await pdf.getPage(safePage);
+            const viewport = page.getViewport({ scale: 1.25 });
+
+            canvas.width = Math.ceil(viewport.width);
+            canvas.height = Math.ceil(viewport.height);
+
+            const context = canvas.getContext('2d');
+            if (!context) return;
+            await page.render({ canvasContext: context, viewport, canvas }).promise;
+
+            setPageCount(pdf.numPages);
+            setPreviewSize({ width: canvas.width, height: canvas.height });
+            setPreviewDisplaySize({ width: canvas.clientWidth || canvas.width, height: canvas.clientHeight || canvas.height });
+        };
+
+        renderPreview();
+    }, [file, pageNumber]);
+
+    const saveDraftBox = () => {
+        if (!draftBox || !activePreviewSize.width || !activePreviewSize.height) return;
+        if (draftBox.width < minSize || draftBox.height < minSize) {
+            setDraftBox(null);
+            return;
+        }
+
+        const xRatio = Math.min(Math.max(0, draftBox.x / activePreviewSize.width), 1);
+        const yRatio = Math.min(Math.max(0, draftBox.y / activePreviewSize.height), 1);
+        const widthRatio = Math.min(Math.max(0, draftBox.width / activePreviewSize.width), 1);
+        const heightRatio = Math.min(Math.max(0, draftBox.height / activePreviewSize.height), 1);
+
+        setBoxes((prev) => [
+            ...prev,
+            {
+                id: crypto.randomUUID(),
+                page: pageNumber,
+                xRatio,
+                yRatio,
+                widthRatio,
+                heightRatio,
+            },
+        ]);
+        setDraftBox(null);
     };
 
     const removeBox = (id: string) => {
@@ -53,11 +137,18 @@ export default function RedactPdf() {
             for (const box of boxes) {
                 if (box.page < 1 || box.page > pdfDoc.getPageCount()) continue;
                 const pdfPage = pdfDoc.getPage(box.page - 1);
+                const { width: pageWidth, height: pageHeight } = pdfPage.getSize();
+                const x = box.xRatio * pageWidth;
+                const yTop = box.yRatio * pageHeight;
+                const width = box.widthRatio * pageWidth;
+                const height = box.heightRatio * pageHeight;
+                const y = pageHeight - yTop - height;
+
                 pdfPage.drawRectangle({
-                    x: box.x,
-                    y: box.y,
-                    width: box.width,
-                    height: box.height,
+                    x,
+                    y,
+                    width,
+                    height,
                     color: rgb(0, 0, 0),
                     borderColor: rgb(0, 0, 0),
                     borderWidth: 0,
@@ -95,22 +186,95 @@ export default function RedactPdf() {
                         <div className="bg-white rounded-2xl border border-gray-200 p-8 space-y-6">
                             <div className="flex items-center gap-2 font-semibold text-gray-700"><EyeOff className="w-5 h-5 text-red-600" /> {file.name}</div>
 
-                            <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-                                <input type="number" min={1} value={page} onChange={(e) => setPage(Number(e.target.value) || 1)} className="rounded-xl border border-gray-300 px-3 py-2.5" placeholder="Seite" />
-                                <input type="number" value={x} onChange={(e) => setX(Number(e.target.value) || 0)} className="rounded-xl border border-gray-300 px-3 py-2.5" placeholder="X" />
-                                <input type="number" value={y} onChange={(e) => setY(Number(e.target.value) || 0)} className="rounded-xl border border-gray-300 px-3 py-2.5" placeholder="Y" />
-                                <input type="number" min={1} value={width} onChange={(e) => setWidth(Number(e.target.value) || 1)} className="rounded-xl border border-gray-300 px-3 py-2.5" placeholder="Breite" />
-                                <input type="number" min={1} value={height} onChange={(e) => setHeight(Number(e.target.value) || 1)} className="rounded-xl border border-gray-300 px-3 py-2.5" placeholder="Höhe" />
-                                <button onClick={addBox} className="bg-red-100 hover:bg-red-200 text-red-700 rounded-xl font-bold px-4 py-2.5 flex items-center justify-center gap-2">
-                                    <Plus className="w-4 h-4" /> Bereich
-                                </button>
+                            <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                                <p className="text-sm text-gray-600">Ziehe in der Vorschau, um Schwärzungsbereiche zu zeichnen. Du kannst beliebig viele Bereiche erstellen.</p>
+                                <label className="text-sm font-semibold text-gray-700 inline-flex items-center gap-2">
+                                    Seite
+                                    <select
+                                        value={pageNumber}
+                                        onChange={(e) => {
+                                            setPageNumber(Number(e.target.value) || 1);
+                                            setDraftBox(null);
+                                            setDrawStart(null);
+                                        }}
+                                        className="rounded-lg border border-gray-300 px-2.5 py-1.5"
+                                    >
+                                        {Array.from({ length: pageCount }, (_, index) => (
+                                            <option key={index + 1} value={index + 1}>Seite {index + 1}</option>
+                                        ))}
+                                    </select>
+                                </label>
+                            </div>
+
+                            <div
+                                ref={previewContainerRef}
+                                className="relative inline-block border border-gray-300 rounded-xl overflow-hidden touch-none"
+                                onPointerMove={(event) => {
+                                    if (!drawStart || !activePreviewSize.width || !activePreviewSize.height) return;
+                                    const point = getRelativePoint(event.clientX, event.clientY);
+                                    if (!point) return;
+
+                                    const x = Math.min(drawStart.x, point.x);
+                                    const y = Math.min(drawStart.y, point.y);
+                                    const width = Math.max(minSize, Math.abs(point.x - drawStart.x));
+                                    const height = Math.max(minSize, Math.abs(point.y - drawStart.y));
+                                    setDraftBox({ x, y, width, height });
+                                }}
+                                onPointerUp={() => {
+                                    saveDraftBox();
+                                    setDrawStart(null);
+                                }}
+                                onPointerLeave={() => {
+                                    saveDraftBox();
+                                    setDrawStart(null);
+                                }}
+                            >
+                                <canvas
+                                    ref={previewCanvasRef}
+                                    className="max-w-full h-auto block bg-gray-50"
+                                    onPointerDown={(event) => {
+                                        if (!activePreviewSize.width || !activePreviewSize.height) return;
+                                        const point = getRelativePoint(event.clientX, event.clientY);
+                                        if (!point) return;
+                                        setDrawStart(point);
+                                        setDraftBox({ x: point.x, y: point.y, width: minSize, height: minSize });
+                                    }}
+                                />
+
+                                {boxes
+                                    .filter((box) => box.page === pageNumber)
+                                    .map((box) => {
+                                        const x = box.xRatio * activePreviewSize.width;
+                                        const y = box.yRatio * activePreviewSize.height;
+                                        const width = box.widthRatio * activePreviewSize.width;
+                                        const height = box.heightRatio * activePreviewSize.height;
+                                        return (
+                                            <div
+                                                key={box.id}
+                                                className="absolute bg-black/95 border border-white/30"
+                                                style={{ left: x, top: y, width, height }}
+                                            />
+                                        );
+                                    })}
+
+                                {draftBox && (
+                                    <div
+                                        className="absolute bg-black/85 border border-red-500"
+                                        style={{
+                                            left: draftBox.x,
+                                            top: draftBox.y,
+                                            width: draftBox.width,
+                                            height: draftBox.height,
+                                        }}
+                                    />
+                                )}
                             </div>
 
                             {boxes.length > 0 && (
                                 <div className="space-y-2 max-h-56 overflow-y-auto">
                                     {boxes.map((box) => (
                                         <div key={box.id} className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
-                                            <div className="text-sm text-gray-700">Seite {box.page} · x:{box.x} y:{box.y} · {box.width}×{box.height}</div>
+                                            <div className="text-sm text-gray-700">Seite {box.page} · Bereich #{box.id.slice(0, 6)}</div>
                                             <button onClick={() => removeBox(box.id)} className="text-red-600 hover:text-red-700"><Trash2 className="w-4 h-4" /></button>
                                         </div>
                                     ))}

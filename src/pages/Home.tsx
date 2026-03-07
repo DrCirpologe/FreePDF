@@ -5,7 +5,19 @@ import {
     Minimize2,
     Trash2,
     RotateCw,
+    Layers,
     PenTool,
+    Crop,
+    Stamp,
+    Share2,
+    Lock,
+    LockKeyhole,
+    FilePenLine,
+    FileSignature,
+    FileSearch,
+    TextCursorInput,
+    ScanText,
+    Camera,
     FileText,
     FileImage,
     Image,
@@ -61,7 +73,7 @@ const TOOLS = [
         path: '/sign',
         title: 'PDF unterschreiben',
         description: 'Unterschreibe PDF-Dokumente digital oder frage Unterschriften an.',
-        icon: <PenTool className="w-8 h-8 text-indigo-500" />,
+        icon: <FileSignature className="w-8 h-8 text-indigo-500" />,
         emoji: '✍️',
         color: 'bg-indigo-50'
     }
@@ -78,26 +90,27 @@ const ALL_TOOLS = [
     // { path: '/pdf-to-excel', title: 'PDF in Excel', description: 'PDFs in bearbeitbare Excel-Tabellen konvertieren.', icon: <FileText className="w-8 h-8 text-green-500" />, color: 'bg-green-50', emoji: '📊' },
     { path: '/pdf-converter', title: 'PDF-Konverter', description: 'Dateien in PDF und aus PDF zurück konvertieren.', icon: <FileText className="w-8 h-8 text-purple-500" />, color: 'bg-purple-50', emoji: '🔁' },
     { path: '/annotate-pdf', title: 'PDF kommentieren', description: 'In PDF schreiben, zeichnen und markieren.', icon: <PenTool className="w-8 h-8 text-pink-500" />, color: 'bg-pink-50', emoji: '✏️' },
-    { path: '/edit-pdf', title: 'PDF bearbeiten', description: 'Text, Formen, Bilder und Kommentare hinzufügen.', icon: <PenTool className="w-8 h-8 text-cyan-500" />, color: 'bg-cyan-50', emoji: '🛠️' },
-    { path: '/pdf-form-filler', title: 'PDF-Formularausfüller', description: 'PDF-Formulare online ausfüllen.', icon: <FileText className="w-8 h-8 text-teal-500" />, color: 'bg-teal-50', emoji: '✅' },
-    { path: '/pdf-reader', title: 'PDF-Reader', description: 'PDFs online anzeigen, drucken und teilen.', icon: <FileText className="w-8 h-8 text-slate-500" />, color: 'bg-slate-50', emoji: '👁️' },
-    { path: '/crop-pdf', title: 'PDF zuschneiden', description: 'Dokumente mit dem Zuschneidungstool zuschneiden.', icon: <Scissors className="w-8 h-8 text-emerald-500" />, color: 'bg-emerald-50', emoji: '✂️' },
+    { path: '/edit-pdf', title: 'PDF bearbeiten', description: 'Text, Formen, Bilder und Kommentare hinzufügen.', icon: <FilePenLine className="w-8 h-8 text-cyan-500" />, color: 'bg-cyan-50', emoji: '🛠️' },
+    { path: '/pdf-form-filler', title: 'PDF-Formularausfüller', description: 'PDF-Formulare online ausfüllen.', icon: <TextCursorInput className="w-8 h-8 text-teal-500" />, color: 'bg-teal-50', emoji: '✅' },
+    { path: '/pdf-reader', title: 'PDF-Reader', description: 'PDFs online anzeigen, drucken und teilen.', icon: <FileSearch className="w-8 h-8 text-slate-500" />, color: 'bg-slate-50', emoji: '👁️' },
+    { path: '/crop-pdf', title: 'PDF zuschneiden', description: 'Dokumente mit dem Zuschneidungstool zuschneiden.', icon: <Crop className="w-8 h-8 text-emerald-500" />, color: 'bg-emerald-50', emoji: '✂️' },
     { path: '/redact-pdf', title: 'PDF schwärzen', description: 'Vertrauliche Inhalte aus PDFs entfernen.', icon: <ShieldAlert className="w-8 h-8 text-rose-500" />, color: 'bg-rose-50', emoji: '🔒' },
-    { path: '/watermark', title: 'Wasserzeichen-PDF', description: 'Ein Wasserzeichen zu PDFs hinzufügen.', icon: <FileText className="w-8 h-8 text-cyan-500" />, color: 'bg-cyan-50', emoji: '💧' },
+    { path: '/watermark', title: 'Wasserzeichen-PDF', description: 'Ein Wasserzeichen zu PDFs hinzufügen.', icon: <Stamp className="w-8 h-8 text-cyan-500" />, color: 'bg-cyan-50', emoji: '💧' },
+    { path: '/share-pdf', title: 'PDF freigeben', description: 'PDF-Dateien per Link teilen und freigeben.', icon: <Share2 className="w-8 h-8 text-cyan-500" />, color: 'bg-cyan-50', emoji: '🔗' },
     { path: '/page-numbers', title: 'Seitenzahlen einfügen', description: 'Seitenzahlen in PDF-Dateien einbauen.', icon: <Hash className="w-8 h-8 text-indigo-500" />, color: 'bg-indigo-50', emoji: '🔢' },
-    { path: '/extract-pages', title: 'PDF-Seiten extrahieren', description: 'Gezielte Seiten aus einer PDF-Datei auswählen.', icon: <FileText className="w-8 h-8 text-sky-500" />, color: 'bg-sky-50', emoji: '📑' },
-    { path: '/organize-pdf', title: 'PDF organisieren', description: 'Seiten neu anordnen, löschen, drehen und ergänzen.', icon: <FileText className="w-8 h-8 text-violet-500" />, color: 'bg-violet-50', emoji: '🗂️' },
-    { path: '/remove-password', title: 'PDF Passwort entfernen', description: 'Passwort, Verschlüsselung und Rechte entfernen.', icon: <ShieldAlert className="w-8 h-8 text-red-500" />, color: 'bg-red-50', emoji: '🔓' },
-    { path: '/encrypt-pdf', title: 'PDF verschlüsseln', description: 'Passwort hinzufügen und PDF verschlüsseln.', icon: <ShieldAlert className="w-8 h-8 text-rose-500" />, color: 'bg-rose-50', emoji: '🛡️' },
-    { path: '/flatten-pdf', title: 'Ebenen reduzieren', description: 'Bearbeitung der PDF nachträglich verhindern.', icon: <FileText className="w-8 h-8 text-amber-500" />, color: 'bg-amber-50', emoji: '📌' },
-    { path: '/ocr', title: 'OCR', description: 'Gescannte Texte durchsuchbar machen.', icon: <FileImage className="w-8 h-8 text-teal-500" />, color: 'bg-teal-50', emoji: '🔍' },
-    { path: '/pdf-ocr', title: 'PDF OCR', description: 'Texterkennung für gescannte PDFs nutzen.', icon: <FileImage className="w-8 h-8 text-red-500" />, color: 'bg-red-50', emoji: '🧾' },
+    { path: '/extract-pages', title: 'PDF-Seiten extrahieren', description: 'Gezielte Seiten aus einer PDF-Datei auswählen.', icon: <Scissors className="w-8 h-8 text-sky-500" />, color: 'bg-sky-50', emoji: '📑' },
+    { path: '/organize-pdf', title: 'PDF organisieren', description: 'Seiten neu anordnen, löschen, drehen und ergänzen.', icon: <Combine className="w-8 h-8 text-violet-500" />, color: 'bg-violet-50', emoji: '🗂️' },
+    { path: '/remove-password', title: 'PDF Passwort entfernen', description: 'Passwort, Verschlüsselung und Rechte entfernen.', icon: <LockKeyhole className="w-8 h-8 text-red-500" />, color: 'bg-red-50', emoji: '🔓' },
+    { path: '/encrypt-pdf', title: 'PDF verschlüsseln', description: 'Passwort hinzufügen und PDF verschlüsseln.', icon: <Lock className="w-8 h-8 text-rose-500" />, color: 'bg-rose-50', emoji: '🛡️' },
+    { path: '/flatten-pdf', title: 'Ebenen reduzieren', description: 'Bearbeitung der PDF nachträglich verhindern.', icon: <Layers className="w-8 h-8 text-amber-500" />, color: 'bg-amber-50', emoji: '📌' },
+    { path: '/ocr', title: 'OCR', description: 'Gescannte Texte durchsuchbar machen.', icon: <ScanText className="w-8 h-8 text-teal-500" />, color: 'bg-teal-50', emoji: '🔍' },
+    { path: '/pdf-ocr', title: 'PDF OCR', description: 'Texterkennung für gescannte PDFs nutzen.', icon: <ScanText className="w-8 h-8 text-red-500" />, color: 'bg-red-50', emoji: '🧾' },
     // { path: '/ai-pdf-assistant', title: 'KI-PDF-Assistent', description: 'Mit KI Dokumente bearbeiten.', icon: <ShieldAlert className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '🤖' },
     // { path: '/chat-with-pdf', title: 'Mit PDFs chatten', description: 'Fragen direkt zu deinen PDFs stellen.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '💬' },
     // { path: '/ai-pdf-summary', title: 'KI-PDF-Zusammenfassung', description: 'PDF-Inhalte per KI zusammenfassen lassen.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '🧠' },
     // { path: '/translate-pdf', title: 'PDF übersetzen', description: 'PDF-Inhalte als übersetzte Zusammenfassung erhalten.', icon: <FileText className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '🌐' },
     // { path: '/ai-question-generator', title: 'KI-Fragen-Generator', description: 'Multiple-Choice- und offene Fragen erstellen.', icon: <Hash className="w-8 h-8 text-blue-500" />, color: 'bg-blue-50', emoji: '❓' },
-    { path: '/pdf-scanner', title: 'PDF-Scanner', description: 'PDFs aus Smartphone-Scans erstellen.', icon: <FileImage className="w-8 h-8 text-cyan-500" />, color: 'bg-cyan-50', emoji: '📱' },
+    { path: '/pdf-scanner', title: 'PDF-Scanner', description: 'PDFs aus Smartphone-Scans erstellen.', icon: <Camera className="w-8 h-8 text-cyan-500" />, color: 'bg-cyan-50', emoji: '📱' },
     { path: '/remove-metadata', title: 'Metadaten entfernen', description: 'Sensible Dateimetadaten aus PDFs löschen.', icon: <ShieldAlert className="w-8 h-8 text-emerald-500" />, color: 'bg-emerald-50', emoji: '🧹' }
 ];
 
@@ -108,7 +121,7 @@ export default function Home() {
             <section className="w-full bg-gradient-to-b from-blue-50/50 to-transparent pt-16 pb-12 text-center px-4 rounded-b-[3rem] sm:rounded-b-[4rem] mb-12">
                 <div className="max-w-4xl mx-auto animate-slide-up">
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight mb-6">
-                        Wir machen PDFs <span className="text-blue-600">einfach.</span>
+                        Wir machen <span className="text-red-600">PDFs</span> <span className="text-blue-600">einfach.</span>
                     </h1>
                     <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
                         Alle Werkzeuge, die du zum Bearbeiten brauchst – direkt im Browser. Keine Installation, absolut kostenlos und 100% sicher, da deine Dateien deinen Computer nie verlassen.

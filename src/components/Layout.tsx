@@ -13,7 +13,18 @@ import {
     Image,
     PenTool,
     Hash,
-    ShieldAlert
+    ShieldAlert,
+    Crop,
+    Stamp,
+    Share2,
+    Lock,
+    LockKeyhole,
+    FilePenLine,
+    FileSignature,
+    FileSearch,
+    TextCursorInput,
+    ScanText,
+    Camera
 } from 'lucide-react';
 
 type ToolItem = {
@@ -36,7 +47,7 @@ const TOOL_SHEET_COLUMNS: ToolColumn[] = [
         items: [
             { title: 'PDF verkleinern', path: '/compress', icon: Minimize2, tone: 'bg-red-100 text-red-800 group-hover:bg-red-800 group-hover:text-white' },
             { title: 'Konvertieren', icon: FileText, tone: '', plainText: true },
-            { title: 'PDF-Konverter', path: '/pdf-converter', icon: FileText, tone: 'bg-red-100 text-red-800 group-hover:bg-red-800 group-hover:text-white' },
+            { title: 'PDF-Konverter', path: '/pdf-converter', icon: RotateCw, tone: 'bg-red-100 text-red-800 group-hover:bg-red-800 group-hover:text-white' },
             // { title: 'KI PDF', icon: ShieldAlert, tone: '', plainText: true },
             // { title: 'Mit PDFs chatten', path: '/chat-with-pdf', icon: FileText, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' },
             // { title: 'KI-PDF-Zusammenfassung', path: '/ai-pdf-summary', icon: FileText, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' },
@@ -51,22 +62,22 @@ const TOOL_SHEET_COLUMNS: ToolColumn[] = [
             { title: 'PDF teilen', path: '/split', icon: Scissors, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' },
             { title: 'PDF drehen', path: '/rotate', icon: RotateCw, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' },
             { title: 'PDF-Seiten löschen', path: '/delete-pages', icon: Trash2, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' },
-            { title: 'PDF-Seiten extrahieren', path: '/extract-pages', icon: FileText, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' },
-            { title: 'PDF Organisieren', path: '/organize-pdf', icon: FileText, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' }
+            { title: 'PDF-Seiten extrahieren', path: '/extract-pages', icon: Scissors, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' },
+            { title: 'PDF Organisieren', path: '/organize-pdf', icon: Layers, tone: 'bg-violet-100 text-violet-700 group-hover:bg-violet-700 group-hover:text-white' }
         ]
     },
     {
         heading: 'Ansehen und Bearbeiten',
         items: [
-            { title: 'PDF bearbeiten', path: '/edit-pdf', icon: PenTool, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'PDF bearbeiten', path: '/edit-pdf', icon: FilePenLine, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
             { title: 'PDF Kommentieren', path: '/annotate-pdf', icon: PenTool, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
-            { title: 'PDF-Reader', path: '/pdf-reader', icon: FileText, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'PDF-Reader', path: '/pdf-reader', icon: FileSearch, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
             { title: 'Seitenzahlen einfügen', path: '/page-numbers', icon: Hash, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
-            { title: 'PDFs zuschneiden', path: '/crop-pdf', icon: Scissors, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'PDFs zuschneiden', path: '/crop-pdf', icon: Crop, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
             { title: 'PDF schwärzen', path: '/redact-pdf', icon: ShieldAlert, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
-            { title: 'Wasserzeichen-PDF', path: '/watermark', icon: FileText, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
-            { title: 'PDF-Formularausfüller', path: '/pdf-form-filler', icon: FileText, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
-            { title: 'PDF freigeben', path: '/share-pdf', icon: FileText, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' }
+            { title: 'Wasserzeichen-PDF', path: '/watermark', icon: Stamp, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'PDF-Formularausfüller', path: '/pdf-form-filler', icon: TextCursorInput, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' },
+            { title: 'PDF freigeben', path: '/share-pdf', icon: Share2, tone: 'bg-cyan-100 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white' }
         ]
     },
     {
@@ -85,19 +96,19 @@ const TOOL_SHEET_COLUMNS: ToolColumn[] = [
             // { title: 'Excel in PDF', path: '/excel-to-pdf', icon: FileText, tone: 'bg-emerald-100 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white' },
             // { title: 'PPT in PDF', path: '/ppt-to-pdf', icon: FileText, tone: 'bg-orange-100 text-orange-600 group-hover:bg-orange-500 group-hover:text-white' },
             { title: 'JPG in PDF', path: '/jpg-to-pdf', icon: Image, tone: 'bg-yellow-100 text-yellow-700 group-hover:bg-yellow-600 group-hover:text-white' },
-            { title: 'PDF OCR', path: '/pdf-ocr', icon: FileImage, tone: 'bg-red-100 text-red-700 group-hover:bg-red-600 group-hover:text-white' }
+            { title: 'PDF OCR', path: '/pdf-ocr', icon: ScanText, tone: 'bg-red-100 text-red-700 group-hover:bg-red-600 group-hover:text-white' }
         ]
     },
     {
         heading: 'Unterschreiben',
         items: [
-            { title: 'Unterschreibe PDF', path: '/sign', icon: PenTool, tone: 'bg-pink-100 text-pink-700 group-hover:bg-pink-600 group-hover:text-white' },
+            { title: 'Unterschreibe PDF', path: '/sign', icon: FileSignature, tone: 'bg-pink-100 text-pink-700 group-hover:bg-pink-600 group-hover:text-white' },
             { title: 'Mehr', icon: ShieldAlert, tone: '', plainText: true },
-            { title: 'PDF Passwort entfernen', path: '/remove-password', icon: ShieldAlert, tone: 'bg-rose-100 text-rose-600 group-hover:bg-rose-500 group-hover:text-white' },
-            { title: 'PDF verschlüsseln', path: '/encrypt-pdf', icon: ShieldAlert, tone: 'bg-rose-100 text-rose-600 group-hover:bg-rose-500 group-hover:text-white' },
-            { title: 'Ebenen der PDF reduzieren', path: '/flatten-pdf', icon: FileText, tone: 'bg-rose-100 text-rose-600 group-hover:bg-rose-500 group-hover:text-white' },
+            { title: 'PDF Passwort entfernen', path: '/remove-password', icon: LockKeyhole, tone: 'bg-rose-100 text-rose-600 group-hover:bg-rose-500 group-hover:text-white' },
+            { title: 'PDF verschlüsseln', path: '/encrypt-pdf', icon: Lock, tone: 'bg-rose-100 text-rose-600 group-hover:bg-rose-500 group-hover:text-white' },
+            { title: 'Ebenen der PDF reduzieren', path: '/flatten-pdf', icon: Layers, tone: 'bg-rose-100 text-rose-600 group-hover:bg-rose-500 group-hover:text-white' },
             { title: 'Scan', icon: FileImage, tone: '', plainText: true },
-            { title: 'PDF-Scanner', path: '/pdf-scanner', icon: FileImage, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' }
+            { title: 'PDF-Scanner', path: '/pdf-scanner', icon: Camera, tone: 'bg-blue-100 text-blue-800 group-hover:bg-blue-800 group-hover:text-white' }
         ]
     }
 ];

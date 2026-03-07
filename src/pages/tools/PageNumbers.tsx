@@ -1,24 +1,74 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Download, Hash, Loader2, RefreshCcw } from 'lucide-react';
 import PdfUploader from '../../components/PdfUploader';
+import * as pdfjsLib from 'pdfjs-dist';
 
-type Position = 'bottom-right' | 'bottom-center' | 'bottom-left' | 'top-right' | 'top-center' | 'top-left';
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
+
+type Position = 'bottom-right' | 'bottom-center' | 'bottom-left' | 'top-right' | 'top-center' | 'top-left' | 'custom';
 
 export default function PageNumbers() {
+    const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
+    const previewContainerRef = useRef<HTMLDivElement | null>(null);
+
     const [file, setFile] = useState<File | null>(null);
     const [position, setPosition] = useState<Position>('bottom-right');
     const [startAt, setStartAt] = useState(1);
     const [fontSize, setFontSize] = useState(12);
+    const [previewSize, setPreviewSize] = useState({ width: 0, height: 0 });
+    const [previewDisplaySize, setPreviewDisplaySize] = useState({ width: 0, height: 0 });
+    const [customPoint, setCustomPoint] = useState({ x: 40, y: 40 });
+    const [dragging, setDragging] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [resultUrl, setResultUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    const activePreviewSize = {
+        width: previewDisplaySize.width || previewSize.width,
+        height: previewDisplaySize.height || previewSize.height,
+    };
 
     const onFilesSelected = (files: File[]) => {
         if (!files[0]) return;
         setFile(files[0]);
         setResultUrl(null);
         setError(null);
+        setPreviewSize({ width: 0, height: 0 });
+        setPreviewDisplaySize({ width: 0, height: 0 });
+        setCustomPoint({ x: 40, y: 40 });
+        setDragging(false);
     };
+
+    useEffect(() => {
+        const renderPreview = async () => {
+            if (!file || position !== 'custom') return;
+            const canvas = previewCanvasRef.current;
+            if (!canvas) return;
+
+            const data = new Uint8Array(await file.arrayBuffer());
+            const pdf = await pdfjsLib.getDocument({ data }).promise;
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 1.2 });
+
+            canvas.width = Math.ceil(viewport.width);
+            canvas.height = Math.ceil(viewport.height);
+
+            const context = canvas.getContext('2d');
+            if (!context) return;
+            await page.render({ canvasContext: context, viewport, canvas }).promise;
+
+            const displayWidth = canvas.clientWidth || canvas.width;
+            const displayHeight = canvas.clientHeight || canvas.height;
+            setPreviewSize({ width: canvas.width, height: canvas.height });
+            setPreviewDisplaySize({ width: displayWidth, height: displayHeight });
+            setCustomPoint((prev) => ({
+                x: Math.min(Math.max(0, prev.x), Math.max(0, displayWidth - 10)),
+                y: Math.min(Math.max(0, prev.y), Math.max(0, displayHeight - 10)),
+            }));
+        };
+
+        renderPreview();
+    }, [file, position]);
 
     const getCoords = (pageWidth: number, pageHeight: number, textWidth: number) => {
         const margin = 24;
@@ -29,6 +79,14 @@ export default function PageNumbers() {
             case 'top-left': return { x: margin, y: pageHeight - margin - fontSize };
             case 'top-center': return { x: (pageWidth - textWidth) / 2, y: pageHeight - margin - fontSize };
             case 'top-right': return { x: pageWidth - textWidth - margin, y: pageHeight - margin - fontSize };
+            case 'custom': {
+                const widthRef = Math.max(1, activePreviewSize.width);
+                const heightRef = Math.max(1, activePreviewSize.height);
+                const x = (customPoint.x / widthRef) * pageWidth;
+                const yFromTop = (customPoint.y / heightRef) * pageHeight;
+                const y = pageHeight - yFromTop - fontSize;
+                return { x, y: Math.max(0, y) };
+            }
         }
     };
 
@@ -92,7 +150,18 @@ export default function PageNumbers() {
                                         <option value="top-right">Oben rechts</option>
                                         <option value="top-center">Oben mitte</option>
                                         <option value="top-left">Oben links</option>
+                                        <option value="custom">Eigene Position</option>
                                     </select>
+                                    <button
+                                        type="button"
+                                        onClick={() => setPosition('custom')}
+                                        className={`mt-2 w-full rounded-xl px-3 py-2.5 text-sm font-semibold border transition-colors ${position === 'custom'
+                                            ? 'bg-blue-600 border-blue-600 text-white'
+                                            : 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100'
+                                            }`}
+                                    >
+                                        Selber positionieren
+                                    </button>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">Startnummer</label>
@@ -103,6 +172,40 @@ export default function PageNumbers() {
                                     <input type="number" value={fontSize} min={8} max={40} onChange={(e) => setFontSize(Number(e.target.value) || 12)} className="w-full rounded-xl border border-gray-300 px-3 py-2.5" />
                                 </div>
                             </div>
+
+                            {position === 'custom' && (
+                                <div className="space-y-3">
+                                    <p className="text-sm text-gray-600">Ziehe die Seitenzahl in der Vorschau an die gewünschte Position.</p>
+                                    <div
+                                        ref={previewContainerRef}
+                                        className="relative inline-block border border-gray-300 rounded-xl overflow-hidden touch-none"
+                                        onPointerMove={(event) => {
+                                            if (!dragging || !activePreviewSize.width || !activePreviewSize.height) return;
+                                            const container = previewContainerRef.current;
+                                            if (!container) return;
+                                            const rect = container.getBoundingClientRect();
+                                            const x = Math.min(Math.max(0, event.clientX - rect.left), activePreviewSize.width - 10);
+                                            const y = Math.min(Math.max(0, event.clientY - rect.top), activePreviewSize.height - 10);
+                                            setCustomPoint({ x, y });
+                                        }}
+                                        onPointerUp={() => setDragging(false)}
+                                        onPointerLeave={() => setDragging(false)}
+                                    >
+                                        <canvas ref={previewCanvasRef} className="max-w-full h-auto block bg-gray-50" />
+                                        <div
+                                            className="absolute cursor-move select-none text-gray-700 font-semibold"
+                                            style={{ left: customPoint.x, top: customPoint.y, fontSize: `${fontSize}px` }}
+                                            onPointerDown={(event) => {
+                                                event.preventDefault();
+                                                event.stopPropagation();
+                                                setDragging(true);
+                                            }}
+                                        >
+                                            {startAt}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
 
