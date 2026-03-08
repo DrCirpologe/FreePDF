@@ -30,6 +30,38 @@ import {
 } from 'lucide-react';
 import SeoManager from './SeoManager';
 
+const isLikelyMobileDevice = () => {
+    if (typeof window === 'undefined') return false;
+    const userAgent = navigator.userAgent || '';
+    return /Android|iPhone|iPad|iPod|Mobile/i.test(userAgent) || window.matchMedia('(pointer: coarse)').matches;
+};
+
+const tryMobileDownload = async (href: string, filename: string) => {
+    const response = await fetch(href);
+    const blob = await response.blob();
+    const file = new File([blob], filename, { type: blob.type || 'application/octet-stream' });
+
+    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+        const canShareFiles = typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] });
+        if (canShareFiles) {
+            await navigator.share({ files: [file], title: filename });
+            return;
+        }
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    const tempAnchor = document.createElement('a');
+    tempAnchor.href = objectUrl;
+    tempAnchor.download = filename;
+    tempAnchor.rel = 'noopener noreferrer';
+    tempAnchor.style.display = 'none';
+    document.body.appendChild(tempAnchor);
+    tempAnchor.click();
+    tempAnchor.remove();
+
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 15_000);
+};
+
 type ToolItem = {
     title: string;
     path?: string;
@@ -203,6 +235,34 @@ export default function Layout() {
         document.addEventListener('mousedown', handleMobileOutsideClick);
         return () => document.removeEventListener('mousedown', handleMobileOutsideClick);
     }, [isMobileMenuOpen, isMobileToolsSheetOpen]);
+
+    useEffect(() => {
+        const handleDownloadClick = (event: MouseEvent) => {
+            const target = event.target as HTMLElement | null;
+            if (!target) return;
+
+            const anchor = target.closest('a[download]') as HTMLAnchorElement | null;
+            if (!anchor) return;
+
+            const href = anchor.getAttribute('href') ?? '';
+            if (!href.startsWith('blob:')) return;
+            if (!isLikelyMobileDevice()) return;
+
+            const filename = anchor.getAttribute('download') || 'download';
+            event.preventDefault();
+
+            void (async () => {
+                try {
+                    await tryMobileDownload(href, filename);
+                } catch {
+                    window.open(href, '_blank', 'noopener,noreferrer');
+                }
+            })();
+        };
+
+        document.addEventListener('click', handleDownloadClick);
+        return () => document.removeEventListener('click', handleDownloadClick);
+    }, []);
 
     return (
         <div className="min-h-screen flex flex-col">
