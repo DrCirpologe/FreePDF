@@ -24,6 +24,11 @@ const PAGE_SEO: Record<string, SeoConfig> = {
         canonicalPath: '/',
         noindex: true
     },
+    '/index': {
+        title: 'Alle PDF Tools im Überblick | FreePDF',
+        description: 'Alle PDF-Tools auf einer Seite: PDF zusammenfügen, teilen, komprimieren, bearbeiten, unterschreiben und mehr.',
+        noindex: true
+    },
     '/merge': { title: 'PDF zusammenfügen kostenlos online | FreePDF', description: 'Mehrere PDF-Dateien kostenlos online zusammenfügen und in der richtigen Reihenfolge als eine PDF speichern.' },
     '/split': { title: 'PDF teilen kostenlos online | FreePDF', description: 'PDF online teilen, Seiten einzeln extrahieren und als neue Datei herunterladen – schnell und kostenlos.' },
     '/delete-pages': { title: 'PDF Seiten löschen kostenlos online | FreePDF', description: 'Seiten aus PDF löschen und die bereinigte Datei direkt speichern – ohne Installation und kostenlos.' },

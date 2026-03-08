@@ -194,7 +194,7 @@ export default function Startseite() {
                 </div>
 
                 <Link
-                    to="/"
+                    to="/index"
                     className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-white font-semibold hover:bg-blue-700 transition-colors"
                 >
                     Alle PDF-Tools ansehen

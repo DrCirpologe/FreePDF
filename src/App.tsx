@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import CookieBanner from './components/CookieBanner';
 
+const Home = lazy(() => import('./pages/Home'));
 const Startseite = lazy(() => import('./pages/Startseite'));
 const ToolsLayout = lazy(() => import('./pages/tools/ToolsLayout'));
 const MergePdf = lazy(() => import('./pages/tools/MergePdf'));
@@ -47,6 +48,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Startseite />} />
             <Route path="startseite" element={<Startseite />} />
+            <Route path="index" element={<Home />} />
 
             {/* Tool Routes wrapped in a standard layout */}
             <Route element={<ToolsLayout />}>
