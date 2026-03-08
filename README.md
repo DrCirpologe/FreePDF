@@ -31,6 +31,14 @@ Beim Build werden `public/robots.txt` und `public/sitemap.xml` automatisch mit d
 8. Core Web Vitals in Search Console beobachten und problematische URLs priorisieren.
 9. Nach Deployment 1x Social Preview testen (OpenGraph/Twitter), damit Titel/Bild korrekt gezogen werden.
 
+## GitHub Pages Deployment
+
+- Dieses Projekt deployt automatisch über GitHub Actions mit `.github/workflows/deploy-pages.yml`.
+- Wichtig in den Repository-Einstellungen:
+   - `Settings -> Pages -> Source`: **GitHub Actions** auswählen.
+- Bei jedem Push auf `Main` wird `dist/` gebaut und veröffentlicht.
+- Für SPA-Routen wird automatisch `dist/404.html` erzeugt (Fallback auf die App).
+
 ## Wichtige SEO-Dateien
 
 - `src/components/SeoManager.tsx` – route-basierte Meta-Tags, Canonical, JSON-LD
