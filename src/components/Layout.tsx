@@ -210,7 +210,7 @@ export default function Layout() {
     }, [location.pathname]);
 
     useEffect(() => {
-        const handleMobileOutsideClick = (event: MouseEvent) => {
+        const handleMobileOutsideClick = (event: PointerEvent) => {
             const target = event.target as Node;
 
             if (isMobileMenuOpen) {
@@ -218,7 +218,10 @@ export default function Layout() {
                 const clickedMenuButton = mobileMenuButtonRef.current?.contains(target);
 
                 if (!clickedInsideMenu && !clickedMenuButton) {
+                    event.preventDefault();
+                    event.stopPropagation();
                     setIsMobileMenuOpen(false);
+                    return;
                 }
             }
 
@@ -227,13 +230,15 @@ export default function Layout() {
                 const clickedToolsButton = mobileToolsButtonRef.current?.contains(target);
 
                 if (!clickedInsideToolsSheet && !clickedToolsButton) {
+                    event.preventDefault();
+                    event.stopPropagation();
                     setIsMobileToolsSheetOpen(false);
                 }
             }
         };
 
-        document.addEventListener('mousedown', handleMobileOutsideClick);
-        return () => document.removeEventListener('mousedown', handleMobileOutsideClick);
+        document.addEventListener('pointerdown', handleMobileOutsideClick, true);
+        return () => document.removeEventListener('pointerdown', handleMobileOutsideClick, true);
     }, [isMobileMenuOpen, isMobileToolsSheetOpen]);
 
     useEffect(() => {
