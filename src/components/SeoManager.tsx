@@ -15,8 +15,8 @@ type SeoConfig = {
 
 const PAGE_SEO: Record<string, SeoConfig> = {
     '/': {
-        title: 'PDF Tools kostenlos online bearbeiten | FreePDF',
-        description: 'PDF zusammenfügen, teilen, komprimieren, drehen, signieren und konvertieren – kostenlos, direkt im Browser und ohne Upload auf fremde Server.'
+        title: 'PDF bearbeiten online kostenlos – 30 PDF Tools | FreePDF',
+        description: 'PDF bearbeiten, zusammenfügen, teilen, komprimieren, drehen und signieren – kostenlose PDF Tools online, schnell und sicher im Browser.'
     },
     '/startseite': {
         title: 'PDF Tools kostenlos online bearbeiten | FreePDF',
@@ -24,11 +24,11 @@ const PAGE_SEO: Record<string, SeoConfig> = {
         canonicalPath: '/',
         noindex: true
     },
-    '/merge': { title: 'PDF zusammenfügen online kostenlos | FreePDF', description: 'Mehrere PDFs in der gewünschten Reihenfolge zu einer Datei zusammenfügen – schnell und kostenlos im Browser.' },
-    '/split': { title: 'PDF teilen online kostenlos | FreePDF', description: 'PDF-Dateien in einzelne Seiten oder Bereiche aufteilen und gezielt exportieren.' },
-    '/delete-pages': { title: 'PDF Seiten löschen online | FreePDF', description: 'Einzelne Seiten aus PDF-Dateien entfernen und die Datei direkt neu speichern.' },
-    '/rotate': { title: 'PDF drehen online kostenlos | FreePDF', description: 'PDF-Seiten um 90°, 180° oder 270° drehen und korrekt ausrichten.' },
-    '/compress': { title: 'PDF komprimieren online kostenlos | FreePDF', description: 'PDF-Dateigröße reduzieren für E-Mail, Upload und schnellere Ladezeiten.' },
+    '/merge': { title: 'PDF zusammenfügen kostenlos online | FreePDF', description: 'Mehrere PDF-Dateien kostenlos online zusammenfügen und in der richtigen Reihenfolge als eine PDF speichern.' },
+    '/split': { title: 'PDF teilen kostenlos online | FreePDF', description: 'PDF online teilen, Seiten einzeln extrahieren und als neue Datei herunterladen – schnell und kostenlos.' },
+    '/delete-pages': { title: 'PDF Seiten löschen kostenlos online | FreePDF', description: 'Seiten aus PDF löschen und die bereinigte Datei direkt speichern – ohne Installation und kostenlos.' },
+    '/rotate': { title: 'PDF drehen kostenlos online | FreePDF', description: 'PDF Seiten online drehen (90°, 180°, 270°) und korrekt ausgerichtet herunterladen.' },
+    '/compress': { title: 'PDF komprimieren kostenlos online | FreePDF', description: 'PDF-Datei verkleinern und Dateigröße reduzieren – kostenloses PDF Komprimieren im Browser.' },
     '/extract-pages': { title: 'PDF Seiten extrahieren online | FreePDF', description: 'Gewünschte PDF-Seiten auswählen und als neue Datei exportieren.' },
     '/organize-pdf': { title: 'PDF organisieren online | FreePDF', description: 'PDF-Seiten sortieren, umstellen, entfernen und effizient neu strukturieren.' },
     '/page-numbers': { title: 'Seitenzahlen in PDF einfügen | FreePDF', description: 'Seitennummern in PDF-Dateien einfügen und Position frei wählen.' },
@@ -36,28 +36,28 @@ const PAGE_SEO: Record<string, SeoConfig> = {
     '/crop-pdf': { title: 'PDF zuschneiden online | FreePDF', description: 'Ränder und Ausschnitt von PDF-Seiten präzise anpassen.' },
     '/redact-pdf': { title: 'PDF schwärzen online | FreePDF', description: 'Sensible Inhalte dauerhaft aus PDF-Dateien entfernen.' },
     '/annotate-pdf': { title: 'PDF kommentieren online | FreePDF', description: 'PDFs markieren, kommentieren und mit Notizen versehen.' },
-    '/edit-pdf': { title: 'PDF bearbeiten online | FreePDF', description: 'PDF-Dokumente direkt im Browser bearbeiten und anpassen.' },
+    '/edit-pdf': { title: 'PDF bearbeiten kostenlos online | FreePDF', description: 'PDF online bearbeiten: Inhalte anpassen, kommentieren und Dokumente direkt im Browser speichern.' },
     '/pdf-form-filler': { title: 'PDF Formular ausfüllen online | FreePDF', description: 'PDF-Formulare digital ausfüllen und sofort speichern.' },
     '/pdf-reader': { title: 'PDF Reader online | FreePDF', description: 'PDFs online öffnen, lesen und schnell prüfen.' },
     '/share-pdf': { title: 'PDF teilen online | FreePDF', description: 'PDF-Dateien unkompliziert bereitstellen und weitergeben.' },
-    '/jpg-to-pdf': { title: 'JPG in PDF umwandeln online | FreePDF', description: 'JPG, PNG und weitere Bilder in PDF-Dateien umwandeln.' },
+    '/jpg-to-pdf': { title: 'JPG in PDF umwandeln kostenlos | FreePDF', description: 'JPG zu PDF online konvertieren – auch PNG und weitere Bildformate schnell und kostenlos umwandeln.' },
     '/img-to-pdf': {
         title: 'JPG in PDF umwandeln online | FreePDF',
         description: 'Bilder in PDF umwandeln – schnell und kostenlos.',
         canonicalPath: '/jpg-to-pdf',
         noindex: true
     },
-    '/pdf-to-jpg': { title: 'PDF in JPG umwandeln online | FreePDF', description: 'PDF-Seiten als JPG-Bilder exportieren – einzeln oder gesammelt.' },
+    '/pdf-to-jpg': { title: 'PDF in JPG umwandeln kostenlos | FreePDF', description: 'PDF zu JPG online umwandeln und einzelne Seiten als Bilder exportieren – kostenlos und ohne Anmeldung.' },
     '/pdf-to-img': {
         title: 'PDF in JPG umwandeln online | FreePDF',
         description: 'PDF in Bilddateien umwandeln – direkt im Browser.',
         canonicalPath: '/pdf-to-jpg',
         noindex: true
     },
-    '/pdf-converter': { title: 'PDF Konverter online kostenlos | FreePDF', description: 'Dateien in PDF und aus PDF konvertieren – einfach und schnell.' },
+    '/pdf-converter': { title: 'PDF Konverter kostenlos online | FreePDF', description: 'Kostenloser PDF Konverter: Dateien in PDF umwandeln und PDFs in Bildformate zurück konvertieren.' },
     '/ocr': { title: 'OCR für PDF online | FreePDF', description: 'Texterkennung für gescannte Dokumente und Bilder im Browser.' },
     '/pdf-ocr': { title: 'PDF OCR online kostenlos | FreePDF', description: 'Gescannte PDFs mit OCR durchsuchbar machen.' },
-    '/sign': { title: 'PDF unterschreiben online | FreePDF', description: 'Digitale Unterschrift in PDF-Dateien einfügen und Dokumente signieren.' },
+    '/sign': { title: 'PDF unterschreiben online kostenlos | FreePDF', description: 'PDF digital unterschreiben und Signatur einfügen – kostenloses Online-Tool für schnelle Unterschriften.' },
     '/remove-password': { title: 'PDF Passwort entfernen online | FreePDF', description: 'Passwortschutz aus PDF-Dateien entfernen, sofern Zugriff erlaubt ist.' },
     '/encrypt-pdf': { title: 'PDF verschlüsseln online | FreePDF', description: 'PDF-Dateien mit Passwort schützen und verschlüsseln.' },
     '/flatten-pdf': { title: 'PDF reduzieren (flatten) online | FreePDF', description: 'PDF-Inhalte fixieren, um unbeabsichtigte Änderungen zu reduzieren.' },
