@@ -1,73 +1,37 @@
-# React + TypeScript + Vite
+# FreePDF
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Kostenlose Online-Tools zum Bearbeiten von PDF-Dateien (React + TypeScript + Vite).
 
-Currently, two official plugins are available:
+## Entwicklung
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Abhängigkeiten installieren: `npm install`
+2. Lokale Entwicklungsumgebung starten: `npm run dev`
+3. Produktions-Build erzeugen: `npm run build`
 
-## React Compiler
+## SEO-Konfiguration
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Primäre Domain wird über `VITE_SITE_URL` gesetzt.
+- Lege lokal eine `.env` oder für Deployment eine `.env.production` an (siehe `.env.example`).
+- Beispiel: `VITE_SITE_URL=https://deine-domain.de`
 
-## Expanding the ESLint configuration
+Beim Build werden `public/robots.txt` und `public/sitemap.xml` automatisch mit der gesetzten Domain erstellt.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Search Console Go-Live Checkliste
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1. Domain mit HTTPS live schalten und Weiterleitungen auf genau eine kanonische Variante setzen (`https://deine-domain.de`).
+2. `VITE_SITE_URL` auf die Live-Domain setzen.
+3. Build ausführen (`npm run build`) und deployen.
+4. Prüfen, dass folgende URLs öffentlich erreichbar sind:
+   - `/robots.txt`
+   - `/sitemap.xml`
+5. Property in Google Search Console hinzufügen (Domain-Property oder URL-Präfix).
+6. Sitemap in Search Console einreichen: `https://deine-domain.de/sitemap.xml`.
+7. Indexierung für Startseite und 2-3 wichtige Tool-Seiten über URL-Prüfung anstoßen.
+8. Core Web Vitals in Search Console beobachten und problematische URLs priorisieren.
+9. Nach Deployment 1x Social Preview testen (OpenGraph/Twitter), damit Titel/Bild korrekt gezogen werden.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Wichtige SEO-Dateien
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- `src/components/SeoManager.tsx` – route-basierte Meta-Tags, Canonical, JSON-LD
+- `scripts/generate-seo.mjs` – Build-Generator für `robots.txt` und `sitemap.xml`
+- `.env.example` – Beispiel für `VITE_SITE_URL`
