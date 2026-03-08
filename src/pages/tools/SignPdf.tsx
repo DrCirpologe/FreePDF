@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Download, Loader2, PenLine, RefreshCcw, Trash2 } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import PdfUploader from '../../components/PdfUploader';
 import * as pdfjsLib from 'pdfjs-dist';
 
@@ -20,6 +21,7 @@ type Interaction = {
 };
 
 export default function SignPdf() {
+    const location = useLocation();
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const drawingRef = useRef(false);
@@ -51,6 +53,13 @@ export default function SignPdf() {
         setPreviewDisplaySize({ width: 0, height: 0 });
         setPlacement({ x: 80, y: 80, width: 180, height: 70 });
     };
+
+    useEffect(() => {
+        const state = location.state as { prefillFile?: File } | null;
+        const prefillFile = state?.prefillFile;
+        if (!prefillFile || prefillFile.type !== 'application/pdf') return;
+        onFilesSelected([prefillFile]);
+    }, [location.state]);
 
     const activePreviewSize = {
         width: previewDisplaySize.width || previewSize.width,

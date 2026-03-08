@@ -90,10 +90,112 @@
   50% { box-shadow: 0 0 20px 5px rgba(15, 98, 254, 0.2); }
 }
 
+@keyframes adGradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes adBlobFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -14px, 0) scale(1.05); }
+}
+
+@keyframes lavaDriftA {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  25% { transform: translate3d(16px, -22px, 0) scale(1.12); }
+  50% { transform: translate3d(34px, 6px, 0) scale(0.98); }
+  75% { transform: translate3d(8px, 22px, 0) scale(1.08); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes lavaDriftB {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  25% { transform: translate3d(-26px, 16px, 0) scale(1.06); }
+  50% { transform: translate3d(-10px, -22px, 0) scale(1.15); }
+  75% { transform: translate3d(22px, -8px, 0) scale(1.02); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes lavaDriftC {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  20% { transform: translate3d(20px, 12px, 0) scale(1.09); }
+  45% { transform: translate3d(-14px, 24px, 0) scale(1.03); }
+  70% { transform: translate3d(-22px, -14px, 0) scale(1.14); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes adTextGlowPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 3px rgba(199, 210, 254, 0.19),
+      0 0 6px rgba(129, 140, 248, 0.16),
+      0 0 11px rgba(56, 189, 248, 0.11);
+  }
+  50% {
+    text-shadow:
+      0 0 4px rgba(199, 210, 254, 0.23),
+      0 0 8px rgba(129, 140, 248, 0.2),
+      0 0 14px rgba(56, 189, 248, 0.15);
+  }
+}
+
 .animate-slide-up {
   animation: slideUp 0.5s ease-out forwards;
 }
 
 .animate-fade-in {
   animation: fadeIn 0.4s ease-out forwards;
+}
+
+.ad-motion-bg {
+  background: linear-gradient(120deg, #090b2b, #1a1a56, #101a4d, #090b2b);
+  background-size: 260% 260%;
+  animation: adGradientShift 10s ease-in-out infinite;
+}
+
+.ad-motion-blob {
+  filter: blur(24px);
+  opacity: 0.35;
+  animation: adBlobFloat 8s ease-in-out infinite;
+}
+
+.ad-motion-blob.delay {
+  animation-delay: 1.7s;
+}
+
+.ad-lava-field {
+  position: absolute;
+  inset: -8%;
+  pointer-events: none;
+  filter: blur(22px) saturate(180%) brightness(92%);
+}
+
+.ad-lava-blob {
+  position: absolute;
+  border-radius: 9999px;
+  opacity: 0.58;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.ad-lava-a {
+  animation: lavaDriftA 8s ease-in-out infinite;
+}
+
+.ad-lava-b {
+  animation: lavaDriftB 9s ease-in-out infinite;
+}
+
+.ad-lava-c {
+  animation: lavaDriftC 10s ease-in-out infinite;
+}
+
+.ad-heading-glow {
+  color: #dbe7ff;
+  text-shadow:
+    0 0 3px rgba(199, 210, 254, 0.19),
+    0 0 6px rgba(129, 140, 248, 0.16),
+    0 0 11px rgba(56, 189, 248, 0.11);
+  animation: adTextGlowPulse 3.2s ease-in-out infinite;
 }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Crop, Download, Loader2, RefreshCcw } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import PdfUploader from '../../components/PdfUploader';
 import * as pdfjsLib from 'pdfjs-dist';
 
@@ -28,6 +29,7 @@ type InteractionState = {
 };
 
 export default function CropPdf() {
+    const location = useLocation();
     const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const previewContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -61,6 +63,13 @@ export default function CropPdf() {
         setCropRect(null);
         setInteraction(null);
     };
+
+    useEffect(() => {
+        const state = location.state as { prefillFile?: File } | null;
+        const prefillFile = state?.prefillFile;
+        if (!prefillFile || prefillFile.type !== 'application/pdf') return;
+        onFilesSelected([prefillFile]);
+    }, [location.state]);
 
     const getRelativePoint = (clientX: number, clientY: number) => {
         const container = previewContainerRef.current;

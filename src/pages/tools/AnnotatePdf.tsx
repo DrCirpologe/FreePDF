@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Download, Highlighter, Loader2, Pipette, Plus, RefreshCcw, Trash2 } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import PdfUploader from '../../components/PdfUploader';
 import * as pdfjsLib from 'pdfjs-dist';
 
@@ -27,6 +28,7 @@ type DragState = {
 };
 
 export default function AnnotatePdf() {
+    const location = useLocation();
     const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const previewContainerRef = useRef<HTMLDivElement | null>(null);
     const [file, setFile] = useState<File | null>(null);
@@ -65,6 +67,13 @@ export default function AnnotatePdf() {
         setDragState(null);
         setIsPickingFromPreview(false);
     };
+
+    useEffect(() => {
+        const state = location.state as { prefillFile?: File } | null;
+        const prefillFile = state?.prefillFile;
+        if (!prefillFile || prefillFile.type !== 'application/pdf') return;
+        onFilesSelected([prefillFile]);
+    }, [location.state]);
 
     useEffect(() => {
         const loadPageCount = async () => {

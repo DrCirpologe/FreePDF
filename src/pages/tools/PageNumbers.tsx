@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Download, Hash, Loader2, RefreshCcw } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import PdfUploader from '../../components/PdfUploader';
 import * as pdfjsLib from 'pdfjs-dist';
 
@@ -8,6 +9,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mi
 type Position = 'bottom-right' | 'bottom-center' | 'bottom-left' | 'top-right' | 'top-center' | 'top-left' | 'custom';
 
 export default function PageNumbers() {
+    const location = useLocation();
     const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const previewContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -38,6 +40,13 @@ export default function PageNumbers() {
         setCustomPoint({ x: 40, y: 40 });
         setDragging(false);
     };
+
+    useEffect(() => {
+        const state = location.state as { prefillFile?: File } | null;
+        const prefillFile = state?.prefillFile;
+        if (!prefillFile || prefillFile.type !== 'application/pdf') return;
+        onFilesSelected([prefillFile]);
+    }, [location.state]);
 
     useEffect(() => {
         const renderPreview = async () => {

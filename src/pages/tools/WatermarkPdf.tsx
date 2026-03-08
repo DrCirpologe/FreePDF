@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Download, Droplets, Loader2, RefreshCcw } from 'lucide-react';
 import PdfUploader from '../../components/PdfUploader';
+import { useLocation } from 'react-router-dom';
 
 export default function WatermarkPdf() {
+    const location = useLocation();
     const [file, setFile] = useState<File | null>(null);
     const [text, setText] = useState('FREEPDF');
     const [fontSize, setFontSize] = useState(48);
@@ -18,6 +20,13 @@ export default function WatermarkPdf() {
         setResultUrl(null);
         setError(null);
     };
+
+    useEffect(() => {
+        const state = location.state as { prefillFile?: File } | null;
+        const prefillFile = state?.prefillFile;
+        if (!prefillFile || prefillFile.type !== 'application/pdf') return;
+        onFilesSelected([prefillFile]);
+    }, [location.state]);
 
     const applyWatermark = async () => {
         if (!file || !text.trim()) return;

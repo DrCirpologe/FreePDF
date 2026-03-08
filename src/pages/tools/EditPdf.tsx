@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Download, Loader2, Pencil, Plus, RefreshCcw, Trash2 } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import PdfUploader from '../../components/PdfUploader';
 
 type EditItem = {
@@ -12,6 +13,7 @@ type EditItem = {
 };
 
 export default function EditPdf() {
+    const location = useLocation();
     const [file, setFile] = useState<File | null>(null);
     const [resultUrl, setResultUrl] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -34,6 +36,13 @@ export default function EditPdf() {
         setItems([]);
         setError(null);
     };
+
+    useEffect(() => {
+        const state = location.state as { prefillFile?: File } | null;
+        const prefillFile = state?.prefillFile;
+        if (!prefillFile || prefillFile.type !== 'application/pdf') return;
+        onFilesSelected([prefillFile]);
+    }, [location.state]);
 
     const addEditItem = () => {
         if (!text.trim()) return;
