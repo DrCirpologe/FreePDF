@@ -199,3 +199,8 @@
     0 0 11px rgba(56, 189, 248, 0.11);
   animation: adTextGlowPulse 3.2s ease-in-out infinite;
 }
+
+.tools-outlet-wrap > * {
+  margin-left: auto;
+  margin-right: auto;
+}

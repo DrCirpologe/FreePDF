@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, type ComponentType } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import {
     Layers,
     ChevronDown,
+    Menu,
+    X,
     Combine,
     Scissors,
     Trash2,
@@ -114,15 +116,23 @@ const TOOL_SHEET_COLUMNS: ToolColumn[] = [
 ];
 
 export default function Layout() {
+    const location = useLocation();
     const [isToolsOpen, setIsToolsOpen] = useState(false);
+    const [isMobileToolsSheetOpen, setIsMobileToolsSheetOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [sheetTop, setSheetTop] = useState(64);
     const toolsSheetRef = useRef<HTMLDivElement | null>(null);
     const toolsButtonRef = useRef<HTMLButtonElement | null>(null);
+    const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+    const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
+    const mobileToolsSheetRef = useRef<HTMLDivElement | null>(null);
+    const mobileToolsButtonRef = useRef<HTMLButtonElement | null>(null);
 
     const handleToolsToggle = () => {
         if (!isToolsOpen) {
             const buttonBottom = toolsButtonRef.current?.getBoundingClientRect().bottom ?? 64;
-            setSheetTop(Math.round(buttonBottom + 10));
+            const viewportSafeTop = Math.min(Math.max(buttonBottom + 10, 74), window.innerHeight - 220);
+            setSheetTop(Math.round(viewportSafeTop));
         }
 
         setIsToolsOpen(prev => !prev);
@@ -147,7 +157,7 @@ export default function Layout() {
         const originalBodyOverflow = document.body.style.overflow;
         const originalHtmlOverflow = document.documentElement.style.overflow;
 
-        if (isToolsOpen) {
+        if (isToolsOpen || isMobileMenuOpen || isMobileToolsSheetOpen) {
             document.body.style.overflow = 'hidden';
             document.documentElement.style.overflow = 'hidden';
         }
@@ -157,7 +167,41 @@ export default function Layout() {
             document.body.style.overflow = originalBodyOverflow;
             document.documentElement.style.overflow = originalHtmlOverflow;
         };
-    }, [isToolsOpen]);
+    }, [isToolsOpen, isMobileMenuOpen, isMobileToolsSheetOpen]);
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        setIsMobileMenuOpen(false);
+        setIsMobileToolsSheetOpen(false);
+        setIsToolsOpen(false);
+    }, [location.pathname]);
+
+    useEffect(() => {
+        const handleMobileOutsideClick = (event: MouseEvent) => {
+            const target = event.target as Node;
+
+            if (isMobileMenuOpen) {
+                const clickedInsideMenu = mobileMenuRef.current?.contains(target);
+                const clickedMenuButton = mobileMenuButtonRef.current?.contains(target);
+
+                if (!clickedInsideMenu && !clickedMenuButton) {
+                    setIsMobileMenuOpen(false);
+                }
+            }
+
+            if (isMobileToolsSheetOpen) {
+                const clickedInsideToolsSheet = mobileToolsSheetRef.current?.contains(target);
+                const clickedToolsButton = mobileToolsButtonRef.current?.contains(target);
+
+                if (!clickedInsideToolsSheet && !clickedToolsButton) {
+                    setIsMobileToolsSheetOpen(false);
+                }
+            }
+        };
+
+        document.addEventListener('mousedown', handleMobileOutsideClick);
+        return () => document.removeEventListener('mousedown', handleMobileOutsideClick);
+    }, [isMobileMenuOpen, isMobileToolsSheetOpen]);
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -196,7 +240,125 @@ export default function Layout() {
                         </nav>
                     </div>
 
+                    <div className="md:hidden flex items-center gap-2">
+                        <button
+                            ref={mobileToolsButtonRef}
+                            type="button"
+                            onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                setIsMobileToolsSheetOpen((prev) => !prev);
+                            }}
+                            className={`inline-flex items-center justify-center rounded-lg border px-3 py-2 text-sm font-semibold transition-colors ${isMobileToolsSheetOpen
+                                ? 'border-blue-200 bg-blue-50 text-blue-700'
+                                : 'border-gray-200 bg-white text-gray-700 hover:text-blue-600 hover:border-blue-200'}`}
+                        >
+                            Tools
+                        </button>
+
+                        <button
+                            ref={mobileMenuButtonRef}
+                            type="button"
+                            onClick={() => {
+                                setIsMobileToolsSheetOpen(false);
+                                setIsMobileMenuOpen((prev) => !prev);
+                            }}
+                            className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white p-2 text-gray-700 hover:text-blue-600 hover:border-blue-200 transition-colors"
+                            aria-label={isMobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
+                        >
+                            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                        </button>
+                    </div>
+
                 </div>
+
+                {isMobileMenuOpen && (
+                    <>
+                        <div
+                            className="md:hidden fixed inset-0 top-16 bg-gray-500/55 backdrop-blur-md backdrop-grayscale backdrop-brightness-75 z-40 transition-opacity"
+                            onClick={() => {
+                                setIsMobileMenuOpen(false);
+                            }}
+                        ></div>
+                        <div ref={mobileMenuRef} className="md:hidden fixed left-0 right-0 top-16 z-50 border-t border-gray-200 bg-white px-4 py-4 space-y-3 animate-fade-in max-h-[calc(100vh-5rem)] overflow-y-auto">
+                            <div className="grid grid-cols-1 gap-2">
+                                <Link to="/compress" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Komprimieren</Link>
+                                <Link to="/pdf-converter" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Umwandeln</Link>
+                                <Link to="/merge" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Zusammenführen</Link>
+                                <Link to="/edit-pdf" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Bearbeiten</Link>
+                                <Link to="/sign" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Unterschreiben</Link>
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {isMobileToolsSheetOpen && (
+                    <>
+                        <div
+                            className="md:hidden fixed inset-0 top-16 bg-gray-500/55 backdrop-blur-md backdrop-grayscale backdrop-brightness-75 z-40 transition-opacity"
+                            onClick={() => setIsMobileToolsSheetOpen(false)}
+                        ></div>
+                        <div ref={mobileToolsSheetRef} className="md:hidden fixed left-0 right-0 top-16 max-h-[calc(100vh-5rem)] bg-white border-t border-b border-gray-200 shadow-xl z-50 overflow-y-auto animate-slide-up">
+                            <div className="px-4 py-4 space-y-3">
+                                {TOOL_SHEET_COLUMNS.map((column) => (
+                                    <div key={`mobile-sheet-${column.heading}`} className="rounded-xl border border-gray-200 p-2.5">
+                                        <h3 className="text-[11px] font-bold uppercase tracking-wide text-gray-700 mb-2 px-1">
+                                            {column.heading}
+                                        </h3>
+                                        <div className="space-y-1.5">
+                                            {column.items.map((tool) => {
+                                                const Icon = tool.icon;
+
+                                                if (tool.plainText) {
+                                                    return (
+                                                        <div key={`mobile-sheet-${column.heading}-${tool.title}`} className="px-1 py-0.5">
+                                                            <span className="font-bold text-[12px] text-gray-700 leading-tight">
+                                                                {tool.title}
+                                                            </span>
+                                                        </div>
+                                                    );
+                                                }
+
+                                                if (tool.externalHref) {
+                                                    return (
+                                                        <a
+                                                            key={`mobile-sheet-${column.heading}-${tool.title}`}
+                                                            href={tool.externalHref}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="group flex items-center gap-1.5 p-1.5 rounded-md hover:bg-gray-50 transition-colors"
+                                                        >
+                                                            <div className={`p-1.5 rounded-md transition-colors ${tool.tone}`}>
+                                                                <Icon className="w-[18px] h-[18px]" />
+                                                            </div>
+                                                            <span className="font-semibold text-[12px] text-gray-900 leading-tight">
+                                                                {tool.title}
+                                                            </span>
+                                                        </a>
+                                                    );
+                                                }
+
+                                                return (
+                                                    <Link
+                                                        key={`mobile-sheet-${column.heading}-${tool.title}`}
+                                                        to={tool.path ?? '/'}
+                                                        className="group flex items-center gap-1.5 p-1.5 rounded-md hover:bg-gray-50 transition-colors"
+                                                    >
+                                                        <div className={`p-1.5 rounded-md transition-colors ${tool.tone}`}>
+                                                            <Icon className="w-[18px] h-[18px]" />
+                                                        </div>
+                                                        <span className="font-semibold text-[12px] text-gray-900 leading-tight">
+                                                            {tool.title}
+                                                        </span>
+                                                    </Link>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                )}
 
                 {/* Tools Mega Menu / Sheet */}
                 {isToolsOpen && (
@@ -205,7 +367,11 @@ export default function Layout() {
                             className="fixed inset-0 top-16 bg-gray-500/55 backdrop-blur-md backdrop-grayscale backdrop-brightness-75 z-40 transition-opacity"
                             onClick={() => setIsToolsOpen(false)}
                         ></div>
-                        <div ref={toolsSheetRef} style={{ top: `${sheetTop}px` }} className="fixed left-0 right-0 h-[calc(64vh-2.56rem+25px)] bg-white border-t border-b border-gray-200 shadow-xl z-50 overflow-y-hidden animate-slide-up">
+                        <div
+                            ref={toolsSheetRef}
+                            style={{ top: `${sheetTop}px`, maxHeight: `calc(100vh - ${sheetTop + 16}px)` }}
+                            className="fixed left-0 right-0 bg-white border-t border-b border-gray-200 shadow-xl z-50 overflow-y-auto animate-slide-up"
+                        >
                             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
                                     {TOOL_SHEET_COLUMNS.map((column) => (
@@ -278,12 +444,12 @@ export default function Layout() {
             </header>
 
             {/* Main Content */}
-            <main className={`flex-1 w-full flex flex-col items-center transition-all duration-200 ${isToolsOpen ? 'blur-[3px]' : 'blur-0'}`}>
+            <main className={`flex-1 w-full flex flex-col items-center transition-all duration-200 ${isToolsOpen || isMobileMenuOpen || isMobileToolsSheetOpen ? 'blur-[3px]' : 'blur-0'}`}>
                 <Outlet />
             </main>
 
             {/* Footer */}
-            <footer className={`bg-gray-50 border-t border-gray-200 mt-20 transition-all duration-200 ${isToolsOpen ? 'blur-[3px]' : 'blur-0'}`}>
+            <footer className={`bg-gray-50 border-t border-gray-200 mt-20 transition-all duration-200 ${isToolsOpen || isMobileMenuOpen || isMobileToolsSheetOpen ? 'blur-[3px]' : 'blur-0'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         <div className="col-span-1 md:col-span-2">
