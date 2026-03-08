@@ -133,30 +133,30 @@ export default function Home() {
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Unsere beliebtesten PDF-Tools</h2>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                     {TOOLS.map((tool, idx) => (
                         <Link
                             key={tool.title}
                             to={tool.path}
-                            className={`group flex flex-col px-6 py-5 rounded-2xl border border-gray-200 bg-white hover:border-blue-200 hover:shadow-xl transition-all duration-300 relative overflow-hidden animate-fade-in`}
+                            className={`group flex flex-col px-3 py-3 sm:px-6 sm:py-5 rounded-2xl border border-gray-200 bg-white hover:border-blue-200 hover:shadow-xl transition-all duration-300 relative overflow-hidden animate-fade-in`}
                             style={{ animationDelay: `${idx * 50}ms` }}
                         >
                             {tool.popular && (
-                                <span className="absolute top-4 right-4 bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-md uppercase tracking-wide">
+                                <span className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-blue-100 text-blue-700 text-[10px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md uppercase tracking-wide">
                                     Beliebt
                                 </span>
                             )}
 
-                            <div className="flex items-center gap-4 mb-4">
-                                <div className={`p-3 rounded-xl ${tool.color} group-hover:scale-110 transition-transform duration-300`}>
+                            <div className="flex items-center gap-2 sm:gap-4 mb-2 sm:mb-4">
+                                <div className={`p-2 sm:p-3 rounded-xl ${tool.color} group-hover:scale-110 transition-transform duration-300`}>
                                     {tool.icon}
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                                <h3 className="text-sm sm:text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
                                     {tool.title}
                                 </h3>
                             </div>
 
-                            <p className="text-gray-500 text-sm leading-relaxed flex-1">
+                            <p className="text-gray-500 text-xs sm:text-sm leading-snug sm:leading-relaxed flex-1">
                                 {tool.description}
                             </p>
                         </Link>
@@ -166,24 +166,24 @@ export default function Home() {
 
             {/* All Tools Grid */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-32">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                     {ALL_TOOLS.map((tool, idx) => (
                         <Link
                             key={tool.path}
                             to={tool.path}
-                            className="group flex flex-col px-6 py-5 rounded-2xl border border-gray-200 bg-white hover:border-blue-200 hover:shadow-xl transition-all duration-300 relative overflow-hidden animate-fade-in"
+                            className="group flex flex-col px-3 py-3 sm:px-6 sm:py-5 rounded-2xl border border-gray-200 bg-white hover:border-blue-200 hover:shadow-xl transition-all duration-300 relative overflow-hidden animate-fade-in"
                             style={{ animationDelay: `${idx * 35}ms` }}
                         >
-                            <div className="flex items-center gap-4 mb-4">
-                                <div className={`p-3 rounded-xl ${tool.color} group-hover:scale-110 transition-transform duration-300`}>
+                            <div className="flex items-center gap-2 sm:gap-4 mb-2 sm:mb-4">
+                                <div className={`p-2 sm:p-3 rounded-xl ${tool.color} group-hover:scale-110 transition-transform duration-300`}>
                                     {tool.icon}
                                 </div>
-                                <h4 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                                <h4 className="text-sm sm:text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
                                     {tool.title}
                                 </h4>
                             </div>
 
-                            <p className="text-gray-500 text-sm leading-relaxed flex-1">{tool.description}</p>
+                            <p className="text-gray-500 text-xs sm:text-sm leading-snug sm:leading-relaxed flex-1">{tool.description}</p>
                         </Link>
                     ))}
                 </div>

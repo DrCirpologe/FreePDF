@@ -100,8 +100,8 @@ export default function Startseite() {
                 </div>
             </section>
 
-            <section className="w-full mt-20 text-center">
-                <div className="w-full mb-12">
+            <section className="w-full mt-20 text-center flex flex-col">
+                <div className="w-full order-last mt-12">
                     <div
                         onClick={openAdTarget}
                         className="mx-auto max-w-6xl overflow-hidden rounded-3xl border border-indigo-800/70 px-5 py-7 md:px-8 md:py-9 shadow-2xl relative ad-motion-bg cursor-pointer"
@@ -179,24 +179,24 @@ export default function Startseite() {
                 </p>
 
                 <div className="w-full mb-10">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                         {POPULAR_TOOLS.map((tool, idx) => (
                             <Link
                                 key={tool.title}
                                 to={tool.path}
-                                className="group flex flex-col px-6 py-5 rounded-2xl border border-gray-200 bg-white hover:border-blue-200 hover:shadow-xl transition-all duration-300 relative overflow-hidden animate-fade-in"
+                                className="group flex flex-col px-3 py-3 sm:px-6 sm:py-5 rounded-2xl border border-gray-200 bg-white hover:border-blue-200 hover:shadow-xl transition-all duration-300 relative overflow-hidden animate-fade-in"
                                 style={{ animationDelay: `${idx * 50}ms` }}
                             >
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className={`p-3 rounded-xl ${tool.color} group-hover:scale-110 transition-transform duration-300`}>
+                                <div className="flex items-center gap-2 sm:gap-4 mb-2 sm:mb-4">
+                                    <div className={`p-2 sm:p-3 rounded-xl ${tool.color} group-hover:scale-110 transition-transform duration-300`}>
                                         {tool.icon}
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                                    <h3 className="text-sm sm:text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
                                         {tool.title}
                                     </h3>
                                 </div>
 
-                                <p className="text-gray-500 text-sm leading-relaxed flex-1">
+                                <p className="text-gray-500 text-xs sm:text-sm leading-snug sm:leading-relaxed flex-1">
                                     {tool.description}
                                 </p>
                             </Link>
