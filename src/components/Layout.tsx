@@ -349,6 +349,15 @@ export default function Layout() {
                                 <Link to="/edit-pdf" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Bearbeiten</Link>
                                 <Link to="/sign" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Unterschreiben</Link>
                             </div>
+
+                            <div className="pt-2 border-t border-gray-100">
+                                <Link
+                                    to="/index"
+                                    className="w-full inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
+                                >
+                                    Alle PDF-Tools ansehen
+                                </Link>
+                            </div>
                         </div>
                     </>
                 )}

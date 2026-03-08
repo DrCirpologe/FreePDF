@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Combine, Image, FileSignature, FilePenLine, Minimize2, Scissors } from 'lucide-react';
 
 const POPULAR_TOOLS = [
@@ -61,11 +61,22 @@ const POPULAR_TOOLS = [
 ];
 
 export default function Startseite() {
+    const navigate = useNavigate();
     const adTargetUrl = 'https://cirpan-software-development.at';
     const heroImageSrc = `${import.meta.env.BASE_URL}bild1.png?v=20260302-2`;
 
     const openAdTarget = () => {
         window.open(adTargetUrl, '_blank', 'noopener,noreferrer');
+    };
+
+    const openToolsOverview = () => {
+        navigate('/index');
+
+        setTimeout(() => {
+            if (!window.location.pathname.endsWith('/index')) {
+                window.location.assign(`${import.meta.env.BASE_URL}index`);
+            }
+        }, 80);
     };
 
     return (
@@ -193,12 +204,13 @@ export default function Startseite() {
                     </div>
                 </div>
 
-                <Link
-                    to="/index"
+                <button
+                    type="button"
+                    onClick={openToolsOverview}
                     className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-white font-semibold hover:bg-blue-700 transition-colors"
                 >
                     Alle PDF-Tools ansehen
-                </Link>
+                </button>
             </section>
         </div>
     );
