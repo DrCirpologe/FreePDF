@@ -334,32 +334,27 @@ export default function Layout() {
                 </div>
 
                 {isMobileMenuOpen && (
-                    <>
-                        <div
-                            className="md:hidden fixed inset-0 top-16 bg-gray-500/55 backdrop-blur-md backdrop-grayscale backdrop-brightness-75 z-40 transition-opacity"
-                            onClick={() => {
-                                setIsMobileMenuOpen(false);
-                            }}
-                        ></div>
-                        <div ref={mobileMenuRef} className="md:hidden fixed left-0 right-0 top-16 z-50 border-t border-gray-200 bg-white px-4 py-4 space-y-3 animate-fade-in max-h-[calc(100vh-5rem)] overflow-y-auto">
-                            <div className="grid grid-cols-1 gap-2">
-                                <Link to="/compress" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Komprimieren</Link>
-                                <Link to="/pdf-converter" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Umwandeln</Link>
-                                <Link to="/merge" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Zusammenführen</Link>
-                                <Link to="/edit-pdf" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Bearbeiten</Link>
-                                <Link to="/sign" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Unterschreiben</Link>
-                            </div>
-
-                            <div className="pt-2 border-t border-gray-100">
-                                <Link
-                                    to="/index"
-                                    className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
-                                >
-                                    Alle PDF-Tools ansehen
-                                </Link>
-                            </div>
+                    <div
+                        ref={mobileMenuRef}
+                        className="md:hidden absolute right-4 top-16 z-50 w-[min(92vw,22rem)] rounded-2xl border border-gray-200 bg-white p-3 space-y-2 shadow-2xl animate-fade-in"
+                    >
+                        <div className="grid grid-cols-1 gap-2">
+                            <Link to="/compress" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Komprimieren</Link>
+                            <Link to="/pdf-converter" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Umwandeln</Link>
+                            <Link to="/merge" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Zusammenführen</Link>
+                            <Link to="/edit-pdf" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Bearbeiten</Link>
+                            <Link to="/sign" className="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50 transition-colors">Unterschreiben</Link>
                         </div>
-                    </>
+
+                        <div className="pt-2 border-t border-gray-100">
+                            <Link
+                                to="/index"
+                                className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
+                            >
+                                Alle PDF-Tools ansehen
+                            </Link>
+                        </div>
+                    </div>
                 )}
 
                 {isMobileToolsSheetOpen && (
