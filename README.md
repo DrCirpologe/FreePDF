@@ -11,6 +11,7 @@ Kostenlose Online-Tools zum Bearbeiten von PDF-Dateien (React + TypeScript + Vit
 ## SEO-Konfiguration
 
 - Primäre Domain wird über `VITE_SITE_URL` gesetzt.
+- Der Deploy-Pfad wird über `VITE_BASE_PATH` gesetzt (z. B. `/FreePDF/` für GitHub Pages-Projektseiten).
 - Lege lokal eine `.env` oder für Deployment eine `.env.production` an (siehe `.env.example`).
 - Beispiel: `VITE_SITE_URL=https://deine-domain.de`
 

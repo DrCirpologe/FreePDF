@@ -1,152 +1,152 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://freepdf.tools/</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/merge</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/merge</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/split</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/split</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/delete-pages</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/delete-pages</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/rotate</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/rotate</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/compress</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/compress</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/extract-pages</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/extract-pages</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/organize-pdf</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/organize-pdf</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/page-numbers</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/page-numbers</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/watermark</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/watermark</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/crop-pdf</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/crop-pdf</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/redact-pdf</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/redact-pdf</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/annotate-pdf</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/annotate-pdf</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/edit-pdf</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/edit-pdf</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/pdf-form-filler</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/pdf-form-filler</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/pdf-reader</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/pdf-reader</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/share-pdf</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/share-pdf</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/jpg-to-pdf</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/jpg-to-pdf</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/pdf-to-jpg</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/pdf-to-jpg</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/pdf-converter</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/pdf-converter</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/ocr</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/ocr</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/pdf-ocr</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/pdf-ocr</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/sign</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/sign</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/remove-password</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/remove-password</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/encrypt-pdf</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/encrypt-pdf</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/flatten-pdf</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/flatten-pdf</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/pdf-scanner</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/pdf-scanner</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/remove-metadata</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/remove-metadata</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/impressum</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/impressum</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://freepdf.tools/datenschutz</loc>
+    <loc>https://drcirpologe.github.io/FreePDF/datenschutz</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>

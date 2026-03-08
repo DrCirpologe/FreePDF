@@ -37,8 +37,12 @@ const Impressum = lazy(() => import('./pages/Impressum'));
 const Datenschutz = lazy(() => import('./pages/Datenschutz'));
 
 function App() {
+  const routerBase = import.meta.env.BASE_URL === '/'
+    ? '/'
+    : import.meta.env.BASE_URL.replace(/\/$/, '');
+
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={routerBase}>
       <Suspense fallback={<div className="px-4 py-10 text-center text-gray-600">Lädt…</div>}>
         <Routes>
           <Route path="/" element={<Layout />}>

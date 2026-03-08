@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://freepdf.tools/sitemap.xml
+Sitemap: https://drcirpologe.github.io/FreePDF/sitemap.xml
