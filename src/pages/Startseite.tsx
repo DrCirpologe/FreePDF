@@ -62,6 +62,7 @@ const POPULAR_TOOLS = [
 
 export default function Startseite() {
     const adTargetUrl = 'https://cirpan-software-development.at';
+    const heroImageSrc = `${import.meta.env.BASE_URL}bild1.png?v=20260302-2`;
 
     const openAdTarget = () => {
         window.open(adTargetUrl, '_blank', 'noopener,noreferrer');
@@ -81,7 +82,7 @@ export default function Startseite() {
 
                 <div className="w-full flex justify-start lg:justify-end">
                     <img
-                        src="/bild1.png?v=20260302-2"
+                        src={heroImageSrc}
                         alt="Startseiten Bild"
                         className="w-full max-w-xl h-auto object-contain"
                     />
