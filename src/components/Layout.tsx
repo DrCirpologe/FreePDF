@@ -153,7 +153,6 @@ export default function Layout() {
     const [isToolsOpen, setIsToolsOpen] = useState(false);
     const [isMobileToolsSheetOpen, setIsMobileToolsSheetOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [sheetTop, setSheetTop] = useState(64);
     const toolsSheetRef = useRef<HTMLDivElement | null>(null);
     const toolsButtonRef = useRef<HTMLButtonElement | null>(null);
     const mobileMenuRef = useRef<HTMLDivElement | null>(null);
@@ -161,18 +160,10 @@ export default function Layout() {
     const mobileToolsSheetRef = useRef<HTMLDivElement | null>(null);
     const mobileToolsButtonRef = useRef<HTMLButtonElement | null>(null);
 
-    const handleToolsToggle = () => {
-        if (!isToolsOpen) {
-            const buttonBottom = toolsButtonRef.current?.getBoundingClientRect().bottom ?? 64;
-            const viewportSafeTop = Math.min(Math.max(buttonBottom + 10, 74), window.innerHeight - 220);
-            setSheetTop(Math.round(viewportSafeTop));
-        }
-
-        setIsToolsOpen(prev => !prev);
-    };
+    const handleToolsToggle = () => setIsToolsOpen(prev => !prev);
 
     useEffect(() => {
-        const handleOutsideClick = (event: MouseEvent) => {
+        const handleOutsideClick = (event: PointerEvent) => {
             if (!isToolsOpen) {
                 return;
             }
@@ -182,25 +173,25 @@ export default function Layout() {
             const clickedToolsButton = toolsButtonRef.current?.contains(target);
 
             if (!clickedInsideSheet && !clickedToolsButton) {
+                event.preventDefault();
+                event.stopPropagation();
                 setIsToolsOpen(false);
             }
         };
 
-        document.addEventListener('mousedown', handleOutsideClick);
+        document.addEventListener('pointerdown', handleOutsideClick, true);
         const originalBodyOverflow = document.body.style.overflow;
         const originalHtmlOverflow = document.documentElement.style.overflow;
 
-        if (isToolsOpen || isMobileToolsSheetOpen) {
-            document.body.style.overflow = 'hidden';
-            document.documentElement.style.overflow = 'hidden';
-        }
+        document.body.style.overflow = originalBodyOverflow;
+        document.documentElement.style.overflow = originalHtmlOverflow;
 
         return () => {
-            document.removeEventListener('mousedown', handleOutsideClick);
+            document.removeEventListener('pointerdown', handleOutsideClick, true);
             document.body.style.overflow = originalBodyOverflow;
             document.documentElement.style.overflow = originalHtmlOverflow;
         };
-    }, [isToolsOpen, isMobileMenuOpen, isMobileToolsSheetOpen]);
+    }, [isToolsOpen]);
 
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -363,25 +354,92 @@ export default function Layout() {
                 )}
 
                 {isMobileToolsSheetOpen && (
-                    <>
-                        <div
-                            className="md:hidden fixed inset-0 top-16 bg-gray-500/55 backdrop-blur-md backdrop-grayscale backdrop-brightness-75 z-40 transition-opacity"
-                            onClick={() => setIsMobileToolsSheetOpen(false)}
-                        ></div>
-                        <div ref={mobileToolsSheetRef} className="md:hidden fixed left-0 right-0 top-16 max-h-[calc(100vh-5rem)] bg-white border-t border-b border-gray-200 shadow-xl z-50 overflow-y-auto animate-slide-up">
-                            <div className="px-4 py-4 space-y-3">
+                    <div ref={mobileToolsSheetRef} className="md:hidden absolute left-4 right-4 top-16 max-h-[calc(100vh-5rem)] bg-white rounded-2xl border border-gray-200 shadow-2xl z-50 overflow-y-auto animate-fade-in">
+                        <div className="px-3 py-3 space-y-3">
+                            {TOOL_SHEET_COLUMNS.map((column) => (
+                                <div key={`mobile-sheet-${column.heading}`} className="rounded-xl border border-gray-200 p-2.5">
+                                    <h3 className="text-[11px] font-bold uppercase tracking-wide text-gray-700 mb-2 px-1">
+                                        {column.heading}
+                                    </h3>
+                                    <div className="space-y-1.5">
+                                        {column.items.map((tool) => {
+                                            const Icon = tool.icon;
+
+                                            if (tool.plainText) {
+                                                return (
+                                                    <div key={`mobile-sheet-${column.heading}-${tool.title}`} className="px-1 py-0.5">
+                                                        <span className="font-bold text-[12px] text-gray-700 leading-tight">
+                                                            {tool.title}
+                                                        </span>
+                                                    </div>
+                                                );
+                                            }
+
+                                            if (tool.externalHref) {
+                                                return (
+                                                    <a
+                                                        key={`mobile-sheet-${column.heading}-${tool.title}`}
+                                                        href={tool.externalHref}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="group flex items-center gap-1.5 p-1.5 rounded-md hover:bg-gray-50 transition-colors"
+                                                    >
+                                                        <div className={`p-1.5 rounded-md transition-colors ${tool.tone}`}>
+                                                            <Icon className="w-[18px] h-[18px]" />
+                                                        </div>
+                                                        <span className="font-semibold text-[12px] text-gray-900 leading-tight">
+                                                            {tool.title}
+                                                        </span>
+                                                    </a>
+                                                );
+                                            }
+
+                                            return (
+                                                <Link
+                                                    key={`mobile-sheet-${column.heading}-${tool.title}`}
+                                                    to={tool.path ?? '/'}
+                                                    className="group flex items-center gap-1.5 p-1.5 rounded-md hover:bg-gray-50 transition-colors"
+                                                >
+                                                    <div className={`p-1.5 rounded-md transition-colors ${tool.tone}`}>
+                                                        <Icon className="w-[18px] h-[18px]" />
+                                                    </div>
+                                                    <span className="font-semibold text-[12px] text-gray-900 leading-tight">
+                                                        {tool.title}
+                                                    </span>
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Tools Mega Menu / Sheet */}
+                {isToolsOpen && (
+                    <div
+                        ref={toolsSheetRef}
+                        className="hidden md:block absolute left-4 right-4 top-16 max-h-[calc(100vh-5rem)] bg-white rounded-2xl border border-gray-200 shadow-2xl z-50 overflow-y-auto animate-fade-in"
+                    >
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
                                 {TOOL_SHEET_COLUMNS.map((column) => (
-                                    <div key={`mobile-sheet-${column.heading}`} className="rounded-xl border border-gray-200 p-2.5">
-                                        <h3 className="text-[11px] font-bold uppercase tracking-wide text-gray-700 mb-2 px-1">
+                                    <div key={column.heading} className="rounded-lg p-2">
+                                        <h3 className="text-[10px] font-bold uppercase tracking-wide text-gray-700 mb-2 px-1">
                                             {column.heading}
                                         </h3>
+
                                         <div className="space-y-1.5">
                                             {column.items.map((tool) => {
                                                 const Icon = tool.icon;
 
                                                 if (tool.plainText) {
                                                     return (
-                                                        <div key={`mobile-sheet-${column.heading}-${tool.title}`} className="px-1 py-0.5">
+                                                        <div
+                                                            key={`${column.heading}-${tool.title}`}
+                                                            className="px-1 py-0.5"
+                                                        >
                                                             <span className="font-bold text-[12px] text-gray-700 leading-tight">
                                                                 {tool.title}
                                                             </span>
@@ -392,10 +450,11 @@ export default function Layout() {
                                                 if (tool.externalHref) {
                                                     return (
                                                         <a
-                                                            key={`mobile-sheet-${column.heading}-${tool.title}`}
+                                                            key={`${column.heading}-${tool.title}`}
                                                             href={tool.externalHref}
                                                             target="_blank"
                                                             rel="noreferrer"
+                                                            onClick={() => setIsToolsOpen(false)}
                                                             className="group flex items-center gap-1.5 p-1.5 rounded-md hover:bg-gray-50 transition-colors"
                                                         >
                                                             <div className={`p-1.5 rounded-md transition-colors ${tool.tone}`}>
@@ -410,8 +469,9 @@ export default function Layout() {
 
                                                 return (
                                                     <Link
-                                                        key={`mobile-sheet-${column.heading}-${tool.title}`}
+                                                        key={`${column.heading}-${tool.title}`}
                                                         to={tool.path ?? '/'}
+                                                        onClick={() => setIsToolsOpen(false)}
                                                         className="group flex items-center gap-1.5 p-1.5 rounded-md hover:bg-gray-50 transition-colors"
                                                     >
                                                         <div className={`p-1.5 rounded-md transition-colors ${tool.tone}`}>
@@ -428,89 +488,7 @@ export default function Layout() {
                                 ))}
                             </div>
                         </div>
-                    </>
-                )}
-
-                {/* Tools Mega Menu / Sheet */}
-                {isToolsOpen && (
-                    <>
-                        <div
-                            className="fixed inset-0 top-16 bg-gray-500/55 backdrop-blur-md backdrop-grayscale backdrop-brightness-75 z-40 transition-opacity"
-                            onClick={() => setIsToolsOpen(false)}
-                        ></div>
-                        <div
-                            ref={toolsSheetRef}
-                            style={{ top: `${sheetTop}px`, maxHeight: `calc(100vh - ${sheetTop + 16}px)` }}
-                            className="fixed left-0 right-0 bg-white border-t border-b border-gray-200 shadow-xl z-50 overflow-y-auto animate-slide-up"
-                        >
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
-                                    {TOOL_SHEET_COLUMNS.map((column) => (
-                                        <div key={column.heading} className="rounded-lg p-2">
-                                            <h3 className="text-[10px] font-bold uppercase tracking-wide text-gray-700 mb-2 px-1">
-                                                {column.heading}
-                                            </h3>
-
-                                            <div className="space-y-1.5">
-                                                {column.items.map((tool) => {
-                                                    const Icon = tool.icon;
-
-                                                    if (tool.plainText) {
-                                                        return (
-                                                            <div
-                                                                key={`${column.heading}-${tool.title}`}
-                                                                className="px-1 py-0.5"
-                                                            >
-                                                                <span className="font-bold text-[12px] text-gray-700 leading-tight">
-                                                                    {tool.title}
-                                                                </span>
-                                                            </div>
-                                                        );
-                                                    }
-
-                                                    if (tool.externalHref) {
-                                                        return (
-                                                            <a
-                                                                key={`${column.heading}-${tool.title}`}
-                                                                href={tool.externalHref}
-                                                                target="_blank"
-                                                                rel="noreferrer"
-                                                                onClick={() => setIsToolsOpen(false)}
-                                                                className="group flex items-center gap-1.5 p-1.5 rounded-md hover:bg-gray-50 transition-colors"
-                                                            >
-                                                                <div className={`p-1.5 rounded-md transition-colors ${tool.tone}`}>
-                                                                    <Icon className="w-[18px] h-[18px]" />
-                                                                </div>
-                                                                <span className="font-semibold text-[12px] text-gray-900 leading-tight">
-                                                                    {tool.title}
-                                                                </span>
-                                                            </a>
-                                                        );
-                                                    }
-
-                                                    return (
-                                                        <Link
-                                                            key={`${column.heading}-${tool.title}`}
-                                                            to={tool.path ?? '/'}
-                                                            onClick={() => setIsToolsOpen(false)}
-                                                            className="group flex items-center gap-1.5 p-1.5 rounded-md hover:bg-gray-50 transition-colors"
-                                                        >
-                                                            <div className={`p-1.5 rounded-md transition-colors ${tool.tone}`}>
-                                                                <Icon className="w-[18px] h-[18px]" />
-                                                            </div>
-                                                            <span className="font-semibold text-[12px] text-gray-900 leading-tight">
-                                                                {tool.title}
-                                                            </span>
-                                                        </Link>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </>
+                    </div>
                 )}
             </header>
 
