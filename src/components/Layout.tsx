@@ -190,7 +190,7 @@ export default function Layout() {
         const originalBodyOverflow = document.body.style.overflow;
         const originalHtmlOverflow = document.documentElement.style.overflow;
 
-        if (isToolsOpen || isMobileMenuOpen || isMobileToolsSheetOpen) {
+        if (isToolsOpen || isMobileToolsSheetOpen) {
             document.body.style.overflow = 'hidden';
             document.documentElement.style.overflow = 'hidden';
         }
