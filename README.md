@@ -37,7 +37,8 @@ Beim Build werden `public/robots.txt` und `public/sitemap.xml` automatisch mit d
 - Wichtig in den Repository-Einstellungen:
    - `Settings -> Pages -> Source`: **GitHub Actions** auswählen.
 - Bei jedem Push auf `Main` wird `dist/` gebaut und veröffentlicht.
-- Für SPA-Routen wird automatisch `dist/404.html` erzeugt (Fallback auf die App).
+- Für SEO-relevante Routen werden beim Build zusätzlich statische `dist/<route>/index.html` Dateien erzeugt (200-Response auf GitHub Pages).
+- Zusätzlich wird `dist/404.html` als SPA-Fallback erzeugt.
 
 ## Wichtige SEO-Dateien
 

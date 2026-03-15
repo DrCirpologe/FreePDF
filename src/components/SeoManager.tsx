@@ -2,7 +2,13 @@ import { useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const SITE_NAME = 'FreePDF';
-const SITE_URL = (import.meta.env.VITE_SITE_URL || 'https://freepdf.tools').replace(/\/$/, '');
+const runtimeBasePath = import.meta.env.BASE_URL === '/'
+    ? ''
+    : import.meta.env.BASE_URL.replace(/\/$/, '');
+const runtimeFallbackSiteUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}${runtimeBasePath}`
+    : 'https://freepdf.tools';
+const SITE_URL = (import.meta.env.VITE_SITE_URL || runtimeFallbackSiteUrl).replace(/\/$/, '');
 const DEFAULT_IMAGE = '/logo.png';
 const DEFAULT_DESCRIPTION = 'Kostenlose Online-Tools zum Bearbeiten von PDFs – schnell, sicher und ohne Installation.';
 

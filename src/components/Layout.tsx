@@ -267,7 +267,7 @@ export default function Layout() {
             <header className="sticky top-0 z-50 glass-panel border-b border-gray-200">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-6">
-                        <Link to="/startseite" className="flex items-center gap-2 group">
+                        <Link to="/" className="flex items-center gap-2 group">
                             <div className="bg-blue-600 text-white p-1.5 rounded-lg group-hover:bg-blue-700 transition-colors">
                                 <Layers className="w-5 h-5" />
                             </div>

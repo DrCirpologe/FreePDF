@@ -7,7 +7,7 @@
     "dev": "vite",
     "seo:generate": "node scripts/generate-seo.mjs",
     "build": "npm run seo:generate && tsc -b && vite build",
-    "postbuild": "cp dist/index.html dist/404.html",
+    "postbuild": "node scripts/generate-static-route-pages.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
